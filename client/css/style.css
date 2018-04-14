@@ -35,6 +35,13 @@ p {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	overflow: hidden;
+}
+
+#map p {
+	margin: 0px 0px;
+	height: 12px;
+	letter-spacing: 0px;
 }
 
 #story {

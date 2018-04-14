@@ -11,4 +11,4 @@ domStory.innerHTML = window.backToTheIpsum;
 
 //
 var world = new World();
-console.log( world );
+domMap.innerHTML = world.render();
