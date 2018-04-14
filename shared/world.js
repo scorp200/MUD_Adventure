@@ -18,19 +18,19 @@ var module = function( opts = {} ) {
 }
 
 /**
- * Iterates through the map and writes characters to a string as HTML.
+ * Iterates through the map and builds a HTML string.
  */
 module.prototype.render = function() {
 	
 	//
 	var html = "<div>";
 	for ( var y=0; y<this.height; y++ ) {
-		html += "<p>";
+		html += "<div class='row'>";
 		for ( var x=0; x<this.width; x++ ) {
 			var cell = this.data[x+"-"+y];
-			html += "<span style=\"color:"+cell.draw[1]+"\">" + cell.draw[0] + "</span>";
+			html += "<div style=\"width: 12px; height: 12px; background-color: "+cell.draw[1]+"; background-image: url(test/codepage-437.png); background-position: -24px -132px;\"></div>";
 		}
-		html += "</p>";
+		html += "</div>";
 	}
 	html += "</div>";
 	
