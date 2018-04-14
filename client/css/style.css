@@ -1,0 +1,44 @@
+
+html {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	margin: 0px;
+	background: #000;
+	color: #fff;
+	font-family: monospace;
+}
+
+p {
+	margin: 4px;
+}
+
+#tools {
+	width: 100%;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+#character {
+	width: 100%;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+#map {
+	width: 100%;
+	height: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#story {
+	width: 100%;
+	height: 50%;
+	overflow-y: scroll;
+}
