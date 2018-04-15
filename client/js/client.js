@@ -21,11 +21,21 @@ domCommand.onkeydown = function( e ) {
 		// grab command, "print" it and clear input
 		// Do something with command later
 		var cmd = domCommand.value;
-		domStory.innerHTML += "<p>" + cmd + "</p>"
+		Story.log( cmd );
+		Command.execute( cmd );
 		domCommand.value = "";
 		
 		// if at bottom, stay there
 		if ( atBottom ) el.scrollTop = el.scrollHeight;
 		
 	}
+}
+
+//
+var Story = {
+	
+	log: function( text ) {
+		domStory.innerHTML += "<p>" + text + "</p>"
+	}
+	
 }
