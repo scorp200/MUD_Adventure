@@ -5,7 +5,11 @@ const sqlite3 = require('sqlite3').verbose();
 const ws = require('ws');
 
 var modules = {};
-var port;
+var settings = {
+    world_name: '',
+    world_seed: '',
+    server_port: ''
+};
 
 fs.readFile('./server.properties', 'utf8', function(err, data) {
     if (err) {
@@ -16,17 +20,23 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
                 return console.log(err);
             }
             console.log("new default server protperties has been created");
+            startup()
         });
     } else {
-        console.log(data);
         data = data.split('\n');
-        console.log(data);
+        data.forEach(function(e) {
+            e = e.split('=');
+            settings[e[0]] = e[1];
+        })
+        console.log('previous settings have been loaded');
+        startup()
     }
 });
 
-
-/*var server = new ws.Server({
-    port: port
-}, function() {
-    console.log('Websockets server up on port' + port);
-});*/
+function startup() {
+    var server = new ws.Server({
+        port: settings.server_port
+    }, function() {
+        console.log('Websockets server up on port' + settings.server_port);
+    });
+}
