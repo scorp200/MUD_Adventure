@@ -9,6 +9,7 @@ var domTools = document.getElementById( "tools" ),
 //
 var world = new World();
 domMap.innerHTML = world.render();
+Story.intro();
 
 //
 domCommand.onkeydown = function( e ) {
@@ -29,13 +30,4 @@ domCommand.onkeydown = function( e ) {
 		if ( atBottom ) el.scrollTop = el.scrollHeight;
 		
 	}
-}
-
-//
-var Story = {
-	
-	log: function( text ) {
-		domStory.innerHTML += "<p>" + text + "</p>"
-	}
-	
 }

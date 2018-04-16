@@ -7,8 +7,8 @@
 	var world = function( opts = {} ) {
 
 		// get values or set defaults
-		this.width = opts.width || 32,
-		this.height = opts.height || 32;
+		this.width = opts.width || 48,
+		this.height = opts.height || 22;
 		this.data = {};
 		
 		// fill map
