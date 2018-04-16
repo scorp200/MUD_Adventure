@@ -1,7 +1,7 @@
 
 (function() {
 
-	var module = {
+	var command = {
 
 		test: {
 			_execute: exeTest
@@ -12,13 +12,13 @@
 	/**
 	 *
 	 */
-	module.execute = function( cmd ) {
+	command.execute = function( cmd ) {
 		
-		if ( typeof module[cmd] !== "undefined" )
-			module[cmd]._execute();
-		
+		if ( typeof command[cmd] !== "undefined" )
+			command[cmd]._execute();
 		else
-			Story.log( "Unknown command: " + cmd, module	);
+			Story.log( "Unknown command: " + cmd );
+		
 	}
 
 	/**
@@ -29,9 +29,9 @@
 	}
 
 	// export
-	var __moduleName = "Command";
-	( typeof exports === "undefined" )
-		? window[__moduleName] = module
-		: exports = module;
+	if ( typeof module === "undefined" )
+		window["Command"] = command
+	else
+		module.exports = command;
 		
 })();

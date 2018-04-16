@@ -1,10 +1,10 @@
 
 (function() {
-
+	
 	/**
 	 * @constructor
 	 */
-	var module = function( opts = {} ) {
+	var world = function( opts = {} ) {
 
 		// get values or set defaults
 		this.width = opts.width || 32,
@@ -14,7 +14,7 @@
 		// fill map
 		for ( var x=0; x<this.width; x++ )
 		for ( var y=0; y<this.height; y++ ) {
-			this.data[x+"-"+y] = new module.Cell();
+			this.data[x+"-"+y] = new world.Cell();
 		}
 
 	}
@@ -22,7 +22,7 @@
 	/**
 	 * Iterates through the map and builds a HTML string.
 	 */
-	module.prototype.render = function() {
+	world.prototype.render = function() {
 		
 		//
 		var html = "<div>";
@@ -44,23 +44,23 @@
 	/**
 	 * @constructor
 	 */
-	module.Cell = function( opts = {} ) {
+	world.Cell = function( opts = {} ) {
 
 		this.type = opts.type || "grass";
-		this.draw = module.Cell.mapping[this.type];
+		this.draw = world.Cell.mapping[this.type];
 
 	}
 
 	// See https://www.martinstoeckli.ch/fontmap/fontmap.html reference
 	// Assume Courier New is used
-	module.Cell.mapping = {
+	world.Cell.mapping = {
 		"grass": [ "&#8718;", "#00ff00" ]
 	}
 
 	// export
-	var __moduleName = "World";
-	( typeof exports === "undefined" )
-		? window[__moduleName] = module
-		: exports = module;
+	if ( typeof module === "undefined" )
+		window["World"] = world
+	else
+		module.exports = world;
 		
 })();
