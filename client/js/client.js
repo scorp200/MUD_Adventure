@@ -12,6 +12,14 @@ domMap.innerHTML = world.render();
 Story.intro();
 
 //
+Client = {
+	
+	characterName: "",
+	characterPass: ""
+	
+}
+
+//
 domCommand.onkeydown = function( e ) {
 	if ( e.key === "Enter" ) {
 		
@@ -22,7 +30,7 @@ domCommand.onkeydown = function( e ) {
 		// grab command, "print" it and clear input
 		// Do something with command later
 		var cmd = domCommand.value;
-		Story.log( cmd );
+		//Story.log( cmd );
 		Command.execute( cmd );
 		domCommand.value = "";
 		

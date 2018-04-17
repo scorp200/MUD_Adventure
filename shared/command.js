@@ -4,14 +4,9 @@
 	var command = {
 		_capture: null,
 
-		"test": {
-			_execute: exeTest
-		},
-		
-		"new": {
-			_condition: "start",
-			_execute: exeNew
-		}
+		"test": { _execute: exeTest },
+		"say": { _execute: exeSay },
+		"new": { _execute: exeNew }
 
 	}
 
@@ -20,45 +15,64 @@
 	 */
 	command.execute = function( cmd ) {
 		
-		console.log( command._capture );
+		// if console is not waiting to capture input
 		if ( command._capture === null ) {
 			
-			if ( typeof command[cmd] !== "undefined" )
-				command[cmd]._execute();
-			else
-				Story.log( "Unknown command: " + cmd );
+			var index = cmd.indexOf( " " ),
+				first = cmd.substr( 0, ( index === -1 ) ? cmd.length : index ),
+				theRest = cmd.replace( first+" ", "");
 			
-		} else {
+			console.log( index, first, theRest );
+			if ( typeof command[first] !== "undefined" )
+				command[first]._execute( theRest );
+			else
+				Story.log( "Unknown command: " + first );
+			
+		}
 		
-			if ( command._capture.check === null || command._capture.check( cmd ) ) {
-				command._capture.success();
+		// waiting to capture input
+		else {
+		
+			var check = command._capture.check;
+			if ( check === null || check( cmd ) ) {
+				command._capture.success( cmd );
 			} else {
-				command._capture.fail();
+				command._capture.fail( cmd );
 			}
 		
 		}
 		
 	}
 	
-/** */
-function exeNew() {
-	Story.log( "Creating a new character..." );
-	Story.log( "Please enter the name of your character:" );
-	command._capture = {
-		check: function( x ) { return x !== "fuck"; },
-		success: exePassword,
-		fail: function() {
-			Story.log( "Terrible name! Try again:" );
+	/** */
+	function exeSay( text ) {
+		Story.log( "<a-" + Client.characterName + "->: " + text );
+	}
+
+	
+	/** */
+	function exeNew() {
+		Story.log( "Creating a new character..." );
+		Story.log( "Please enter the name of your character:" );
+		command._capture = {
+			check: function( x ) { return x !== "fuck"; },
+			success: function( x ) {
+				Client.characterName = x;
+				exePassword();
+			},
+			fail: function() {
+				Story.log( "Terrible name! Try again:" );
+			}
 		}
 	}
-}
 	
 	/** */
 	function exePassword() {
 		Story.log( "Please enter a password:" );
 		command._capture = {
 			check: null,
-			success: function() {
+			success: function( x ) {
+				Client.characterPass = x;
 				Story.log( "You now exist!" );
 				command._capture = null;
 			},

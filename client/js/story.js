@@ -17,6 +17,8 @@
 			// add colors
 			text = text.split( "<r-" ).join( "<span style='color: #ff0000;'>" );
 			text = text.split( "<g-" ).join( "<span style='color: #00ff00;'>" );
+			text = text.split( "<b-" ).join( "<span style='color: #0000ff;'>" );
+			text = text.split( "<a-" ).join( "<span style='color: #00ffff;'>" );
 			text = text.split( "->" ).join( "</span>" );
 			
 			// final print
