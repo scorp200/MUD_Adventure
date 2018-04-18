@@ -14,9 +14,8 @@ body {
 	margin: 0px;
 	background: #000;
 	color: #fff;
-	font-family: monospace;
-	font-size: 12pt;
-	letter-spacing: 3.2px;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 12px;
 }
 
 p {
@@ -81,7 +80,8 @@ p {
 	border: 0px solid;
 	background: #000;
 	color: #fff;
-	font-family: monospace;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 12px;
 	margin: 0px;
-	padding: 4px;
+	padding: 0px;
 }

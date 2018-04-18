@@ -3,18 +3,10 @@
 
         _capture: null,
 
-        "test": {
-            _execute: exeTest
-        },
-        "say": {
-            _execute: exeSay
-        },
-        "new": {
-            _execute: exeNew
-        },
-        "move": {
-            _execute: exeMove
-        }
+        "test": { _execute: exeTest },
+        "say": { _execute: exeSay },
+        "new": { _execute: exeNew },
+        "move": { _execute: exeMove }
 
     }
 
@@ -72,6 +64,7 @@
     function exeNew() {
 
         Story.log("Creating a new character...");
+		Story.space();
         Story.log("Please enter the name of your character:");
         command._capture = {
             check: function(x) {
@@ -80,6 +73,7 @@
             success: function(x) {
                 Client.characterName = x;
                 Story.log(x + ", huh? I guess that'll do.");
+				Story.space();
                 exePassword();
             },
             fail: function() {
@@ -101,6 +95,7 @@
             success: function(x) {
                 Client.characterPass = x;
                 Story.log("You now exist!");
+				Story.space();
                 command._capture = null;
                 try {
                     socket.send(JSON.stringify(Client));
