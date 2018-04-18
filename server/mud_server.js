@@ -16,6 +16,7 @@ var settings = {
     server_tick: 0
 };
 
+// create server
 fs.readFile('./server.properties', 'utf8', function(err, data) {
     if (err) {
         var seed = (Math.floor(Math.random() * 100 * 100) / 100);

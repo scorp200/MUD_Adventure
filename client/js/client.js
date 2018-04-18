@@ -2,8 +2,7 @@
 var domTools = document.getElementById("tools"),
     domCharacter = document.getElementById("character"),
     domMap = document.getElementById("map"),
-    domStory = document.querySelector("#story div"),
-    domCommand = document.querySelector("#command input");
+    domStory = document.querySelector("#story div");
 
 //
 var world = new World();
@@ -14,16 +13,18 @@ Story.intro();
 Client = {
 
     characterName: "",
-    characterPass: ""
+    characterPass: "",
+	socket: null
 
 }
+
 //server connection
 var socket = null;
 var con = new WebSocket('ws://localhost:8123/');
 con.onopen = function() {
     Story.log('You have entered a new world!')
     socket = con;
-    Command.socket = socket;
+    Client.socket = socket;
 }
 con.onerror = function(err) {
     console.log('Socket error: ' + err);
@@ -44,25 +45,6 @@ con.onmessage = function(msg) {
         world.data = data.world.data;
         domMap.innerHTML = world.render();
     }
-    if (data == 'ping!')
+    if (data === 'ping!')
         Story.log('server has pinged! ' + Date.now());
-}
-
-//
-domCommand.onkeydown = function(e) {
-	
-    //wait for connection
-    if (socket == null)
-        return;
-	
-    if (e.key === "Enter") {
-
-        // grab command, "print" it and clear input
-        // Do something with command later
-        var cmd = domCommand.value;
-        //Story.log( cmd );
-        Command.execute(cmd);
-        domCommand.value = "";
-
-    }
 }

@@ -1,4 +1,23 @@
 (function() {
+	
+	// cache DOM
+    var domCommand = document.querySelector("#command input");
+	domCommand.onkeydown = function(e) {
+		
+		//wait for connection
+		if ( Client.socket == null )
+			return;
+		
+		// if enter key pressed
+		if (e.key === "Enter") {
+			var cmd = domCommand.value;
+			Command.execute(cmd);
+			domCommand.value = "";
+		}
+		
+	}
+	
+	//
     var command = {
 
         _capture: null,

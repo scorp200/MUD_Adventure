@@ -10,7 +10,13 @@ module.exports = function(world, rate, clients) {
             try {
                 client.conn.send(JSON.stringify('ping!'));
             } catch (e) {
-                console.log(e);
+				
+				//console.log(e);
+				
+				// remove client
+				console.log( "PAIL FAILED: Removing client: " + client );
+				clients.splice( clients.indexOf( client ), 1 );
+				
             }
         })
     }
