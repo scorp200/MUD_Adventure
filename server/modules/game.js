@@ -3,11 +3,12 @@ module.exports = function(world, rate, clients) {
     console.log('game world has started');
 
     function update() {
-        console.log(clients.length);
+        //do stuff
+
+        //update all clients
         clients.forEach(function(client) {
             try {
-                client.conn.send("ping!");
-                console.log('Pinging ' + client.characterName);
+                client.conn.send(JSON.stringify('ping!'));
             } catch (e) {
                 console.log(e);
             }

@@ -49,6 +49,7 @@ function startup() {
         width: 100,
         height: 100
     });
+    game = new Game(world, settings.server_tick, clients);
     var server = new ws.Server({
         port: settings.server_port
     }, function() {
@@ -71,18 +72,4 @@ function startup() {
             }
         });
     });
-
-    setInterval(update, settings.server_tick);
-    console.log('game world has started');
-
-    function update() {
-        console.log(clients.length);
-        clients.forEach(function(client) {
-            try {
-                client.conn.send(JSON.stringify('ping!'));
-            } catch (e) {
-                console.log(e);
-            }
-        })
-    }
 }
