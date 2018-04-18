@@ -14,6 +14,10 @@
 		
 		log: function( text ) {
 			
+			// scrolling element
+			var el = document.querySelector( "#story" );
+			var atBottom = (el.scrollHeight - el.scrollTop === el.clientHeight);
+			
 			// add colors
 			text = text.split( "<r-" ).join( "<span style='color: #ff0000;'>" );
 			text = text.split( "<g-" ).join( "<span style='color: #00ff00;'>" );
@@ -23,6 +27,9 @@
 			
 			// final print
 			domStory.innerHTML += "<p>" + text + "</p>"
+			
+			// if at bottom, stay there
+			if (atBottom) el.scrollTop = el.scrollHeight;
 			
 		}
 		

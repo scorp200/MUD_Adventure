@@ -50,14 +50,12 @@ con.onmessage = function(msg) {
 
 //
 domCommand.onkeydown = function(e) {
+	
     //wait for connection
     if (socket == null)
         return;
+	
     if (e.key === "Enter") {
-
-        // scrolling element
-        var el = document.querySelector("#story")
-        var atBottom = (el.scrollHeight - el.scrollTop === el.clientHeight);
 
         // grab command, "print" it and clear input
         // Do something with command later
@@ -66,7 +64,5 @@ domCommand.onkeydown = function(e) {
         Command.execute(cmd);
         domCommand.value = "";
 
-        // if at bottom, stay there
-        if (atBottom) el.scrollTop = el.scrollHeight;
     }
 }
