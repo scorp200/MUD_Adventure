@@ -1,5 +1,10 @@
 
 (function() {
+	
+	//
+	if ( typeof require !== "undefined" ) {
+		Simplex = require('../shared/simplex.js');
+	}
 
 	/**
 	 * @constructor
@@ -12,8 +17,8 @@
 		this.data = {};
 
 		// fill map
-		this.clear();
-		this.generateTrees();
+		this.generate();
+		//this.generateTrees();
 
 	}
 	
@@ -28,6 +33,25 @@
 		}
 	
 	}
+	
+	/**
+	 *
+	 */
+	world.prototype.generate = function() {
+	
+		for ( var x=0; x<this.width; x++ )
+		for ( var y=0; y<this.height; y++ ) {
+			
+			type = ( Simplex.getHeight( x, y, 1, 0.16, 1 )+1 > 1 )
+				? "grass"
+				: "tree";
+				
+			//console.log( Simplex.getHeight( -50, 570, 1.0, 0.00025, 1 ) );
+			
+			this.data[x+"-"+y] = new world.Cell({ type: type });
+		}
+	
+	},
 	
 	/**
 	 *
