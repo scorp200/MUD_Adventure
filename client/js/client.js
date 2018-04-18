@@ -37,13 +37,15 @@ con.onclose = function(err) {
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
     console.log(data);
-		//get the world from the server
+    //get the world from the server
     if (data.world) {
         world.width = data.world.width;
         world.height = data.world.height;
         world.data = data.world.data;
-				domMap.innerHTML = world.render();
+        domMap.innerHTML = world.render();
     }
+    if (data == 'ping!')
+        Story.log('server has pinged! ' + Date.now());
 }
 
 //
