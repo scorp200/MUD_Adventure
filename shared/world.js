@@ -1,6 +1,6 @@
 
 (function() {
-	
+
 	/**
 	 * @constructor
 	 */
@@ -10,7 +10,7 @@
 		this.width = opts.width || 48,
 		this.height = opts.height || 22;
 		this.data = {};
-		
+
 		// fill map
 		this.clear();
 		this.generateTrees();
@@ -53,7 +53,7 @@
 	 * Iterates through the map and builds a HTML string.
 	 */
 	world.prototype.render = function() {
-		
+
 		//
 		var html = "<div>";
 		for ( var y=0; y<this.height; y++ ) {
@@ -75,7 +75,7 @@
 			html += "</div>";
 		}
 		html += "</div>";
-		
+
 		//
 		return html;
 
@@ -133,5 +133,5 @@
 		window["World"] = world
 	else
 		module.exports = world;
-		
+
 })();
