@@ -9,16 +9,18 @@ html {
 body {
 	display: flex;
 	flex-direction: column;
-	width: 640px;
+	width: 576px;
 	height: 480px;
 	margin: 0px;
 	background: #000;
 	color: #fff;
 	font-family: monospace;
+	font-size: 12pt;
+	letter-spacing: 3.2px;
 }
 
 p {
-	margin: 4px;
+	margin: 0px;
 }
 
 *:focus {
@@ -39,7 +41,7 @@ p {
 
 #map {
 	width: 100%;
-	height: 70%;
+	height: 264px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -52,7 +54,7 @@ p {
 }
 
 #map .row div {
-	margin: 0.5px;
+	margin: 0px;
 }
 
 #story {
