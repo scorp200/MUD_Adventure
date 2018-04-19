@@ -30,8 +30,6 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
             settings.world_seed = seed;
             settings.server_port = 8123;
             settings.server_tick = 1000;
-            game =
-                startup()
         });
     } else {
         data = data.split('\n');
@@ -40,8 +38,9 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
             settings[e[0]] = e[1];
         })
         console.log('previous settings have been loaded');
-        startup()
+
     }
+    startup()
 });
 
 function startup() {
