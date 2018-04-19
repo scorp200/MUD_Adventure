@@ -12,8 +12,8 @@
 	var world = function( opts = {} ) {
 		
 		// get values or set defaults
-		this.chunkWidth = opts.chunkWidth || 16;
-		this.chunkHeight = opts.chunkHeight || 16;
+		this.chunkWidth = opts.chunkWidth || 64;
+		this.chunkHeight = opts.chunkHeight || 64;
 		this.width = opts.width || 2;
 		this.height = opts.height || 2;
 		this.chunks = {};
@@ -43,7 +43,12 @@
 
 		for ( var x=0; x<this.width; x++ )
 		for ( var y=0; y<this.height; y++ ) {
-			this.chunks[x+"-"+y] = new Chunk({ x: x, y: y });
+			this.chunks[x+"-"+y] = new Chunk({
+				x: x,
+				y: y,
+				width: this.chunkWidth,
+				height: this.chunkHeight
+			});
 		}
 
 	},
@@ -89,6 +94,17 @@
 					colors = cell.draw.color.length,
 					ci = permutation[(y + (y*48) + x) % 512] % colors,
 					color = cell.draw.color[ci];
+					
+				// IGNORE THIS, INFACT NONE OF THIS IS HOW THINGS WILL ACTUALLY RENDER!!
+				var key = "testID";
+				if ( Client.playerID === key ) {
+					var player = chunk.players[key];
+					if ( player && player.x === x-chunk.x*this.chunkWidth && player.y === y-chunk.y*this.chunkHeight ) {
+						tileX = 24;
+						tileY = 0;
+						color = "#00ffff";
+					}
+				}
 
 				html += "<div style=\"width: 12px; height: 12px; background-color: "+color+"; background-image: url(test/codepage-437.png); background-position: -"+tileX+"px -"+tileY+"px;\"></div>";
 

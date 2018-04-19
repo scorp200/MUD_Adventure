@@ -5,18 +5,27 @@ var domTools = document.getElementById("tools"),
     domStory = document.querySelector("#story div");
 
 //
-var world = new World();
-domMap.innerHTML = world.render();
-Story.intro();
-
-//
 Client = {
 
     characterName: "",
     characterPass: "",
+	playerID: "testID",
     socket: null
 
 }
+
+//
+var world = new World();
+
+// quick test, wang a player in a chunk!
+var chunk = world.chunks["1-1"];
+chunk.players["testID"] = {
+	x: 1,
+	y: 1
+};
+
+domMap.innerHTML = world.render();
+Story.intro();
 
 //server connection
 var socket = null;

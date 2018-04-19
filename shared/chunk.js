@@ -10,8 +10,9 @@
 		this.width = opts.width || 16;
 		this.height = opts.height || 16;
 		this.data = {};
+		this.players = {};
 		this.generate();
-	
+		
 	}
 	
 	/**
