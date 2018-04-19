@@ -10,6 +10,8 @@ Client = {
     characterName: "",
     characterPass: "",
 	playerID: "testID",
+	x: 69,
+	y: 67,
     socket: null
 
 }
@@ -18,10 +20,12 @@ Client = {
 var world = new World();
 
 // quick test, wang a player in a chunk!
-var chunk = world.chunks["1-1"];
+var cx = Math.floor( Client.x / world.chunkWidth );
+var cy = Math.floor( Client.y / world.chunkHeight );
+var chunk = world.chunks[cx+"-"+cy];
 chunk.players["testID"] = {
-	x: 1,
-	y: 1
+	x: Client.x - chunk.x * world.chunkWidth,
+	y: Client.y - chunk.y * world.chunkWidth
 };
 
 domMap.innerHTML = world.render();
@@ -31,7 +35,7 @@ Story.intro();
 var socket = null;
 var con = new WebSocket('ws://localhost:8123/');
 con.onopen = function() {
-    Story.log('You have entered a new world!')
+    Story.log('You have entered a new world!');
     socket = con;
     Client.socket = socket;
 }
