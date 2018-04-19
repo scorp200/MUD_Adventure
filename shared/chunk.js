@@ -23,7 +23,7 @@
 		for ( var y=0; y<this.height; y++ ) {
 
 			// create height
-			var height = Simplex.getHeight( this.x+x, this.y+y, 1, 0.16, 1 ) + 1;
+			var height = Simplex.getHeight( this.x*this.width+x, this.y*this.height+y, 1, 0.16, 1 ) + 1;
 			type = ( height > 1 ) ? "grass" : "tree";
 
 			// set data

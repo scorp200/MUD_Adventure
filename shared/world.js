@@ -14,8 +14,8 @@
 		// get values or set defaults
 		this.chunkWidth = opts.chunkWidth || 16;
 		this.chunkHeight = opts.chunkHeight || 16;
-		this.width = opts.width || 1;
-		this.height = opts.height || 1;
+		this.width = opts.width || 2;
+		this.height = opts.height || 2;
 		this.chunks = {};
 
 		// fill map
@@ -80,7 +80,8 @@
 			for ( var x=0; x<this.width*this.chunkWidth; x++ ) {
 				
 				var chunk = this.chunks[~~(x/this.chunkWidth)+"-"+~~(y/this.chunkHeight)];
-				var cell = chunk.data[(x-chunk.x)+"-"+(y-chunk.y)];
+				var cell = chunk.data[(x-chunk.x*this.chunkWidth)+"-"+(y-chunk.y*this.chunkHeight)];
+				
 				var tiles = cell.draw.tiles.length,
 					index = permutation[(y + (y*48) + x) % 512] % tiles,
 					tileX = cell.draw.tiles[index].x,
