@@ -13,12 +13,15 @@ var settings = {
     world_name: '',
     world_seed: 0,
     server_port: 0,
-    server_tick: 0
+    server_tick: 1000
 };
 
-// create server
+// server properties
 fs.readFile('./server.properties', 'utf8', function(err, data) {
+
     if (err) {
+
+		// create new server properties
         var seed = (Math.floor(Math.random() * 100 * 100) / 100);
         data = 'world_name=world\nworld_seed=' + seed + '\nserver_port=8123\nserver_tick=1000';
         fs.writeFile("./server.properties", data, 'utf8', function(err) {
@@ -31,30 +34,45 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
             settings.server_port = 8123;
             settings.server_tick = 1000;
         });
+
     } else {
+
+		// load existing server properties
         data = data.split('\n');
         data.forEach(function(e) {
             e = e.split('=');
             settings[e[0]] = e[1];
         })
-        console.log('previous settings have been loaded');
-
+        console.log('previous settings have been loaded: ', settings);
+		
     }
-    startup()
+
+	// start
+	startup();
+
 });
 
+/**
+ *
+ */
 function startup() {
+
+	// create world
     world.world_name = settings.world_name;
     world.world = new World({
         width: 100,
         height: 100
     });
+
+	// create server
     game = new Game(world, settings.server_tick, clients);
     var server = new ws.Server({
         port: settings.server_port
     }, function() {
         console.log('Websockets server up on port ' + settings.server_port);
     });
+
+	// handle connection
     server.on('connection', function(conn) {
         var cid = clients.length;
         console.log('Player ' + cid + ' has connected');

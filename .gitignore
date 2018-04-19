@@ -1,3 +1,4 @@
 *.log
 *.properties
 *.cmd
+server/run_server.bat
