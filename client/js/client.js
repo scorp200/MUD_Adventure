@@ -14,7 +14,7 @@ Client = {
 
     characterName: "",
     characterPass: "",
-	socket: null
+    socket: null
 
 }
 
@@ -38,20 +38,20 @@ con.onclose = function(err) {
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
     //console.log(data);
-	
+
     //get the world from the server
     if (data.world) {
-		Story.log( "It's a whole new world, a new fantastic point of view!" );
-        world.width = data.world.width;
-        world.height = data.world.height;
-        world.data = data.world.data;
+        Story.log("It's a whole new world, a new fantastic point of view!");
+        world.width = data.world.world.width;
+        world.height = data.world.world.height;
+        world.data = data.world.world.data;
         domMap.innerHTML = world.render();
     }
-	
-    if (data === 'ping!') {
-        console.log( 'ping: ' + Date.now());
-	}
-	
-	return true;
-	
+
+    if (data == 'ping!') {
+        console.log('ping: ' + Date.now());
+    }
+
+    return true;
+
 }

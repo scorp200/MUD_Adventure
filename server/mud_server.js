@@ -5,14 +5,16 @@ const EventEmitter = require('events');
 const ws = require('ws');
 const World = require('../shared/world.js');
 const Game = require('./modules/game.js');
+const Player = require('./modules/player.js');
 var modules = {};
 var game = null;
 var world = {};
 var clients = [];
+//setup default server setings incase properties is missing or damaged
 var settings = {
-    world_name: '',
-    world_seed: 0,
-    server_port: 0,
+    world_name: 'world',
+    world_seed: Date.now(),
+    server_port: 8123,
     server_tick: 1000
 };
 
@@ -20,62 +22,63 @@ var settings = {
 fs.readFile('./server.properties', 'utf8', function(err, data) {
 
     if (err) {
-
-		// create new server properties
-        var seed = (Math.floor(Math.random() * 100 * 100) / 100);
-        data = 'world_name=world\nworld_seed=' + seed + '\nserver_port=8123\nserver_tick=1000';
-        fs.writeFile("./server.properties", data, 'utf8', function(err) {
-            if (err) {
-                throw err;
-            }
-            console.log("new default server protperties has been created");
-            settings.world_name = 'world';
-            settings.world_seed = seed;
-            settings.server_port = 8123;
-            settings.server_tick = 1000;
-        });
-
+        // just write the default server properties
+        writeProperties();
+        console.log("using default server settings");
     } else {
-
-		// load existing server properties
+        // load existing server properties
         data = data.split('\n');
         data.forEach(function(e) {
             e = e.split('=');
-            settings[e[0]] = e[1];
-        })
-        console.log('previous settings have been loaded: ', settings);
-		
+            if (settings[e[0]])
+                settings[e[0]] = e[1];
+        });
+        console.log('previous settings have been loaded');
+        writeProperties();
     }
 
-	// start
-	startup();
+    // start
+    startup();
 
 });
-
+/**
+ * Always write into the properties file to make sure it contains all the correct settings
+ */
+function writeProperties() {
+    var data = '';
+    var keys = Object.keys(settings);
+    keys.forEach(function(e) {
+        data += e + '=' + settings[e] + '\n';
+    });
+    fs.writeFile("./server.properties", data, 'utf8', function(err) {
+        if (err) {
+            throw err;
+        }
+    });
+}
 /**
  *
  */
 function startup() {
 
-	// create world
+    // create world
     world.world_name = settings.world_name;
     world.world = new World({
         width: 100,
         height: 100
     });
-
-	// create server
     game = new Game(world, settings.server_tick, clients);
+    // create server
     var server = new ws.Server({
         port: settings.server_port
     }, function() {
         console.log('Websockets server up on port ' + settings.server_port);
     });
 
-	// handle connection
+    // handle connection
     server.on('connection', function(conn) {
         var cid = clients.length;
-        console.log('Player ' + cid + ' has connected');
+        console.log('Client ' + cid + ' has connected');
         try {
             conn.send(JSON.stringify(world));
         } catch (e) {
@@ -83,11 +86,17 @@ function startup() {
         }
         conn.on('message', function(msg) {
             var data = JSON.parse(msg);
-            console.log(data);
-            if (data.characterName && data.characterPass) {
-                clients[cid] = data;
-                clients[cid].conn = conn;
+            if (!clients[cid] && data.characterName && data.characterPass) {
+                console.log('Client ' + cid + ' is now ' + data.characterName);
+                clients[cid] = new Player(cid, conn, data.characterName, data.characterPass);
+            } else if (clients[cid] && data.command) {
+                console.log(clients[cid].name + ' has send the command ' + data.command);
+                game.push(clients[cid], data);
             }
+        });
+        conn.on('close', function() {
+            clients[cid] = null;
+            console.log('Client ' + cid + ' has left.')
         });
     });
 }

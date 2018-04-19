@@ -1,6 +1,6 @@
 
 (function() {
-	
+
 	//
 	if ( typeof require !== "undefined" ) {
 		Simplex = require('../shared/simplex.js');
@@ -10,7 +10,7 @@
 	 * @constructor
 	 */
 	var world = function( opts = {} ) {
-
+		this.chunks = {};
 		// get values or set defaults
 		this.width = opts.width || 48,
 		this.height = opts.height || 22;
@@ -21,52 +21,52 @@
 		//this.generateTrees();
 
 	}
-	
+
 	/**
 	 *
 	 */
 	world.prototype.clear = function() {
-	
+
 		for ( var x=0; x<this.width; x++ )
 		for ( var y=0; y<this.height; y++ ) {
 			this.data[x+"-"+y] = new world.Cell();
 		}
-	
+
 	}
-	
+
 	/**
 	 *
 	 */
 	world.prototype.generate = function() {
-	
+
 		for ( var x=0; x<this.width; x++ )
 		for ( var y=0; y<this.height; y++ ) {
-			
+
 			type = ( Simplex.getHeight( x, y, 1, 0.16, 1 )+1 > 1 )
 				? "grass"
 				: "tree";
-				
+
 			//console.log( Simplex.getHeight( -50, 570, 1.0, 0.00025, 1 ) );
-			
+
 			this.data[x+"-"+y] = new world.Cell({ type: type });
 		}
-	
+
 	},
-	
+
 	/**
 	 *
 	 */
 	world.prototype.generateTrees = function() {
-	
+
 		// create some randomly place trees (TEST)
 		for ( var n=0; n<50; n++ ) {
 			var x = ~~( Math.random() * this.width );
 			var y = ~~( Math.random() * this.height );
 			this.data[x+"-"+y].set({ type: "tree" });
 		}
-	
+
 	}
-	
+
 	//
 	var permutation = [];
 	for (  var n=0; n<512; n++ ) {
@@ -83,7 +83,7 @@
 		for ( var y=0; y<this.height; y++ ) {
 			html += "<div class='row'>";
 			for ( var x=0; x<this.width; x++ ) {
-				
+
 				var cell = this.data[x+"-"+y],
 					tiles = cell.draw.tiles.length,
 					index = permutation[(y + (y*48) + x) % 512] % tiles,
@@ -92,9 +92,9 @@
 					colors = cell.draw.color.length,
 					ci = permutation[(y + (y*48) + x) % 512] % colors,
 					color = cell.draw.color[ci];
-				
+
 				html += "<div style=\"width: 12px; height: 12px; background-color: "+color+"; background-image: url(test/codepage-437.png); background-position: -"+tileX+"px -"+tileY+"px;\"></div>";
-				
+
 			}
 			html += "</div>";
 		}
@@ -112,7 +112,7 @@
 		this.type = opts.type || "grass";
 		this.draw = world.Cell.mapping[this.type];
 	}
-	
+
 	/**
 	 *
 	 */
@@ -124,7 +124,7 @@
 	// See https://www.martinstoeckli.ch/fontmap/fontmap.html reference
 	// Assume Courier New is used
 	world.Cell.mapping = {
-		
+
 		"grass": {
 			tiles: [
 				{x: 0,   y: 0},
@@ -140,7 +140,7 @@
 				"#006600"
 			]
 		},
-		
+
 		"tree": {
 			tiles: [
 				{x: 168, y: 12}
@@ -149,7 +149,7 @@
 				"#00cc00"
 			]
 		}
-		
+
 	}
 
 	// export

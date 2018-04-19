@@ -1,31 +1,40 @@
 (function() {
-	
-	// cache DOM
+
+    // cache DOM
     var domCommand = document.querySelector("#command input");
-	domCommand.onkeydown = function(e) {
-		
-		//wait for connection
-		if ( Client.socket == null )
-			return;
-		
-		// if enter key pressed
-		if (e.key === "Enter") {
-			var cmd = domCommand.value;
-			Command.execute(cmd);
-			domCommand.value = "";
-		}
-		
-	}
-	
-	//
+    var server = false;
+    domCommand.onkeydown = function(e) {
+
+        //wait for connection
+        if (Client.socket == null)
+            return;
+
+        // if enter key pressed
+        if (e.key === "Enter") {
+            var cmd = domCommand.value;
+            Command.execute(cmd);
+            domCommand.value = "";
+        }
+
+    }
+
+    //
     var command = {
 
         _capture: null,
 
-        "test": { _execute: exeTest },
-        "say": { _execute: exeSay },
-        "new": { _execute: exeNew },
-        "move": { _execute: exeMove }
+        "test": {
+            _execute: exeTest
+        },
+        "say": {
+            _execute: exeSay
+        },
+        "new": {
+            _execute: exeNew
+        },
+        "move": {
+            _execute: exeMove
+        }
 
     }
 
@@ -70,8 +79,10 @@
      * @param {string} text The text to "say"
      */
     function exeSay(text) {
+        if (server) {
 
-        Story.log("<a-" + Client.characterName + "->: " + text);
+        } else
+            Story.log("<a-" + Client.characterName + "->: " + text);
 
     }
 
@@ -81,22 +92,23 @@
      * When input is accepted, goes onto exePassword().
      */
     function exeNew() {
-
-        Story.log("Creating a new character...");
-		Story.space();
-        Story.log("Please enter the name of your character:");
-        command._capture = {
-            check: function(x) {
-                return x !== "fuck";
-            },
-            success: function(x) {
-                Client.characterName = x;
-                Story.log(x + ", huh? I guess that'll do.");
-				Story.space();
-                exePassword();
-            },
-            fail: function() {
-                Story.log("Terrible name! Try again:");
+        if (!server) {
+            Story.log("Creating a new character...");
+            Story.space();
+            Story.log("Please enter the name of your character:");
+            command._capture = {
+                check: function(x) {
+                    return x !== "fuck";
+                },
+                success: function(x) {
+                    Client.characterName = x;
+                    Story.log(x + ", huh? I guess that'll do.");
+                    Story.space();
+                    exePassword();
+                },
+                fail: function() {
+                    Story.log("Terrible name! Try again:");
+                }
             }
         }
 
@@ -107,35 +119,48 @@
      * Completion finishes character creation, and sends the information to the server
      */
     function exePassword() {
-
-        Story.log("Please enter a password:");
-        command._capture = {
-            check: null,
-            success: function(x) {
-                Client.characterPass = x;
-                Story.log("You now exist!");
-				Story.space();
-                command._capture = null;
-                try {
-                    socket.send(JSON.stringify(Client));
-                } catch (e) {
-                    console.log('error sending client data: ' + e);
+        if (!server) {
+            Story.log("Please enter a password:");
+            command._capture = {
+                check: null,
+                success: function(x) {
+                    Client.characterPass = x;
+                    Story.log("You now exist!");
+                    Story.space();
+                    command._capture = null;
+                    try {
+                        socket.send(JSON.stringify(Client));
+                    } catch (e) {
+                        console.log('error sending client data: ' + e);
+                    }
+                },
+                fail: function() {
+                    Story.log("Try again:");
                 }
-            },
-            fail: function() {
-                Story.log("Try again:");
             }
         }
-
     }
     /**
      * Move to a specified direction
      */
     function exeMove(dir) {
-        if (dir == 'n' || dir == 'e' || dir == 's' || dir == 'w') {
-            Story.log('Moving ' + dir);
+        if (server) {
+
         } else {
-            Story.log('Please use n,e,s,w for direction!');
+            if (dir == 'n' || dir == 'e' || dir == 's' || dir == 'w') {
+                Story.log('Moving ' + dir);
+                try {
+                    var cmd = {
+                        command: 'move',
+                        opt: dir
+                    };
+                    socket.send(JSON.stringify(cmd));
+                } catch (e) {
+                    console.log('error sending command data: ' + e);
+                }
+            } else {
+                Story.log('Please use n,e,s,w for direction!');
+            }
         }
     }
 
@@ -151,7 +176,9 @@
     // export
     if (typeof module === "undefined")
         window["Command"] = command
-    else
+    else {
+        server = true;
         module.exports = command;
+    }
 
 })();
