@@ -12,9 +12,10 @@
 	var world = function( opts = {} ) {
 		
 		// get values or set defaults
-		this.width = opts.width || 48,
-		this.height = opts.height || 22;
-		this.data = {};
+		this.chunkWidth = opts.chunkWidth || 16;
+		this.chunkHeight = opts.chunkHeight || 16;
+		this.width = opts.width || 1;
+		this.height = opts.height || 1;
 		this.chunks = {};
 
 		// fill map
@@ -42,20 +43,13 @@
 
 		for ( var x=0; x<this.width; x++ )
 		for ( var y=0; y<this.height; y++ ) {
-
-			type = ( Simplex.getHeight( x, y, 1, 0.16, 1 )+1 > 1 )
-				? "grass"
-				: "tree";
-
-			//console.log( Simplex.getHeight( -50, 570, 1.0, 0.00025, 1 ) );
-
-			this.data[x+"-"+y] = new Cell({ type: type });
+			this.chunks[x+"-"+y] = new Chunk({ x: x, y: y });
 		}
 
 	},
 
 	/**
-	 *
+	 * REMOVE/MOVE SOMEWHERE
 	 */
 	world.prototype.generateTrees = function() {
 
@@ -81,12 +75,13 @@
 
 		//
 		var html = "<div>";
-		for ( var y=0; y<this.height; y++ ) {
+		for ( var y=0; y<this.height*this.chunkHeight; y++ ) {
 			html += "<div class='row'>";
-			for ( var x=0; x<this.width; x++ ) {
-
-				var cell = this.data[x+"-"+y],
-					tiles = cell.draw.tiles.length,
+			for ( var x=0; x<this.width*this.chunkWidth; x++ ) {
+				
+				var chunk = this.chunks[~~(x/this.chunkWidth)+"-"+~~(y/this.chunkHeight)];
+				var cell = chunk.data[(x-chunk.x)+"-"+(y-chunk.y)];
+				var tiles = cell.draw.tiles.length,
 					index = permutation[(y + (y*48) + x) % 512] % tiles,
 					tileX = cell.draw.tiles[index].x,
 					tileY = cell.draw.tiles[index].y,
