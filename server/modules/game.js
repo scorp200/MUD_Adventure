@@ -19,8 +19,9 @@ module.exports = function(world, rate, clients) {
         clients.forEach(function(client) {
             try {
                 client.conn.send(JSON.stringify('ping!'));
-            } catch (e)
-            console.log(e);
+            } catch (e) {
+				console.log(e);
+			}
         })
     }
 }

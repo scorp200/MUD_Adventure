@@ -10,11 +10,12 @@
 	 * @constructor
 	 */
 	var world = function( opts = {} ) {
-		this.chunks = {};
+		
 		// get values or set defaults
 		this.width = opts.width || 48,
 		this.height = opts.height || 22;
 		this.data = {};
+		this.chunks = {};
 
 		// fill map
 		this.generate();
@@ -48,7 +49,7 @@
 
 			//console.log( Simplex.getHeight( -50, 570, 1.0, 0.00025, 1 ) );
 
-			this.data[x+"-"+y] = new world.Cell({ type: type });
+			this.data[x+"-"+y] = new Cell({ type: type });
 		}
 
 	},
@@ -105,52 +106,6 @@
 
 	}
 
-	/**
-	 * @constructor
-	 */
-	world.Cell = function( opts = {} ) {
-		this.type = opts.type || "grass";
-		this.draw = world.Cell.mapping[this.type];
-	}
-
-	/**
-	 *
-	 */
-	world.Cell.prototype.set = function( opts = {} ) {
-		Object.assign( this, opts );
-		this.draw = world.Cell.mapping[this.type];
-	}
-
-	// See https://www.martinstoeckli.ch/fontmap/fontmap.html reference
-	// Assume Courier New is used
-	world.Cell.mapping = {
-
-		"grass": {
-			tiles: [
-				{x: 0,   y: 0},
-				{x: 24 , y: 24},
-				{x: 144, y: 24},
-				{x: 168, y: 24},
-				{x: 84,  y: 24},
-				{x: 108, y: 180},
-				{x: 120, y: 180}
-			],
-			color: [
-				"#005500",
-				"#006600"
-			]
-		},
-
-		"tree": {
-			tiles: [
-				{x: 168, y: 12}
-			],
-			color: [
-				"#00cc00"
-			]
-		}
-
-	}
 
 	// export
 	if ( typeof module === "undefined" )
