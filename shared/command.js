@@ -23,18 +23,10 @@
 
         _capture: null,
 
-        "test": {
-            _execute: exeTest
-        },
-        "say": {
-            _execute: exeSay
-        },
-        "new": {
-            _execute: exeNew
-        },
-        "move": {
-            _execute: exeMove
-        }
+        "test": { _execute: exeTest },
+        "say": { _execute: exeSay },
+        "new": { _execute: exeNew },
+        "move": { _execute: exeMove }
 
     }
 
@@ -149,6 +141,18 @@
         } else {
             if (dir == 'n' || dir == 'e' || dir == 's' || dir == 'w') {
                 Story.log('Moving ' + dir);
+				
+				switch ( dir ) {
+					case ( "n" ): Client.y -= 1; break;
+					case ( "e" ): Client.x += 1; break;
+					case ( "s" ): Client.y += 1; break;
+					case ( "w" ): Client.x -= 1; break;
+				}
+				
+				Client.updatePosition();
+				domMap = document.getElementById("map");
+				domMap.innerHTML = world.render();
+				
                 try {
                     var cmd = {
                         command: 'move',

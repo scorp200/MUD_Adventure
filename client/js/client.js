@@ -10,6 +10,7 @@ Client = {
     characterName: "",
     characterPass: "",
 	playerID: "testID",
+	chunk: null,
 	x: 69,
 	y: 67,
     socket: null
@@ -20,13 +21,21 @@ Client = {
 var world = new World();
 
 // quick test, wang a player in a chunk!
-var cx = Math.floor( Client.x / world.chunkWidth );
-var cy = Math.floor( Client.y / world.chunkHeight );
-var chunk = world.chunks[cx+"-"+cy];
-chunk.players["testID"] = {
-	x: Client.x - chunk.x * world.chunkWidth,
-	y: Client.y - chunk.y * world.chunkWidth
-};
+Client.updatePosition = function() {
+	
+	var cx = Math.floor( Client.x / world.chunkWidth );
+	var cy = Math.floor( Client.y / world.chunkHeight );
+	var chunk = world.chunks[cx+"-"+cy];
+	Client.chunk = cx+"-"+cy;
+	chunk.players["testID"] = {
+		x: Client.x - chunk.x * world.chunkWidth,
+		y: Client.y - chunk.y * world.chunkWidth
+	};
+	console.log( chunk.players["testID"] );
+	
+}
+
+Client.updatePosition();
 
 domMap.innerHTML = world.render();
 Story.intro();
@@ -55,9 +64,9 @@ con.onmessage = function(msg) {
     //get the world from the server
     if (data.world) {
         Story.log("It's a whole new world, a new fantastic point of view!");
-        world.width = data.world.world.width;
-        world.height = data.world.world.height;
-        world.data = data.world.world.data;
+        //world.width = data.world.width;
+        //world.height = data.world.height;
+        //world.chunks = data.world.chunks;
         domMap.innerHTML = world.render();
     }
 

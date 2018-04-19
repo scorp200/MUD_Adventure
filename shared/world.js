@@ -4,6 +4,8 @@
 	//
 	if ( typeof require !== "undefined" ) {
 		Simplex = require('../shared/simplex.js');
+		Chunk = require('../shared/Chunk.js');
+		Cell = require('../shared/Cell.js');
 	}
 
 	/**
@@ -41,6 +43,7 @@
 	 */
 	world.prototype.generate = function() {
 
+		console.log( "generating world..." );
 		for ( var x=0; x<this.width; x++ )
 		for ( var y=0; y<this.height; y++ ) {
 			this.chunks[x+"-"+y] = new Chunk({
@@ -50,6 +53,7 @@
 				height: this.chunkHeight
 			});
 		}
+		console.log( "Done!" );
 
 	},
 

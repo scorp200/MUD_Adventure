@@ -1,4 +1,10 @@
 (function() {
+	
+	//
+	if ( typeof require !== "undefined" ) {
+		Simplex = require('../shared/simplex.js');
+		Cell = require('../shared/Cell.js');
+	}
 
 	/**
 	 * @constructor
@@ -20,6 +26,7 @@
 	 */
 	chunk.prototype.generate = function() {
 
+		console.log( this );
 		for ( var x=0; x<this.width; x++ )
 		for ( var y=0; y<this.height; y++ ) {
 
