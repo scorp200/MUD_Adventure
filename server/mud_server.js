@@ -64,35 +64,36 @@ function writeProperties() {
 function startup() {
 
     // create world
-	console.log( "creating world..." );
-    world.world_name = settings.world_name;
-    world.world = new World({
+    console.log("creating world...");
+    world = new World({
         width: 1,
         height: 1,
-		chunkWidth: 64,
-		chunkHeight: 64
+        chunkWidth: 64,
+        chunkHeight: 64,
+        name: settings.world_name
     });
-	
-	//
-	console.log( "starting simulation..." );
+
+    //
+    console.log("starting simulation...");
     game = new Game(world, settings.server_tick, clients);
-	
+
     // create server
-	console.log( "create server..." );
+    console.log("create server...");
     var server = new ws.Server({
         port: settings.server_port
     }, function() {
         console.log('Websockets server up on port ' + settings.server_port);
     });
 
-	console.log( server );
-	
     // handle connection
     server.on('connection', function(conn) {
         var cid = clients.length;
         console.log('Client ' + cid + ' has connected');
         try {
-            conn.send(JSON.stringify(world));
+            conn.send(JSON.stringify({
+                world: world,
+                id: cid
+            }));
         } catch (e) {
             console.log(e);
         }
@@ -100,10 +101,17 @@ function startup() {
             var data = JSON.parse(msg);
             if (!clients[cid] && data.characterName && data.characterPass) {
                 console.log('Client ' + cid + ' is now ' + data.characterName);
-                clients[cid] = new Player(cid, conn, data.characterName, data.characterPass);
+                clients[cid] = new Player(cid, conn, data.characterName, {
+                    x: 32,
+                    y: 32
+                });
+                game.updatePlayerPosition(clients[cid]);
             } else if (clients[cid] && data.command) {
                 console.log(clients[cid].name + ' has send the command ' + data.command);
-                game.push(clients[cid], data);
+                game.push({
+                    player: clients[cid],
+                    command: data.command
+                });
             }
         });
         conn.on('close', function() {
