@@ -41,6 +41,7 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
     startup();
 
 });
+
 /**
  * Always write into the .properties file to make sure it contains all the correct settings
  */
@@ -56,25 +57,36 @@ function writeProperties() {
         }
     });
 }
+
 /**
  *
  */
 function startup() {
 
     // create world
+	console.log( "creating world..." );
     world.world_name = settings.world_name;
     world.world = new World({
-        width: 100,
-        height: 100
+        width: 1,
+        height: 1,
+		chunkWidth: 64,
+		chunkHeight: 64
     });
+	
+	//
+	console.log( "starting simulation..." );
     game = new Game(world, settings.server_tick, clients);
+	
     // create server
+	console.log( "create server..." );
     var server = new ws.Server({
         port: settings.server_port
     }, function() {
         console.log('Websockets server up on port ' + settings.server_port);
     });
 
+	console.log( server );
+	
     // handle connection
     server.on('connection', function(conn) {
         var cid = clients.length;
