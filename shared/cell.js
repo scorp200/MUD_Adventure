@@ -38,10 +38,30 @@
 
 		"tree": {
 			tiles: [
+				{x: 60, y: 0},
+				{x: 72, y: 0},
+				{x: 96, y: 12}
+			],
+			color: [
+				"#00bb00"
+			]
+		},
+		
+		"water": {
+			tiles: [
+				{x: 84, y: 180}
+			],
+			color: [
+				"#00cccc"
+			]
+		},
+		
+		"mountain": {
+			tiles: [
 				{x: 168, y: 12}
 			],
 			color: [
-				"#00cc00"
+				"#aaaaaa"
 			]
 		}
 

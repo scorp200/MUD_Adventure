@@ -9,8 +9,8 @@ Client = {
     characterPass: "",
 	playerID: "testID",
 	chunk: null,
-	x: 20,
-	y: 10,
+	x: 40,
+	y: 40,
     socket: null
 
 }

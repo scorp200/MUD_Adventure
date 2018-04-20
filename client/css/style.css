@@ -9,8 +9,8 @@ html {
 body {
 	display: flex;
 	flex-direction: column;
-	width: 576px;
-	height: 480px;
+	/*width: 576px;
+	height: 480px;*/
 	margin: 0px;
 	background: #000;
 	color: #fff;
@@ -39,8 +39,10 @@ p {
 }
 
 #map {
-	width: 100%;
-	height: 264px;
+	/*width: 100%;
+	height: 264px;*/
+	width: 800px;
+	height: 600px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
