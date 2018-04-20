@@ -78,7 +78,7 @@ function startup() {
     game = new Game(world, settings.server_tick, clients);
 
     // create server
-    console.log("create server...");
+    console.log("creating server...");
     var server = new ws.Server({
         port: settings.server_port
     }, function() {
@@ -87,7 +87,9 @@ function startup() {
 
     // handle connection
     server.on('connection', function(conn) {
-        var cid = clients.length;
+        //reusing old id if any otherwise use the length of clients array
+        var cid = clients.indexOf(null);
+        cid = cid == -1 ? clients.length : cid;
         console.log('Client ' + cid + ' has connected');
         try {
             conn.send(JSON.stringify({

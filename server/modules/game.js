@@ -56,6 +56,8 @@ module.exports = function(world, rate, clients) {
         }
         //update all clients
         clients.forEach(function(client) {
+            if (!client)
+                return;
             try {
                 var key = getPlayerChunk(client);
                 client.conn.send(JSON.stringify({
