@@ -155,7 +155,7 @@
 				
 				Client.updatePosition();
 				domMap = document.getElementById("map");
-				renderer.update( world, Client.x-7, Client.y-7 );
+				renderer.update( world, Client.x, Client.y );
 				
                 try {
                     var cmd = {

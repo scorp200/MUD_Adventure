@@ -34,15 +34,23 @@
 	 */
 	renderer.prototype.update = function( world, wx, wy ) {
 
+		// center view on given location
+		wx -= ~~(this.width / 2);
+		wy -= ~~(this.height / 2);
+	
 		//
 		var html = "<div>";
 		for ( var y=wy; y<wy+this.height; y++ ) {
 			html += "<div class='row'>";
 			for ( var x=wx; x<wx+this.width; x++ ) {
 				
+				// get chunk and cell
 				var chunk = world.chunks[~~(x/world.chunkWidth)+"-"+~~(y/world.chunkHeight)];
-				var cell = chunk.data[(x-chunk.x*world.chunkWidth)+"-"+(y-chunk.y*world.chunkHeight)];
+				var cell = undefined;
+				if ( chunk )
+					cell = chunk.data[(x-chunk.x*world.chunkWidth)+"-"+(y-chunk.y*world.chunkHeight)];
 				
+				// if valid/in bounds
 				if ( cell ) {
 					
 					var tiles = cell.draw.tiles.length,
@@ -64,7 +72,10 @@
 						}
 					}
 					
-				} else {
+				}
+				
+				// invalid/out of bounds
+				else {
 				
 					tileX = 0;
 					tileY = 0;

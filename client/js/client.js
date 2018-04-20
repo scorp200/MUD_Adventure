@@ -36,7 +36,7 @@ Client.updatePosition = function() {
 
 Client.updatePosition();
 
-renderer.update( world, Client.x-7, Client.y-7 );
+renderer.update( world, Client.x, Client.y );
 Story.intro();
 
 //server connection
@@ -66,7 +66,7 @@ con.onmessage = function(msg) {
         //world.width = data.world.width;
         //world.height = data.world.height;
         //world.chunks = data.world.chunks;
-        renderer.update( world, Client.x-7, Client.y-7 );
+        renderer.update( world, Client.x, Client.y );
     }
 
     if (data == 'ping!') {
