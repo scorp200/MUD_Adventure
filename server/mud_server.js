@@ -10,7 +10,7 @@ var modules = {};
 var game = null;
 var world = {};
 var clients = [];
-//setup default server setings incase properties is missing or damaged
+//setup default server setings incase .properties is missing or damaged
 var settings = {
     world_name: 'world',
     world_seed: Date.now(),
@@ -22,7 +22,7 @@ var settings = {
 fs.readFile('./server.properties', 'utf8', function(err, data) {
 
     if (err) {
-        // just write the default server properties
+        // just write the default server.properties
         writeProperties();
         console.log("using default server settings");
     } else {
@@ -42,7 +42,7 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
 
 });
 /**
- * Always write into the properties file to make sure it contains all the correct settings
+ * Always write into the .properties file to make sure it contains all the correct settings
  */
 function writeProperties() {
     var data = '';
