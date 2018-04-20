@@ -62,15 +62,25 @@
 						color = cell.draw.color[ci];
 
 					// IGNORE THIS, INFACT NONE OF THIS IS HOW THINGS WILL ACTUALLY RENDER!!
-					var key = "testID";
-					if ( Client.playerID === key ) {
+					Object.keys(chunk.players).forEach( function( key ) {
+						
 						var player = chunk.players[key];
-						if ( player && player.x === x-chunk.x*world.chunkWidth && player.y === y-chunk.y*world.chunkHeight ) {
-							tileX = 24;
-							tileY = 0;
-							color = "#00ffff";
+						//console.log( Client.playerID, key );
+						if ( player.x === x-chunk.x*world.chunkWidth && player.y === y-chunk.y*world.chunkHeight ) {
+							
+							if ( Client.playerID === key ) {
+								tileX = 24;
+								tileY = 0;
+								color = "#00ffff";
+							} else {
+								tileX = 12;
+								tileY = 0;
+								color = "#ffff00";
+							}
+							
 						}
-					}
+						
+					} );
 
 				}
 

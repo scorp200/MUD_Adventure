@@ -47,11 +47,18 @@ con.onmessage = function(msg) {
     if (data.world) {
         Story.log("It's a whole new world, a new fantastic point of view!");
         world = Object.assign(data.world);
-        Client.playerID = data.id;
+        Client.playerID = data.id.toString();
         renderer.update(world, Client.x, Client.y);
-    } else if (data.chunk) {
-        world.chunks[data.key] = data.chunk;
-        renderer.update(world, world.chunks[data.key].players[Client.playerID].x, world.chunks[data.key].players[Client.playerID].y);
+		console.log( "playerID set to " + Client.playerID );
+    }
+	
+	// received chunk from server
+	else if (data.chunk) {
+		
+		var chunk = data.chunk;
+        world.chunks[data.key] = chunk;
+        renderer.update( world, chunk.players[Client.playerID].x, chunk.players[Client.playerID].y);
+		
     }
 
     if (data == 'ping!') {
