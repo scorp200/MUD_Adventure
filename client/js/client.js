@@ -7,36 +7,19 @@ Client = {
 
     characterName: "",
     characterPass: "",
-	playerID: "testID",
-	chunk: null,
-	x: 40,
-	y: 40,
+    playerID: null,
+    chunk: null,
+    x: 32,
+    y: 32,
     socket: null
 
 }
 
 //
 var world = new World(),
-	renderer = new Renderer();
+    renderer = new Renderer();
 
-// quick test, wang a player in a chunk!
-Client.updatePosition = function() {
-	
-	var cx = Math.floor( Client.x / world.chunkWidth );
-	var cy = Math.floor( Client.y / world.chunkHeight );
-	var chunk = world.chunks[cx+"-"+cy];
-	Client.chunk = cx+"-"+cy;
-	chunk.players["testID"] = {
-		x: Client.x - chunk.x * world.chunkWidth,
-		y: Client.y - chunk.y * world.chunkWidth
-	};
-	console.log( chunk.players["testID"] );
-	
-}
-
-Client.updatePosition();
-
-renderer.update( world, Client.x, Client.y );
+renderer.update(world, Client.x, Client.y);
 Story.intro();
 
 //server connection
@@ -63,10 +46,12 @@ con.onmessage = function(msg) {
     //get the world from the server
     if (data.world) {
         Story.log("It's a whole new world, a new fantastic point of view!");
-        //world.width = data.world.width;
-        //world.height = data.world.height;
-        //world.chunks = data.world.chunks;
-        renderer.update( world, Client.x, Client.y );
+        world = Object.assign(data.world);
+        Client.playerID = data.id;
+        renderer.update(world, Client.x, Client.y);
+    } else if (data.chunk) {
+        world.chunks[data.key] = data.chunk;
+        renderer.update(world, world.chunks[data.key].players[Client.playerID].x, world.chunks[data.key].players[Client.playerID].y);
     }
 
     if (data == 'ping!') {

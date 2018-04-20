@@ -12,12 +12,13 @@
 	var chunk = function( opts ) {
 	
 		this.x = opts.x || 0;
-		this.y = opts.y || 0;
-		this.width = opts.width || 16;
-		this.height = opts.height || 16;
-		this.data = {};
-		this.players = {};
-		this.generate();
+        this.y = opts.y || 0;
+        this.width = opts.width || 16;
+        this.height = opts.height || 16;
+        this.data = {};
+        this.players = {};
+        this.playerCount = 0;
+        this.generate();
 		
 	}
 	

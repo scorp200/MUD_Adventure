@@ -12,13 +12,14 @@
 	 * @constructor
 	 */
 	var world = function( opts = {} ) {
-		
+
 		// get values or set defaults
 		this.chunkWidth = opts.chunkWidth || 64;
 		this.chunkHeight = opts.chunkHeight || 64;
 		this.width = opts.width || 2;
 		this.height = opts.height || 2;
 		this.chunks = {};
+		this.name = opts.name || 'world';
 
 		// fill map
 		this.generate();

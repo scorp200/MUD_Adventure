@@ -1,44 +1,45 @@
 (function() {
 
     // cache DOM
-    var domCommand = document.querySelector("#command input");
-    var server = false;
-    domCommand.onkeydown = function(e) {
-
-        //wait for connection
-        if (Client.socket == null)
-            return;
-
-        // if enter key pressed
-        if (e.key === "Enter") {
-            var cmd = domCommand.value;
-            Command.execute(cmd);
-            domCommand.value = "";
-        }
-
-    }
-
+    var domCommand;
     //
     var command = {
 
         _capture: null,
 
-        "test": { _execute: exeTest },
-        "say": { _execute: exeSay },
-        "new": { _execute: exeNew },
-        "move": { _execute: exeMove },
-		"n": { _execute: exeMove.bind( null, "n" ) },
-		"e": { _execute: exeMove.bind( null, "e" ) },
-		"s": { _execute: exeMove.bind( null, "s" ) },
-		"w": { _execute: exeMove.bind( null, "w" ) }
+        "test": {
+            _execute: exeTest
+        },
+        "say": {
+            _execute: exeSay
+        },
+        "new": {
+            _execute: exeNew
+        },
+        "move": {
+            _execute: exeMove
+        },
+        "n": {
+            _execute: exeMove.bind(null, "n")
+        },
+        "e": {
+            _execute: exeMove.bind(null, "e")
+        },
+        "s": {
+            _execute: exeMove.bind(null, "s")
+        },
+        "w": {
+            _execute: exeMove.bind(null, "w")
+        }
 
     }
-
+    var server = false;
+    command.game = null;
     /**
      * Attemps to execute the given command.
      * @param {string} cmd The command the execute.
      */
-    command.execute = function(cmd) {
+    command.execute = function(cmd, opts = {}) {
 
         // if console is not waiting to capture input
         if (command._capture === null) {
@@ -50,7 +51,9 @@
 
             // if command exists, execute it with remaining text as parameter
             if (typeof command[first] !== "undefined")
-                command[first]._execute(theRest);
+                command[first]._execute(theRest, opts);
+            else if (server)
+                console.log('Attempted to execute unknown command ' + first);
             else
                 Story.log("Unknown command: " + first);
 
@@ -139,28 +142,35 @@
     /**
      * Move to a specified direction
      */
-    function exeMove(dir) {
+    function exeMove(dir, opts = {}) {
         if (server) {
-
+            var newPos = opts.player.position;
+            switch (dir) {
+                case ("n"):
+                    newPos.y -= 1;
+                    break;
+                case ("e"):
+                    newPos.x += 1;
+                    break;
+                case ("s"):
+                    newPos.y += 1;
+                    break;
+                case ("w"):
+                    newPos.x -= 1;
+                    break;
+            }
+            //test if cell is walkable
+            opts.player.position = newPos;
+            command.game.updatePlayerPosition(opts.player);
+            /*Client.updatePosition();
+            domMap = document.getElementById("map");
+            renderer.update(world, Client.x, Client.y);*/
         } else {
             if (dir == 'n' || dir == 'e' || dir == 's' || dir == 'w') {
                 Story.log('Moving ' + dir);
-				
-				switch ( dir ) {
-					case ( "n" ): Client.y -= 1; break;
-					case ( "e" ): Client.x += 1; break;
-					case ( "s" ): Client.y += 1; break;
-					case ( "w" ): Client.x -= 1; break;
-				}
-				
-				Client.updatePosition();
-				domMap = document.getElementById("map");
-				renderer.update( world, Client.x, Client.y );
-				
                 try {
                     var cmd = {
-                        command: 'move',
-                        opt: dir
+                        command: 'move ' + dir
                     };
                     socket.send(JSON.stringify(cmd));
                 } catch (e) {
@@ -182,9 +192,24 @@
     }
 
     // export
-    if (typeof module === "undefined")
-        window["Command"] = command
-    else {
+    if (typeof module === "undefined") {
+        window["Command"] = command;
+        domCommand = document.querySelector("#command input");
+        domCommand.onkeydown = function(e) {
+
+            //wait for connection
+            if (Client.socket == null)
+                return;
+
+            // if enter key pressed
+            if (e.key === "Enter") {
+                var cmd = domCommand.value;
+                command.execute(cmd);
+                domCommand.value = "";
+            }
+
+        }
+    } else {
         server = true;
         module.exports = command;
     }
