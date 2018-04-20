@@ -1,8 +1,6 @@
 // cache DOM
 var domTools = document.getElementById("tools"),
-    domCharacter = document.getElementById("character"),
-    domMap = document.getElementById("map"),
-    domStory = document.querySelector("#story div");
+    domCharacter = document.getElementById("character");
 
 //
 Client = {
@@ -11,14 +9,15 @@ Client = {
     characterPass: "",
 	playerID: "testID",
 	chunk: null,
-	x: 69,
-	y: 67,
+	x: 20,
+	y: 10,
     socket: null
 
 }
 
 //
-var world = new World();
+var world = new World(),
+	renderer = new Renderer();
 
 // quick test, wang a player in a chunk!
 Client.updatePosition = function() {
@@ -37,7 +36,7 @@ Client.updatePosition = function() {
 
 Client.updatePosition();
 
-domMap.innerHTML = world.render();
+renderer.update( world, Client.x-7, Client.y-7 );
 Story.intro();
 
 //server connection
@@ -67,7 +66,7 @@ con.onmessage = function(msg) {
         //world.width = data.world.width;
         //world.height = data.world.height;
         //world.chunks = data.world.chunks;
-        domMap.innerHTML = world.render();
+        renderer.update( world, Client.x-7, Client.y-7 );
     }
 
     if (data == 'ping!') {

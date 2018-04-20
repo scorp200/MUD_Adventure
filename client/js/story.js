@@ -2,7 +2,8 @@
 (function() {
 	
 	// cache DOM
-	var el = document.querySelector( "#story" );
+	var el = document.querySelector( "#story" ),
+		domStory = document.querySelector("#story div");
 
 	//
 	var story = {

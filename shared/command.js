@@ -26,7 +26,11 @@
         "test": { _execute: exeTest },
         "say": { _execute: exeSay },
         "new": { _execute: exeNew },
-        "move": { _execute: exeMove }
+        "move": { _execute: exeMove },
+		"n": { _execute: exeMove.bind( null, "n" ) },
+		"e": { _execute: exeMove.bind( null, "e" ) },
+		"s": { _execute: exeMove.bind( null, "s" ) },
+		"w": { _execute: exeMove.bind( null, "w" ) }
 
     }
 
@@ -151,7 +155,7 @@
 				
 				Client.updatePosition();
 				domMap = document.getElementById("map");
-				domMap.innerHTML = world.render();
+				renderer.update( world, Client.x-7, Client.y-7 );
 				
                 try {
                     var cmd = {
