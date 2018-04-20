@@ -77,12 +77,23 @@
      * Prints a string to the Story, with the current character's name.
      * @param {string} text The text to "say"
      */
-    function exeSay(text) {
+    function exeSay(text, opts) {
         if (server) {
-
-        } else
-            Story.log("<a-" + Client.characterName + "->: " + text);
-
+            command.game.sendToClients(JSON.stringify({
+                say: text,
+                name: opts.player.name
+            }));
+        } else {
+            try {
+                var cmd = {
+                    command: 'say ' + text
+                };
+                socket.send(JSON.stringify(cmd));
+            } catch (e) {
+                console.log('error sending command data: ' + e);
+            }
+        }
+        //Story.log("<a-" + Client.characterName + "->: " + text);
     }
 
 

@@ -1,5 +1,5 @@
 module.exports = function(world, rate, clients) {
-
+    var game = this;
     console.log("rate = " + rate);
     setInterval(update, rate);
     console.log('game world has started');
@@ -51,22 +51,34 @@ module.exports = function(world, rate, clients) {
             var command = commandList.shift();
             //execute the commands
             commands.execute('' + command.command, {
-                player: command.player
+                player: command.player,
+                clients: clients
             });
         }
         //update all clients
         clients.forEach(function(client) {
             if (!client)
                 return;
-            try {
-                var key = getPlayerChunk(client);
-                client.conn.send(JSON.stringify({
-                    chunk: world.chunks[key],
-                    key: key
-                }));
-            } catch (e) {
-                console.log(e);
-            }
+            var key = getPlayerChunk(client);
+            game.sendToClients(JSON.stringify({
+                chunk: world.chunks[key],
+                key: key
+            }), {
+                conn: client.conn
+            });
         })
+    }
+
+    this.sendToClients = function(data, opts = {}) {
+        try {
+            if (opts.conn)
+                opts.conn.send(data);
+            else
+                clients.forEach(function(client) {
+                    client.conn.send(data);
+                });
+        } catch (e) {
+            console.log(e);
+        }
     }
 }

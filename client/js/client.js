@@ -49,16 +49,20 @@ con.onmessage = function(msg) {
         world = Object.assign(data.world);
         Client.playerID = data.id.toString();
         renderer.update(world, Client.x, Client.y);
-		console.log( "playerID set to " + Client.playerID );
+        console.log("playerID set to " + Client.playerID);
     }
-	
-	// received chunk from server
-	else if (data.chunk) {
-		
-		var chunk = data.chunk;
+
+    // received chunk from server
+    else if (data.chunk) {
+
+        var chunk = data.chunk;
         world.chunks[data.key] = chunk;
-        renderer.update( world, chunk.players[Client.playerID].x, chunk.players[Client.playerID].y);
-		
+        renderer.update(world, chunk.players[Client.playerID].x, chunk.players[Client.playerID].y);
+
+    } else if (data.say) {
+
+        Story.log("<a-" + data.name + "->: " + data.say);
+
     }
 
     if (data == 'ping!') {
