@@ -17,6 +17,7 @@
 		this.width = 15;
 		this.height = 15;
 		this.autoSize();
+		this.field = [];
 
 	};
 
@@ -28,80 +29,131 @@
 		this.width = ~~(domMap.clientWidth / 12);
 		this.height = ~~(domMap.clientHeight / 12);
 	}
+	
+	/**
+	 * Sets the width and height of the renderer (in tiles)
+	 * based on the size of the parent element
+	 */
+	renderer.prototype.createField = function() {
+		
+		var main = document.createElement( "DIV" );
+		
+		for ( var y=0; y<this.height; y++ ) {
+			
+			var row = document.createElement( "DIV" );
+			row.classList.add( "row" );
+			main.appendChild( row );
+			
+			for ( var x=0; x<this.width; x++ ) {
+				
+				var cell = document.createElement( "DIV" );
+				cell.style.width = "12px";
+				cell.style.height = "12px";
+				cell.style.backgroundColor = "#FFFFFF";
+				cell.style.backgroundImage = "url(test/codepage-437.png)";
+				cell.style.backgroundPosition = "0px 0px";
+				this.field[y*this.width+x] = cell.style;
+				row.appendChild( cell );
+				
+			}
+			
+		}
+		
+		domMap.appendChild( main );
+		
+	}
 
 	/**
 	 * Iterates through the map and builds a HTML string.
 	 */
 	renderer.prototype.update = function( world, wx, wy ) {
 
+		var time = Date.now();
+		var chunks = {};
+		var players = {};
+	
 		// center view on given location
 		wx -= ~~(this.width / 2);
 		wy -= ~~(this.height / 2);
 
-		//
-		var html = "<div>";
-		for ( var y=wy; y<wy+this.height; y++ ) {
-			html += "<div class='row'>";
-			for ( var x=wx; x<wx+this.width; x++ ) {
+		// render base map
+		for ( var y=wy; y<wy+this.height; y++ )
+		for ( var x=wx; x<wx+this.width; x++ ) {
 
-				// get chunk and cell
-				var chunk = world.chunks[~~(x/world.chunkWidth)+"-"+~~(y/world.chunkHeight)];
-				var cell = undefined;
-				if ( chunk )
-					cell = chunk.data[(x-chunk.x*world.chunkWidth)+"-"+(y-chunk.y*world.chunkHeight)];
+			// get chunk and cell
+			var cKey = ~~(x/world.chunkWidth)+"-"+~~(y/world.chunkHeight);
+			var chunk = world.chunks[cKey];
+			var cell = undefined;
+			if ( chunk ) {
+				chunks[cKey] = chunk;
+				cell = chunk.data[(x-chunk.x*world.chunkWidth)+"-"+(y-chunk.y*world.chunkHeight)];
+			}
+
+			//
+			var cellDiv = this.field[(y-wy)*this.width+(x-wx)];
+			if ( cell ) {
 
 				// if valid/in bounds
-				if ( cell ) {
+				var tiles = cell.draw.tiles.length,
+					index = permutation[(y + (y*48) + x) % 512] % tiles,
+					tile = cell.draw.tiles[index],
+					colors = cell.draw.color.length,
+					ci = permutation[(y + (y*48) + x) % 512] % colors,
+					color = cell.draw.color[ci];
+				
+				cellDiv.backgroundColor = color;
+				cellDiv.backgroundPosition = tile;
 
-					var tiles = cell.draw.tiles.length,
-						index = permutation[(y + (y*48) + x) % 512] % tiles,
-						tileX = cell.draw.tiles[index].x,
-						tileY = cell.draw.tiles[index].y,
-						colors = cell.draw.color.length,
-						ci = permutation[(y + (y*48) + x) % 512] % colors,
-						color = cell.draw.color[ci];
-
-					// IGNORE THIS, INFACT NONE OF THIS IS HOW THINGS WILL ACTUALLY RENDER!!
-					Object.keys(chunk.players).forEach( function( key ) {
-						
-						var player = chunk.players[key];
-						//console.log( Client.playerID, key );
-						if ( player.x === x-chunk.x*world.chunkWidth && player.y === y-chunk.y*world.chunkHeight ) {
-							
-							if ( Client.playerID === key ) {
-								tileX = 24;
-								tileY = 0;
-								color = "#00ffff";
-							} else {
-								tileX = 12;
-								tileY = 0;
-								color = "#ffff00";
-							}
-							
-						}
-						
-					} );
-
-				}
-
-				// invalid/out of bounds
-				else {
-
-					tileX = 0;
-					tileY = 0;
-					color = "#000000";
-
-				}
-
-				html += "<div style=\"width: 12px; height: 12px; background-color: "+color+"; background-image: url(test/codepage-437.png); background-position: -"+tileX+"px -"+tileY+"px;\"></div>";
-
+			} else {
+				
+				// out of bounds
+				cellDiv.backgroundColor = "#000";
+				
 			}
-			html += "</div>";
+			
 		}
-		html += "</div>";
-
+		
+		// render players
+		var w = this.width,
+			h = this.height,
+			field = this.field;
+		 
+		Object.keys( chunks ).forEach( function( key ) {
+			var chunk = chunks[key];
+			Object.assign( players, chunk.players );
+		} );
+			
+		Object.keys(players).forEach( function( key ) {
+			
+			var p = players[key],
+				x = p.x - wx,
+				y = p.y - wy;
+			
+			console.log( x, y );
+			if ( x>0 && y>0 && x<w && y<h ) {
+				
+				var chunk = world.chunks[~~(p.x/world.chunkWidth)+"-"+~~(p.y/world.chunkHeight)];
+				var cell = chunk.data[(p.x-chunk.x*world.chunkWidth)+"-"+(p.y-chunk.y*world.chunkHeight)];
+				var cellDiv = field[y*w+x];
+				
+				if ( Client.playerID === key ) {
+					tile = "-24px -0px";
+					color = "#00ffff";
+				} else {
+					tile = "-12px -0px"
+					color = "#ffff00";
+				}
+				
+				//
+				cellDiv.backgroundColor = color;
+				cellDiv.backgroundPosition = tile;
+				
+			}
+			
+		} );
+		
 		//
-		domMap.innerHTML = html;
+		console.log( "Map rendered in " + (Date.now() - time) + "ms" );
 
 	}
 

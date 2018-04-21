@@ -19,7 +19,8 @@ Client = {
 var world = new World(),
     renderer = new Renderer();
 
-renderer.update(world, Client.x, Client.y);
+renderer.createField();
+//renderer.update(world, Client.x, Client.y);
 Story.intro();
 
 //server connection
@@ -41,7 +42,6 @@ con.onclose = function(err) {
 }
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
-    //console.log(data);
 
     //get the world from the server
     if (data.world) {
