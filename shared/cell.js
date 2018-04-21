@@ -58,7 +58,8 @@
 		
 		"mountain": {
 			tiles: [
-				"-168px -12px"
+				"-168px -12px",
+				"-168px -60px"
 			],
 			color: [
 				"#aaaaaa"

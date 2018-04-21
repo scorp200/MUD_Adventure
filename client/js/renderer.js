@@ -153,7 +153,7 @@
 		} );
 		
 		//
-		console.log( "Map rendered in " + (Date.now() - time) + "ms" );
+		//console.log( "Map rendered in " + (Date.now() - time) + "ms" );
 
 	}
 
