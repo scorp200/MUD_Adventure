@@ -9,8 +9,8 @@ Client = {
     characterPass: "",
     playerID: null,
     chunk: null,
-    x: 32,
-    y: 32,
+    x: 64,
+    y: 64,
     socket: null
 
 }
@@ -20,7 +20,7 @@ var world = new World(),
     renderer = new Renderer();
 
 renderer.createField();
-//renderer.update(world, Client.x, Client.y);
+renderer.update(world, Client.x, Client.y);
 Story.intro();
 
 //server connection
