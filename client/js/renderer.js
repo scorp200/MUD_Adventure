@@ -94,11 +94,12 @@
 			if ( cell ) {
 
 				// if valid/in bounds
-				var tiles = cell.draw.tiles.length,
-					index = permutation[(y + (y*48) + x) % 512] % tiles,
+				var perm = permutation[(y + (y*48) + x) % 512],
+					tiles = cell.draw.tiles.length,
+					index = perm % tiles,
 					tile = cell.draw.tiles[index],
 					colors = cell.draw.color.length,
-					ci = permutation[(y + (y*48) + x) % 512] % colors,
+					ci = perm % colors,
 					color = cell.draw.color[ci];
 				
 				cellDiv.backgroundColor = color;
@@ -129,7 +130,6 @@
 				x = p.x - wx,
 				y = p.y - wy;
 			
-			console.log( x, y );
 			if ( x>0 && y>0 && x<w && y<h ) {
 				
 				var chunk = world.chunks[~~(p.x/world.chunkWidth)+"-"+~~(p.y/world.chunkHeight)];
