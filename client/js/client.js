@@ -30,6 +30,11 @@ con.onopen = function() {
     Story.log('You have entered a new world!');
     socket = con;
     Client.socket = socket;
+	
+	Command.execute( "new" );
+	Command.execute( "test" );
+	Command.execute( "pass" );
+	
 }
 con.onerror = function(err) {
     console.log('Socket error: ' + err);
@@ -57,7 +62,10 @@ con.onmessage = function(msg) {
 
         var chunk = data.chunk;
         world.chunks[data.key] = chunk;
-        renderer.update(world, chunk.players[Client.playerID].x, chunk.players[Client.playerID].y);
+		
+		var clientPlayer = chunk.players[Client.playerID];
+		Object.assign( Client, clientPlayer );
+        renderer.update( world, clientPlayer.x, clientPlayer.y );
 
     }
 	

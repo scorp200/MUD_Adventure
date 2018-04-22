@@ -38,8 +38,8 @@
 			var type = "grass";
 
 			//
-			var river = Math.pow(Math.abs( Simplex.getHeight( cX, cY, 1, 0.0025, 3 ) ), 2 );
-				tributary = Math.pow( Math.abs( Simplex.getHeight( cX, cY, 1, 0.04, 1 ) ), 1.5 );
+			var river = Math.pow(Math.abs( Simplex.getHeight( cX, cY, 1, 0.0025, 3 ) ), 2.5 );
+				tributary = Math.pow( Math.abs( Simplex.getHeight( cX, cY, 1, 0.04, 1 ) ), 2 );
 				//river += height = Simplex.getHeight( cX, cY, 1, 0.01, 1 ) * 1;
 			var moisture = river*0.8 + Simplex.getHeight( cX, cY, 1, 0.16, 1 ) * 0.2;
 			
@@ -49,7 +49,7 @@
 
 			// forests
 			var forest = Simplex.getHeight( cX, cY, 1, 0.24, 1 );
-			if ( forest > 0.85 || (forest > 0.5 && moisture < 0.5) ) type = "tree";
+			if ( forest > 0.8 || (forest > 0.4 && moisture < 0.5) ) type = "tree";
 
 			// mountain
 			var height = Simplex.getHeight( cX, cY, 1, 0.01, 1 ) * 0.6;
@@ -61,7 +61,7 @@
 			// hills
 			height *= 0.8;
 			height += Simplex.getHeight( cY, cX, 1, 0.16, 1 ) * 0.2;
-			if ( height > 0.1 && height <= 0.2 ) type = "hill";
+			if ( height > 0.15 && height <= 0.2 ) type = "hill";
 
 			// rivers
 			if ( river < 0.001 ) type = "water";
