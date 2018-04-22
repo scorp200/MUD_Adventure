@@ -7,30 +7,15 @@
 
         _capture: null,
 
-        "test": {
-            _execute: exeTest
-        },
-        "say": {
-            _execute: exeSay
-        },
-        "new": {
-            _execute: exeNew
-        },
-        "move": {
-            _execute: exeMove
-        },
-        "n": {
-            _execute: exeMove.bind(null, "n")
-        },
-        "e": {
-            _execute: exeMove.bind(null, "e")
-        },
-        "s": {
-            _execute: exeMove.bind(null, "s")
-        },
-        "w": {
-            _execute: exeMove.bind(null, "w")
-        }
+		// stop expanding these! They easily fit on one line
+        "test": { _execute: exeTest },
+		"say": { _execute: exeSay },
+        "new": { _execute: exeNew },
+		"move": { _execute: exeMove },
+        "n": { _execute: exeMove.bind(null, "n") },
+        "e": { _execute: exeMove.bind(null, "e") },
+        "s": { _execute: exeMove.bind(null, "s") },
+        "w": { _execute: exeMove.bind(null, "w") }
 
     }
     var server = false;
@@ -154,8 +139,15 @@
      * Move to a specified direction
      */
     function exeMove(dir, opts = {}) {
+		
+		var player = opts.player;
+		
         if (server) {
-            var newPos = opts.player.position;
+			
+			var world = require( "./world.js" ).world;
+			console.log( world );
+			
+            var newPos = Object.assign( {}, player.position );
             switch (dir) {
                 case ("n"):
                     newPos.y -= 1;
@@ -170,12 +162,18 @@
                     newPos.x -= 1;
                     break;
             }
+			
             //test if cell is walkable
-            opts.player.position = newPos;
-            command.game.updatePlayerPosition(opts.player);
-            /*Client.updatePosition();
-            domMap = document.getElementById("map");
-            renderer.update(world, Client.x, Client.y);*/
+			if ( newPos.x >= 0
+			&&   newPos.y >= 0
+			&&   newPos.x < world.width*world.chunkWidth
+			&&   newPos.y < world.height*world.chunkHeight ) {
+				
+				Object.assign( player.position, newPos );
+				command.game.updatePlayerPosition( player );
+				
+			}
+            
         } else {
             if (dir == 'n' || dir == 'e' || dir == 's' || dir == 'w') {
                 Story.log('Moving ' + dir);

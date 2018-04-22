@@ -9,8 +9,8 @@ Client = {
     characterPass: "",
     playerID: null,
     chunk: null,
-    x: 32,
-    y: 32,
+    x: 64,
+    y: 64,
     socket: null
 
 }
@@ -19,6 +19,7 @@ Client = {
 var world = new World(),
     renderer = new Renderer();
 
+renderer.createField();
 renderer.update(world, Client.x, Client.y);
 Story.intro();
 
@@ -41,9 +42,8 @@ con.onclose = function(err) {
 }
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
-    //console.log(data);
 
-    //get the world from the server
+    // get the world from the server
     if (data.world) {
         Story.log("It's a whole new world, a new fantastic point of view!");
         world = Object.assign(data.world);
@@ -59,7 +59,10 @@ con.onmessage = function(msg) {
         world.chunks[data.key] = chunk;
         renderer.update(world, chunk.players[Client.playerID].x, chunk.players[Client.playerID].y);
 
-    } else if (data.say) {
+    }
+	
+	// received chat from server
+	else if (data.say) {
 
         Story.log("<a-" + data.name + "->: " + data.say);
 

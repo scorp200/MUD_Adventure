@@ -1,4 +1,3 @@
-
 html {
 	height: 100%;
 	display: flex;
@@ -11,6 +10,8 @@ body {
 	flex-direction: column;
 	width: 576px;
 	height: 480px;
+	/*width: 100%;
+	height: 100%;*/
 	margin: 0px;
 	background: #000;
 	color: #fff;
@@ -30,12 +31,18 @@ p {
 	width: 100%;
 	height: 16px;
 	flex-shrink: 0;
+	
+	/*display: none;*/
+	
 }
 
 #character {
 	width: 100%;
 	height: 16px;
 	flex-shrink: 0;
+	
+	/*display: none;*/
+	
 }
 
 #map {
@@ -62,6 +69,9 @@ p {
 	display: flex;
 	align-items: flex-end;
 	overflow-y: scroll;
+	
+	/*display: none;*/
+	
 }
 
 #story div {
@@ -72,6 +82,9 @@ p {
 #command {
 	height: 32px;
 	overflow: hidden;
+	
+	/*display: none;*/
+	
 }
 
 #command input {

@@ -71,6 +71,9 @@ function startup() {
         chunkHeight: 64,
         name: settings.world_name
     });
+	
+	// I know, WTF
+	World.world = world;
 
     //
     console.log("starting simulation...");
