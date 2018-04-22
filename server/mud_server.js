@@ -17,7 +17,6 @@ var settings = {
     server_port: 8123,
     server_tick: 1000
 };
-
 // server properties
 fs.readFile('./server.properties', 'utf8', function(err, data) {
 
