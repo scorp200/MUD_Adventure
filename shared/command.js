@@ -218,7 +218,7 @@
                     console.log('error sending command data: ' + e);
                 }
             } else {
-                Story.log('Please use n,e,s,w for direction!');
+                Story.log('Please use n, e, s or w for direction!');
             }
         }
     }
