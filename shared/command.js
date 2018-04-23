@@ -12,6 +12,7 @@
 		"say": { _execute: exeSay },
         "new": { _execute: exeNew },
 		"move": { _execute: exeMove },
+		"look": {  _execute: exeLook },
         "n": { _execute: exeMove.bind(null, "n") },
         "e": { _execute: exeMove.bind(null, "e") },
         "s": { _execute: exeMove.bind(null, "s") },
@@ -114,27 +115,58 @@
      * Completion finishes character creation, and sends the information to the server
      */
     function exePassword() {
-        if (!server) {
-            Story.log("Please enter a password:");
-            command._capture = {
-                check: null,
-                success: function(x) {
-                    Client.characterPass = x;
-                    Story.log("You now exist!");
-                    Story.space();
-                    command._capture = null;
-                    try {
-                        socket.send(JSON.stringify(Client));
-                    } catch (e) {
-                        console.log('error sending client data: ' + e);
-                    }
-                },
-                fail: function() {
-                    Story.log("Try again:");
-                }
-            }
-        }
+		
+        if ( server )
+			return;
+		
+		Story.log("Please enter a password:");
+		command._capture = {
+			check: null,
+			success: function(x) {
+				Client.characterPass = x;
+				Story.log("You now exist!");
+				Story.space();
+				command._capture = null;
+				try {
+					socket.send(JSON.stringify(Client));
+				} catch (e) {
+					console.log('error sending client data: ' + e);
+				}
+			},
+			fail: function() {
+				Story.log("Try again:");
+			}
+		}
     }
+	
+	/**
+     * Look around at current surroundings
+     */
+    function exeLook() {
+		
+        if ( server )
+			return;
+		
+		Story.log( "You take a look around at your surroundings..." );
+		
+		var getCell = function( x, y ) {
+			var chunk = world.chunks[~~(x/world.chunkWidth)+"-"+~~(y/world.chunkHeight)];
+			var cell = chunk.data[(x-chunk.x*world.chunkWidth)+"-"+(y-chunk.y*world.chunkHeight)];
+			return cell;
+		}
+		
+		//
+		var north = getCell( Client.x, Client.y-1 ).type;
+		var east = getCell( Client.x+1, Client.y ).type;
+		var south = getCell( Client.x, Client.y+1 ).type;
+		var west = getCell( Client.x-1, Client.y ).type;
+		Story.log( "There's " + north + " to the north." );
+		Story.log( "There's " + east + " to the east." );
+		Story.log( "There's " + south + " to the south." );
+		Story.log( "There's " + west + " to the west." );
+    
+    }
+	
     /**
      * Move to a specified direction
      */
@@ -195,9 +227,7 @@
      * Just a test function. If this doesn't work, something is very wrong!
      */
     function exeTest() {
-
         Story.log("Yep, the command system seems to be working...");
-
     }
 
     // export
