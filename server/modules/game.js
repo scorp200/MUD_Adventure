@@ -5,7 +5,7 @@ module.exports = function(world, rate, clients) {
     console.log('game world has started');
     var commandList = [];
     var commands = require('../../shared/command.js');
-    var queue = [];
+    var queue = {};
     commands.game = this;
 
     /**
@@ -17,9 +17,17 @@ module.exports = function(world, rate, clients) {
 
     /**
      * queue changes to send to players.
+     *synax: change = {chunk: 'x-x', change: [a>b], player: [{id:id, pos: pos}], playerCount: x}
      */
     this.pushChanges = function(change) {
         //fancy amazing 11/10 stuff
+        clients.forEach(function(client) {
+            var pos = getPlayerChunk(client).split('-');
+            var changePos = change.chunk.split('-');
+            if (Math.abs(pos[0] - changePos[0]) <= 2 && Math.abs(pos[1] - changePos[1]) <= 2) {
+                client.update.push(change);
+            }
+        });
     }
     /**
      * update player position in the world

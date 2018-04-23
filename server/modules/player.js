@@ -9,4 +9,5 @@ module.exports = function(cid, conn, name, pos = {}) {
         y: 0
     };
     this.chunk = '';
+    this.update = [];
 }

@@ -35,7 +35,7 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
         console.log('previous settings have been loaded');
         writeProperties();
     }
-
+    
     // start
     startup();
 
@@ -71,9 +71,9 @@ function startup() {
         chunkHeight: 64,
         name: settings.world_name
     });
-	
-	// I know, WTF
-	World.world = world;
+
+    // I know, WTF
+    World.world = world;
 
     //
     console.log("starting simulation...");
