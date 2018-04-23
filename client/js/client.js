@@ -20,41 +20,38 @@ var world = new World(),
     renderer = new Renderer();
 
 renderer.createField();
-renderer.update(world, Client.x, Client.y);
-Story.intro();
 
 //server connection
+Story.log( "<1-Connecting...->" );
 var socket = null;
 var con = new WebSocket('ws://localhost:8123/');
 con.onopen = function() {
-    Story.log('You have entered a new world!');
+    Story.log( "<1-You have entered a new world!->" );
     socket = con;
     Client.socket = socket;
-	
-	Command.execute( "new" );
-	Command.execute( "test" );
-	Command.execute( "pass" );
-	
 }
+
 con.onerror = function(err) {
     console.log('Socket error: ' + err);
     Story.log('Whoops there was a problem entering the world...');
 }
+
 con.onclose = function(err) {
     console.log('socket closed');
     Story.log('The world has been lost... refresh?');
     socket = null;
 }
+
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
 
     // get the world from the server
-    if (data.world) {
-        Story.log("It's a whole new world, a new fantastic point of view!");
-        world = Object.assign(data.world);
+    if (data.id !== undefined) {
+        Story.intro();
+        //world = Object.assign(data.world);
         Client.playerID = data.id.toString();
-        renderer.update(world, Client.x, Client.y);
         console.log("playerID set to " + Client.playerID);
+		autoLogin();
     }
 
     // received chunk from server
@@ -71,15 +68,25 @@ con.onmessage = function(msg) {
 	
 	// received chat from server
 	else if (data.say) {
-
         Story.log("<a-" + data.name + "->: " + data.say);
-
     }
 
-    if (data == 'ping!') {
+	// primarily for debugging
+    else if (data == 'ping!') {
         console.log('ping: ' + Date.now());
     }
 
     return true;
 
+}
+
+/**
+ *
+ */
+function autoLogin() {
+	
+	Command.execute( "new" );
+	Command.execute( "test" );
+	Command.execute( "pass" );
+	
 }

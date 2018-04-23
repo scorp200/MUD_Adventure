@@ -9,6 +9,7 @@ const Player = require('./modules/player.js');
 var modules = {};
 var game = null;
 var world = {};
+var accounts = {};
 var clients = [];
 //setup default server setings incase .properties is missing or damaged
 var settings = {
@@ -89,28 +90,58 @@ function startup() {
 
     // handle connection
     server.on('connection', function(conn) {
-        //reusing old id if any otherwise use the length of clients array
+		
+		// send the connecting player their unique id
+        // reusing old id if any, otherwise use the length of clients array
+		// NO LONGER SENDS WORLD DATA
         var cid = clients.indexOf(null);
         cid = cid == -1 ? clients.length : cid;
         console.log('Client ' + cid + ' has connected');
         try {
-            conn.send(JSON.stringify({
-                world: world,
-                id: cid
-            }));
+            conn.send(JSON.stringify({ id: cid }));
         } catch (e) {
             console.log(e);
         }
+		
+		// message from client
         conn.on('message', function(msg) {
             var data = JSON.parse(msg);
-            if (!clients[cid] && data.characterName && data.characterPass) {
-                console.log('Client ' + cid + ' is now ' + data.characterName);
-                clients[cid] = new Player(cid, conn, data.characterName, {
-                    x: 32,
-                    y: 32
-                });
-                game.updatePlayerPosition(clients[cid]);
-            } else if (clients[cid] && data.command) {
+			
+			// new character
+            if (!clients[cid] && data.type === "new" && data.name && data.pass) {
+				if ( !accounts[data.name] ) {
+					console.log('NEW: Client ' + cid + ' is now ' + data.name);
+					accounts[data.name] = new Player(cid, conn, data.name, {
+						x: 32,
+						y: 32
+					});
+					accounts[data.name].pass = data.pass;
+					clients[cid] = accounts[data.name];
+					game.updatePlayerPosition(clients[cid]);
+				} else {
+					console.log( "There's already an account with the name: " + data.name );
+				}
+            }
+			
+			// login character
+            if (!clients[cid] && data.type === "login" && data.name && data.pass) {
+				var acc = accounts[data.name];
+				if ( acc ) {
+					if ( acc.pass === data.pass ) {
+						console.log('LOGIN: Client ' + cid + ' is now ' + data.name);
+						clients[cid] = accounts[data.name];
+						clients[cid].conn = conn;
+						game.updatePlayerPosition(clients[cid]);
+					} else {
+						console.log( "FAILED LOGIN: Incorrect password: " + data.name, acc.pass );
+					}
+				} else {
+					console.log( "FAILED LOGIN: Account with name doesn't exist: " + data.name );
+				}
+            }
+			
+			// command
+			else if (clients[cid] && data.command) {
                 console.log(clients[cid].name + ' has send the command ' + data.command);
                 game.push({
                     player: clients[cid],

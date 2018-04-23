@@ -11,6 +11,7 @@
         "test": { _execute: exeTest },
 		"say": { _execute: exeSay },
         "new": { _execute: exeNew },
+		"login": { _execute: exeLogin },
 		"move": { _execute: exeMove },
 		"look": {  _execute: exeLook },
         "n": { _execute: exeMove.bind(null, "n") },
@@ -81,6 +82,29 @@
         }
         //Story.log("<a-" + Client.characterName + "->: " + text);
     }
+	
+	
+	/**
+     * Asks for a new character name, with basic filter system.
+     * When input is accepted, goes onto exePassword().
+     */
+    function exeLogin( x ) {
+		
+        if ( server )
+			return;
+		
+		try {
+			x = x.split( " " );
+			socket.send(JSON.stringify({
+				type: "login",
+				name: x[0],
+				pass: x[1]
+			}));
+		} catch (e) {
+			console.log('error sending client data: ' + e);
+		}
+
+    }
 
 
     /**
@@ -98,7 +122,7 @@
                 },
                 success: function(x) {
                     Client.characterName = x;
-                    Story.log(x + ", huh? I guess that'll do.");
+                    Story.log( "<a-" + x + "->, huh? I guess that'll do.");
                     Story.space();
                     exePassword();
                 },
@@ -128,7 +152,11 @@
 				Story.space();
 				command._capture = null;
 				try {
-					socket.send(JSON.stringify(Client));
+					socket.send(JSON.stringify({
+						type: "new",
+						name: Client.characterName,
+						pass: Client.characterPass
+					}));
 				} catch (e) {
 					console.log('error sending client data: ' + e);
 				}
