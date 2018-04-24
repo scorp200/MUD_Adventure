@@ -5,8 +5,9 @@ module.exports = function(world, rate, clients) {
     console.log('game world has started');
     var commandList = [];
     var commands = require('../../shared/command.js');
-    var queue = {};
     commands.game = this;
+    var living = {};
+
 
     /**
      * add a player command into an array.
@@ -19,21 +20,24 @@ module.exports = function(world, rate, clients) {
      * queue changes to send to players.
      *synax: change = {chunk: 'x-x', change: [a>b], player: [{id:id, pos: pos}], playerCount: x}
      */
-    this.pushChanges = function(change) {
+    this.pushUpdate = function(change, opts = {}) {
         //fancy amazing 11/10 stuff
         clients.forEach(function(client) {
-            var pos = getPlayerChunk(client).split('-');
-            var changePos = change.chunk.split('-');
-            if (Math.abs(pos[0] - changePos[0]) <= 2 && Math.abs(pos[1] - changePos[1]) <= 2) {
-                client.update.push(change);
+            var key = change.key = getPlayerChunk(client);
+            if (opts.key) {
+                var pos = key.split('-');
+                var changePos = opts.key.split('-');
+                if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2)
+                    return;
             }
+            client.update.push(change);
         });
     }
     /**
      * update player position in the world
      */
     this.updatePlayerPosition = function(player) {
-        var key = getPlayerChunk(player);
+        var key = world.getChunk(player.position);
         var chunk = world.chunks[key];
         if (player.chunk != '' && key != player.chunk) {
             world.chunks[player.chunk].players[player.id] = null;
@@ -60,31 +64,26 @@ module.exports = function(world, rate, clients) {
             //execute the commands
             commands.execute('' + command.command, {
                 player: command.player,
-                clients: clients
+                clients: clients,
+                world: world
             });
         }
         //update all clients
         clients.forEach(function(client) {
-            if (!client)
+            if (!client || client.update.length == 0)
                 return;
             var key = getPlayerChunk(client);
-            game.sendToClients(JSON.stringify({
-                chunk: world.chunks[key],
-                key: key
-            }), {
-                conn: client.conn
-            });
+            var data = {
+                update: client.update
+            };
+            game.sendToClient(client.conn, data);
+            client.update = [];
         })
     }
 
-    this.sendToClients = function(data, opts = {}) {
+    this.sendToClient = function(conn, data) {
         try {
-            if (opts.conn)
-                opts.conn.send(data);
-            else
-                clients.forEach(function(client) {
-                    client.conn.send(data);
-                });
+            conn.send(JSON.stringify(data));
         } catch (e) {
             console.log(e);
         }

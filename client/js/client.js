@@ -9,8 +9,8 @@ Client = {
     characterPass: "",
     playerID: null,
     chunk: null,
-    x: 64,
-    y: 64,
+    x: 32,
+    y: 32,
     socket: null
 
 }
@@ -22,11 +22,12 @@ var world = new World(),
 renderer.createField();
 
 //server connection
-Story.log( "<1-Connecting...->" );
+Story.log("<1-Connecting...->");
 var socket = null;
 var con = new WebSocket('ws://localhost:8123/');
 con.onopen = function() {
-    Story.log( "<1-You have entered a new world!->" );
+    Story.log("<1-You have entered a new world!->");
+    Story.log("<1-waiting to open eyes....->");
     socket = con;
     Client.socket = socket;
 }
@@ -44,34 +45,44 @@ con.onclose = function(err) {
 
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
-
     // get the world from the server
     if (data.id !== undefined) {
         Story.intro();
-        //world = Object.assign(data.world);
+        world = Object.assign(data.world);
         Client.playerID = data.id.toString();
+        renderer.update(world, Client.x, Client.y);
+        Story.log("<1-you now see the vast world->");
         console.log("playerID set to " + Client.playerID);
-		autoLogin();
+        //autoLogin();
     }
 
-    // received chunk from server
-    else if (data.chunk) {
+    // received update from server
+    else if (data.update) {
+        data.update.forEach(function(update) {
+            console.log(update);
+            if (update.change) {
+                //cell change code goes here it should be 11/10 and no less
+            }
 
-        var chunk = data.chunk;
-        world.chunks[data.key] = chunk;
-		
-		var clientPlayer = chunk.players[Client.playerID];
-		Object.assign( Client, clientPlayer );
-        renderer.update( world, clientPlayer.x, clientPlayer.y );
+            // player moved
+            else if (update.move) {
+                world.chunks[update.key].players[update.move] = update.position;
+                console.log(update.move == Client.playerID);
+                if (update.move.toString() == Client.playerID) {
+                    Client.x = update.position.x;
+                    Client.y = update.position.y;
+                }
+            }
 
+            // player say
+            else if (update.say) {
+                Story.log("<a-" + update.name + "->: " + update.say);
+            }
+        });
+        renderer.update(world, Client.x, Client.y);
     }
-	
-	// received chat from server
-	else if (data.say) {
-        Story.log("<a-" + data.name + "->: " + data.say);
-    }
 
-	// primarily for debugging
+    // primarily for debugging
     else if (data == 'ping!') {
         console.log('ping: ' + Date.now());
     }
@@ -84,9 +95,9 @@ con.onmessage = function(msg) {
  *
  */
 function autoLogin() {
-	
-	Command.execute( "new" );
-	Command.execute( "test" );
-	Command.execute( "pass" );
-	
+
+    Command.execute("new");
+    Command.execute("test");
+    Command.execute("pass");
+
 }
