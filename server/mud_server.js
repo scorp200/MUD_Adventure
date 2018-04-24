@@ -98,7 +98,7 @@ function startup() {
         console.log('Client ' + cid + ' has connected');
         game.sendToClient(conn, {
             id: cid,
-            world: world
+            //world: world
         });
 
         // message from client
@@ -116,6 +116,10 @@ function startup() {
                     accounts[data.name].pass = data.pass;
                     clients[cid] = accounts[data.name];
                     game.updatePlayerPosition(clients[cid]);
+					game.sendToClient(conn, {
+						world: world,
+						player: clients[cid].position
+					});
                 } else {
                     console.log("There's already an account with the name: " + data.name);
                 }
@@ -130,6 +134,10 @@ function startup() {
                         clients[cid] = accounts[data.name];
                         clients[cid].conn = conn;
                         game.updatePlayerPosition(clients[cid]);
+						game.sendToClient(conn, {
+							world: world,
+							player: clients[cid].position
+						});
                     } else {
                         console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
                     }

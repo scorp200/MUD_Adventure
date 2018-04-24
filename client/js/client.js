@@ -20,7 +20,7 @@ var world = new World(),
     renderer = new Renderer();
 
 renderer.createField();
-renderer.update(world, Client.x, Client.y);
+//renderer.update(world, Client.x, Client.y);
 
 //server connection
 Story.log("<1-Connecting...->");
@@ -46,19 +46,32 @@ con.onclose = function(err) {
 
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
-    // get the world from the server
+	
+    // get the client id from the server
     if (data.id !== undefined) {
         Story.intro();
-        world = Object.assign(data.world);
         Client.playerID = data.id.toString();
-        //renderer.update(world, Client.x, Client.y);
-        Story.log("<1-you now see the vast world->");
         console.log("playerID set to " + Client.playerID);
         //autoLogin();
     }
+	
+	console.log( data );
+	
+	// get the world from the server
+    if (data.player !== undefined) {
+        Object.assign(Client, data.player);
+		console.log( data.player );
+    }
+	
+	// get the world from the server
+    if (data.world !== undefined) {
+        world = data.world;
+        renderer.update(world, Client.x, Client.y);
+        Story.log("<1-you now see the vast world->");
+    }
 
     // received update from server
-    else if (data.update) {
+    if (data.update) {
         data.update.forEach(function(update) {
             console.log(update);
             if (update.change) {
@@ -84,7 +97,7 @@ con.onmessage = function(msg) {
     }
 
     // primarily for debugging
-    else if (data == 'ping!') {
+    if (data == 'ping!') {
         console.log('ping: ' + Date.now());
     }
 
