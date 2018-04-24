@@ -3,7 +3,8 @@
 	
 	// cache DOM
 	var el = document.querySelector( "#story" ),
-		domStory = document.querySelector("#story div");
+		domStory = document.querySelector("#story div"),
+		lines = [];
 
 	//
 	var story = {
@@ -25,17 +26,40 @@
 		log: function( text ) {
 			
 			// add colors
-			text = text.split( "<1-" ).join( "<span style='color: #555555;'>" );
-			text = text.split( "<r-" ).join( "<span style='color: #ff0000;'>" );
-			text = text.split( "<g-" ).join( "<span style='color: #00ff00;'>" );
-			text = text.split( "<b-" ).join( "<span style='color: #0000ff;'>" );
-			text = text.split( "<a-" ).join( "<span style='color: #00ffff;'>" );
-			text = text.split( "->" ).join( "</span>" );
+			var parseTags = function( text ) {
+				text = text.split( "<1-" ).join( "<span style='color: #555555;'>" );
+				text = text.split( "<r-" ).join( "<span style='color: #ff0000;'>" );
+				text = text.split( "<g-" ).join( "<span style='color: #00ff00;'>" );
+				text = text.split( "<b-" ).join( "<span style='color: #0000ff;'>" );
+				text = text.split( "<a-" ).join( "<span style='color: #00ffff;'>" );
+				text = text.split( "->" ).join( "</span>" );
+				return text;
+			}
 			
 			// final print + scroll
 			var atBottom = (el.scrollHeight - el.scrollTop === el.clientHeight);
-			domStory.innerHTML += "<p>" + text + "</p>"
-			if (atBottom) el.scrollTop = el.scrollHeight;
+			
+			if ( lines.length > 0 && lines[lines.length-1] === text ) {
+				
+				// increment line counter at end
+				var child = domStory.children[lines.length-1];
+				var count = Number(child.textContent.slice(-1));
+				count = (isNaN(count)) ? 2 : count + 1;
+				text += " <1-x" + count + "->";
+				child.innerHTML = parseTags(text);
+				
+			} else {
+				
+				// original text, new p tag
+				var p = document.createElement( "P" );
+				p.innerHTML = parseTags(text);
+				domStory.appendChild( p );
+				lines[domStory.children.length-1] = text;
+				
+			}
+			
+			if (atBottom)
+				el.scrollTop = el.scrollHeight;
 			
 		},
 		
