@@ -4,6 +4,7 @@ module.exports = function(world, rate, clients) {
     setInterval(update, rate);
     console.log('game world has started');
     var commandList = [];
+    var commandLimit = {};
     var commands = require('../../shared/command.js');
     commands.game = this;
     var living = {};
@@ -13,7 +14,10 @@ module.exports = function(world, rate, clients) {
      * add a player command into an array.
      */
     this.push = function(cmd) {
-        commandList.push(cmd);
+        if (!commandLimit[cmd.player.id]) {
+            commandList.push(cmd);
+            commandLimit[cmd.player.id] = true;
+        }
     }
 
     /**
@@ -67,6 +71,7 @@ module.exports = function(world, rate, clients) {
                 clients: clients,
                 world: world
             });
+            commandLimit[command.player.id] = null;
         }
         //update all clients
         clients.forEach(function(client) {
@@ -77,7 +82,7 @@ module.exports = function(world, rate, clients) {
                 update: client.update
             };
             game.sendToClient(client.conn, data);
-            client.update = [];
+            client.update.length = 0;
         })
     }
 
