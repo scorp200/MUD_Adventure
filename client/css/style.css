@@ -47,7 +47,7 @@ p {
 
 #map {
 	width: 100%;
-	height: 264px;
+	height: /*100%;*/264px;
 	display: flex;
 	justify-content: center;
 	align-items: center;

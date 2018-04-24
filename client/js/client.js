@@ -9,8 +9,8 @@ Client = {
     characterPass: "",
     playerID: null,
     chunk: null,
-    x: 32,
-    y: 32,
+    x: 80,
+    y: 40,
     socket: null
 
 }
@@ -20,6 +20,7 @@ var world = new World(),
     renderer = new Renderer();
 
 renderer.createField();
+renderer.update(world, Client.x, Client.y);
 
 //server connection
 Story.log("<1-Connecting...->");
@@ -50,7 +51,7 @@ con.onmessage = function(msg) {
         Story.intro();
         world = Object.assign(data.world);
         Client.playerID = data.id.toString();
-        renderer.update(world, Client.x, Client.y);
+        //renderer.update(world, Client.x, Client.y);
         Story.log("<1-you now see the vast world->");
         console.log("playerID set to " + Client.playerID);
         //autoLogin();

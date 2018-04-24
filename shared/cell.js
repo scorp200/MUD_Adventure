@@ -74,6 +74,16 @@
 			]
 		},
 		
+		"sea": {
+			desc: "Water, but too wavy to traverse safely.",
+			tiles: [
+				"-84px -180px"
+			],
+			color: [
+				"#005555"
+			]
+		},
+		
 		"mountain": {
 			tiles: [
 				"-168px -12px",

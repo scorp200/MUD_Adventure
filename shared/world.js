@@ -13,10 +13,10 @@
     var world = function(opts = {}) {
 
         // get values or set defaults
-        this.chunkWidth = opts.chunkWidth || 64;
-        this.chunkHeight = opts.chunkHeight || 64;
+        this.chunkWidth = opts.chunkWidth || 80;
+        this.chunkHeight = opts.chunkHeight || 80;
         this.width = opts.width || 2;
-        this.height = opts.height || 2;
+        this.height = opts.height || 1;
         this.chunks = {};
         this.name = opts.name || 'world';
 
@@ -30,10 +30,11 @@
      */
     world.prototype.clear = function() {
 
-        for (var x = 0; x < this.width; x++)
+        for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 this.data[x + "-" + y] = new world.Cell();
             }
+		}
 
     }
 
@@ -46,6 +47,7 @@
             for (var x = 0; x < this.width; x++)
                 for (var y = 0; y < this.height; y++) {
                     this.chunks[x + "-" + y] = new Chunk({
+						world: this,
                         x: x,
                         y: y,
                         width: this.chunkWidth,
