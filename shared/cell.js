@@ -16,8 +16,8 @@
 		this.draw = cell.mapping[this.type];
 	}
 
-	// See https://www.martinstoeckli.ch/fontmap/fontmap.html reference
-	// Assume Courier New is used
+	// object defining how each cell type is displayed, accepts multiple tile
+	// offsets and colors that are procedurally chosen based on world location.
 	cell.mapping = {
 
 		"grass": {

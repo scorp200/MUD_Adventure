@@ -24,7 +24,7 @@ renderer.createField();
 //server connection
 Story.log("<1-Connecting...->");
 var socket = null;
-var con = new WebSocket('ws://localhost:8123/');
+var con = new WebSocket(ServerConfig.path);
 con.onopen = function() {
     Story.log("<1-You have entered a new world!->");
     Story.log("<1-waiting to open eyes....->");
