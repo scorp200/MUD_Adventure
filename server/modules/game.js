@@ -44,6 +44,7 @@ module.exports = function(world, rate, clients) {
      * update player position in the world
      */
     this.updatePlayerPosition = function(player) {
+		
         var key = world.getChunk(player.position);
         var chunk = world.chunks[key];
         if (player.chunk != key) {
@@ -77,10 +78,12 @@ module.exports = function(world, rate, clients) {
                     delete player.active[aKey];
             });
         }
+		
         chunk.players[player.id] = {
             x: player.position.x - chunk.x * world.chunkWidth,
             y: player.position.y - chunk.y * world.chunkWidth
         };
+		
         console.log(player.name + ' has moved to chunk ' + key + ' with position: ' + player.position.x + ',' + player.position.y);
     }
 

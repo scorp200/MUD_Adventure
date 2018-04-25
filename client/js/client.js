@@ -80,6 +80,7 @@ con.onmessage = function(msg) {
 
             // player moved
             else if (update.move) {
+				console.log( update.key );
                 world.chunks[update.key].players[update.move] = update.position;
                 console.log(update.move == Client.playerID);
                 if (update.move.toString() == Client.playerID) {

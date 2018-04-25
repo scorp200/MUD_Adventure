@@ -132,6 +132,8 @@ function startup() {
                         console.log('LOGIN: Client ' + cid + ' is now ' + data.name);
                         clients[cid] = accounts[data.name];
                         clients[cid].conn = conn;
+						clients[cid].active = {};
+						clients[cid].chunk = "";
                         game.updatePlayerPosition(clients[cid]);
                         game.sendToClient(conn, {
                             world: world.getProperties(),
