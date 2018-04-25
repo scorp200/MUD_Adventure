@@ -45,10 +45,11 @@ module.exports = function(world, rate, clients) {
      */
     this.updatePlayerPosition = function(player) {
 		
+		var oldKey = player.chunk;
         var key = world.getChunk(player.position);
         var chunk = world.chunks[key];
-        if (player.chunk != key) {
-            if (player.chunk != '') {
+        if (player.chunk !== key) {
+            if (player.chunk !== -1) {
                 world.chunks[player.chunk].players[player.id] = null;
                 world.chunks[player.chunk].playerCount--;
             }
@@ -58,25 +59,42 @@ module.exports = function(world, rate, clients) {
             //Set new active chunks
             for (x = -1; x < 2; x++) {
                 for (y = -1; y < 2; y++) {
-                    var active = (chunk.x + x) + '-' + (chunk.y + y);
-                    if (world.chunks[active]) {
-                        if (!player.active[active]) {
+					var chunkID = (chunk.y + y) * world.width + (chunk.x + x);
+                    if (world.chunks[chunkID]) {
+                        if (!player.active[chunkID]) {
                             game.pushUpdate({
-                                chunk: world.chunks[active]
+                                chunk: world.chunks[chunkID]
                             });
                         }
-                        player.active[active] = true;
+                        player.active[chunkID] = true;
                     }
                 }
             }
+			
             //remove old keys
+			//if ( oldKey !== key ) {
+				//console.log( oldKey, key );
+				//delete player.active[oldKey];
+			//}
+			
+			var idToPos = function( id ) {
+				var y = ~~(id / world.width);
+				var x = id % world.width;
+				return [x, y];
+			}
+			
             var keys = Object.keys(player.active);
             keys.forEach(function(aKey) {
-                var pos = key.split('-');
-                var changePos = aKey.split('-');
+                var pos = idToPos( key );//key.split('-');
+                var changePos = idToPos( aKey );//aKey.split('-');
+				console.log(pos, changePos);
                 if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2)
-                    delete player.active[aKey];
+					delete player.active[aKey];
+				
+				//if ( aKey !== key )
+                    //delete player.active[aKey];
             });
+			
         }
 		
         chunk.players[player.id] = {
@@ -88,7 +106,10 @@ module.exports = function(world, rate, clients) {
     }
 
     var getPlayerChunk = function(player) {
-        return Math.floor(player.position.x / world.chunkWidth) + '-' + Math.floor(player.position.y / world.chunkHeight);
+		var x = ~~(player.position.x / world.chunkWidth),
+			y = ~~(player.position.y / world.chunkHeight),
+			index = y * world.width + x;
+        return index;
     }
 
     function update() {

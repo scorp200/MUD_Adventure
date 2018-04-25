@@ -81,17 +81,28 @@
 		for ( var x=wx; x<wx+this.width; x++ ) {
 
 			// get chunk and cell
-			var cKey = ~~(x/world.chunkWidth)+"-"+~~(y/world.chunkHeight);
+			var cX = ~~(x/world.chunkWidth);
+			var cY = ~~(y/world.chunkHeight);
+			var cKey = cY * world.width + cX;
 			var chunk = world.chunks[cKey];
 			var cell = undefined;
 			if ( chunk ) {
 				chunks[cKey] = chunk;
-				cell = chunk.data[(x-chunk.x*world.chunkWidth)+"-"+(y-chunk.y*world.chunkHeight)];
+				var cx = x - chunk.x * world.chunkWidth,
+					cy = y - chunk.y * world.chunkHeight,
+					index = cy * world.chunkWidth + cx;
+				//cell = chunk.data[cx+"-"+cy];
+				cell = chunk.data[index];
 			}
 
 			//
 			var cellDiv = this.field[(y-wy)*this.width+(x-wx)];
+			//console.log( cell );
 			if ( cell ) {
+				
+				if ( typeof cell === "number" )
+					cell = { draw: Cell.getPropertiesById( cell ) };
+				//console.log( cell );
 
 				// if valid/in bounds
 				var perm = permutation[(y + (y*48) + x) % 512],
@@ -126,14 +137,27 @@
 			
 		Object.keys(players).forEach( function( key ) {
 			
-			var p = players[key],
-				x = p.x - wx,
+			var p = players[key];
+			if ( !p ) {
+				console.log( "error, unknown player(s): ", players );
+				return;
+			}
+			
+			var x = p.x - wx,
 				y = p.y - wy;
 			
 			if ( x>0 && y>0 && x<w && y<h ) {
 				
-				var chunk = world.chunks[~~(p.x/world.chunkWidth)+"-"+~~(p.y/world.chunkHeight)];
-				var cell = chunk.data[(p.x-chunk.x*world.chunkWidth)+"-"+(p.y-chunk.y*world.chunkHeight)];
+				var chunkX = ~~(p.x/world.chunkWidth),
+					chunkY = ~~(p.y/world.chunkHeight),
+					chunkIndex = chunkY * world.width + chunkX,
+					chunk = world.chunks[chunkIndex];
+					
+				var cellX = (p.x - chunk.x * world.chunkWidth),
+					cellY = (p.y - chunk.y * world.chunkHeight),
+					cellIndex = cellY * chunk.width + cellY,
+					cell = chunk.data[cellIndex];
+				
 				var cellDiv = field[y*w+x];
 				
 				if ( Client.playerID === key ) {

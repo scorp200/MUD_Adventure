@@ -16,9 +16,10 @@ Client = {
 }
 
 //
-var world = new World(),
-    renderer = new Renderer();
+var world;// = new World();
+var renderer = new Renderer();
 
+//world.generate();
 renderer.createField();
 //renderer.update(world, Client.x, Client.y);
 
@@ -59,14 +60,15 @@ con.onmessage = function(msg) {
 
     // get the world from the server
     if (data.player !== undefined) {
+		console.log( "data.player" );
         Object.assign(Client, data.player);
-        console.log(data.player);
     }
 
     // get the world from the server
     if (data.world !== undefined) {
-        world = Object.assign(world, data.world);
+        world = new World( data.world );
         //renderer.update(world, Client.x, Client.y);
+		console.log( "data.world" );
         Story.log("<1-you now see the vast world->");
     }
 
@@ -75,12 +77,13 @@ con.onmessage = function(msg) {
         data.update.forEach(function(update) {
             console.log(update);
             if (update.change) {
+				console.log( "update.change" );
                 //cell change code goes here it should be 11/10 and no less
             }
 
             // player moved
             else if (update.move) {
-				console.log( update.key );
+				console.log( "update.move", update.key, world.chunks );
                 world.chunks[update.key].players[update.move] = update.position;
                 console.log(update.move == Client.playerID);
                 if (update.move.toString() == Client.playerID) {
@@ -91,12 +94,17 @@ con.onmessage = function(msg) {
 
             // player say
             else if (update.say) {
+				console.log( "update.say" );
                 Story.log("<a-" + update.name + "->: " + update.say);
             }
 
             //get new chunks
             else if (update.chunk) {
-                world.chunks[update.chunk.x + '-' + update.chunk.y] = update.chunk;
+				console.log( "update.chunk" );
+				var x = update.chunk.x,
+					y = update.chunk.y,
+					i = y * world.width + x;
+                world.chunks[i] = update.chunk;
             }
         });
         renderer.update(world, Client.x, Client.y);

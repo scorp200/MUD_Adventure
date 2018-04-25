@@ -175,16 +175,26 @@
         Story.log("You take a look around at your surroundings...");
 
         var getCell = function(x, y) {
-            var chunk = world.chunks[~~(x / world.chunkWidth) + "-" + ~~(y / world.chunkHeight)];
-            var cell = chunk.data[(x - chunk.x * world.chunkWidth) + "-" + (y - chunk.y * world.chunkHeight)];
+			
+			var chunkX = ~~(x / world.chunkWidth),
+				chunkY = ~~(y / world.chunkHeight),
+				chunkIndex = chunkY * world.width + chunkX,
+				chunk = world.chunks[chunkIndex];
+			
+            var cellX = x - chunk.x * world.chunkWidth,
+				cellY = y - chunk.y * world.chunkHeight,
+				cellIndex = cellY * world.chunkWidth + cellX,
+				cell = chunk.data[cellIndex];
+			
             return cell;
+			
         }
 
         //
-        var north = getCell(Client.x, Client.y - 1).type;
-        var east = getCell(Client.x + 1, Client.y).type;
-        var south = getCell(Client.x, Client.y + 1).type;
-        var west = getCell(Client.x - 1, Client.y).type;
+        var north = Cell.getName( getCell(Client.x, Client.y - 1) );
+        var east = Cell.getName( getCell(Client.x + 1, Client.y) );
+        var south = Cell.getName( getCell(Client.x, Client.y + 1) );
+        var west = Cell.getName( getCell(Client.x - 1, Client.y) );
         Story.log("There's " + north + " to the north.");
         Story.log("There's " + east + " to the east.");
         Story.log("There's " + south + " to the south.");

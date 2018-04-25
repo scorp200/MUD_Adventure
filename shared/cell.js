@@ -15,12 +15,52 @@
 		Object.assign( this, opts );
 		this.draw = cell.mapping[this.type];
 	}
+	
+	/**
+	 * Takes a tile type and returns the tile ID for it. The tile ID should be
+	 * between 0 and 255 (a byte).
+	 * @param {string} type Cell type.
+	 * @returns {int} Cell ID.
+	 */
+	cell.getID = function( type = "grass" ) {
+		return cell.mapping[type].id;
+	}
+	
+	/**
+	 *
+	 */
+	cell.getName = function( id ) {
+		var keys = Object.keys( cell.mapping );
+		for ( var n=0; n<keys.length; n++ ) {
+			var key = keys[n];
+			if ( cell.mapping[key].id === id ) {
+				return key;
+			}
+		}
+	}
+	
+	/**
+	 *
+	 */
+	cell.getPropertiesById = function( id ) {
+		var keys = Object.keys( cell.mapping );
+		for ( var n=0; n<keys.length; n++ ) {
+			var key = keys[n];
+			if ( cell.mapping[key].id === id ) {
+				return cell.mapping[key];
+			}
+		}
+	}
 
-	// object defining how each cell type is displayed, accepts multiple tile
-	// offsets and colors that are procedurally chosen based on world location.
+	/**
+	 * object defining how each cell type is displayed, accepts multiple tile
+	 * offsets and colors that are procedurally chosen based on world location.
+	 * @namespace
+	 */
 	cell.mapping = {
 
 		"grass": {
+			id: 1,
 			tiles: [
 				"-0px -0px",
 				"-24px -24px",
@@ -37,6 +77,7 @@
 		},
 		
 		"drylands": {
+			id: 2,
 			tiles: [
 				"-0px -0px",
 				"-24px -24px",
@@ -55,6 +96,7 @@
 		},
 
 		"tree": {
+			id: 3,
 			tiles: [
 				"-60px -0px",
 				"-72px -0px",
@@ -66,6 +108,7 @@
 		},
 		
 		"water": {
+			id: 4,
 			tiles: [
 				"-84px -180px"
 			],
@@ -75,6 +118,7 @@
 		},
 		
 		"sea": {
+			id: 5,
 			desc: "Water, but too wavy to traverse safely.",
 			tiles: [
 				"-84px -180px"
@@ -85,6 +129,7 @@
 		},
 		
 		"mountain": {
+			id: 6,
 			tiles: [
 				"-168px -12px",
 				"-168px -60px"
@@ -95,6 +140,7 @@
 		},
 		
 		"hill": {
+			id: 7,
 			tiles: [
 				"-168px -60px",
 				"-168px -84px"

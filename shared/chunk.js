@@ -15,9 +15,17 @@
         this.y = opts.y || 0;
         this.width = opts.width || 16;
         this.height = opts.height || 16;
-        this.data = {};
+		this.size = this.width * this.height;
         this.players = {};
         this.playerCount = 0;
+		
+		//
+		this.dataMethod = opts.dataMethod || 0;
+		this.data = this.dataMethod
+			? new ArrayBuffer( this.size )
+			: {};
+		
+		//
         this.generate( opts.world );
 
 	}
@@ -26,21 +34,23 @@
 	 *
 	 */
 	chunk.prototype.generate = function( world ) {
+		
+		// get the center of the world, for island generation.
+		var centerX = world.width * this.width * 0.5,
+			centerY = world.height * this.height * 0.5;
 
 		for ( var x=0; x<this.width; x++ )
 		for ( var y=0; y<this.height; y++ ) {
 
 			//
-			cX = this.x * this.width + x;
-			cY = this.y * this.height + y;
+			var cX = this.x * this.width + x;
+			var cY = this.y * this.height + y;
 
 			// base
 			var type = "grass";
 			
 			// island modifier
-			var centerX = (world.width * this.width) / 2,
-				centerY = (world.height * this.height) / 2,
-				distX = Math.abs(centerX-cX)/centerX,
+			var distX = Math.abs(centerX-cX)/centerX,
 				distY = Math.abs(centerY-cY)/centerY;
 				
 			distX = Math.pow(distX, 0.5*world.width);
@@ -84,10 +94,20 @@
 			if (height <= 0.02) type = "sea";
 			
 			// set data
-			this.data[x+"-"+y] = new Cell({ type: type });
+			this.setCell(x, y, type);
 
 		}
-
+		
+	}
+	
+	/**
+	 *
+	 */
+	chunk.prototype.setCell = function(x, y, type) {
+		var index = y * this.width + x;
+		this.data[index] = this.dataMethod
+			? Cell.getID( type )
+			: new Cell({ type: type });
 	}
 
 	// export
