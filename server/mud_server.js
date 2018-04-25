@@ -66,15 +66,15 @@ function startup() {
     // create world
     console.log("creating world...");
     world = new World({
-        width: 10,
-        height: 10,
+        width: 2,
+        height: 2,
         chunkWidth: 64,
         chunkHeight: 64,
         name: settings.world_name
     });
     world.generate();
     // I know, WTF
-    World.world = world;
+    //World.world = world;
 
     //
     console.log("starting simulation...");
@@ -132,8 +132,8 @@ function startup() {
                         console.log('LOGIN: Client ' + cid + ' is now ' + data.name);
                         clients[cid] = accounts[data.name];
                         clients[cid].conn = conn;
-						clients[cid].active = {};
-						clients[cid].chunk = "";
+                        clients[cid].active = {};
+                        clients[cid].chunk = "";
                         game.updatePlayerPosition(clients[cid]);
                         game.sendToClient(conn, {
                             world: world.getProperties(),
