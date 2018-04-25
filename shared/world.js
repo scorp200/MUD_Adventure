@@ -21,9 +21,23 @@
         this.name = opts.name || 'world';
 
         // fill map
-        this.generate();
+        //this.generate();
 
     }
+
+    /**
+     *
+     */
+    world.prototype.getProperties = function() {
+        return {
+            chunkWidth: this.chunkWidth,
+            chunkHeight: this.chunkHeight,
+            width: this.width,
+            height: this.height,
+            name: this.name
+        };
+    }
+
 
     /**
      *
@@ -34,7 +48,7 @@
             for (var y = 0; y < this.height; y++) {
                 this.data[x + "-" + y] = new world.Cell();
             }
-		}
+        }
 
     }
 
@@ -47,7 +61,7 @@
             for (var x = 0; x < this.width; x++)
                 for (var y = 0; y < this.height; y++) {
                     this.chunks[x + "-" + y] = new Chunk({
-						world: this,
+                        world: this,
                         x: x,
                         y: y,
                         width: this.chunkWidth,

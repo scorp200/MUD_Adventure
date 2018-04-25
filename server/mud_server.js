@@ -66,13 +66,13 @@ function startup() {
     // create world
     console.log("creating world...");
     world = new World({
-        width: 2,
-        height: 2,
+        width: 10,
+        height: 10,
         chunkWidth: 64,
         chunkHeight: 64,
         name: settings.world_name
     });
-
+    world.generate();
     // I know, WTF
     World.world = world;
 
@@ -97,8 +97,7 @@ function startup() {
         cid = cid == -1 ? clients.length : cid;
         console.log('Client ' + cid + ' has connected');
         game.sendToClient(conn, {
-            id: cid,
-            //world: world
+            id: cid
         });
 
         // message from client
@@ -110,16 +109,16 @@ function startup() {
                 if (!accounts[data.name]) {
                     console.log('NEW: Client ' + cid + ' is now ' + data.name);
                     accounts[data.name] = new Player(cid, conn, data.name, {
-                        x: 32,
+                        x: 60,
                         y: 32
                     });
                     accounts[data.name].pass = data.pass;
                     clients[cid] = accounts[data.name];
                     game.updatePlayerPosition(clients[cid]);
-					game.sendToClient(conn, {
-						world: world,
-						player: clients[cid].position
-					});
+                    game.sendToClient(conn, {
+                        world: world.getProperties(),
+                        player: clients[cid].position
+                    });
                 } else {
                     console.log("There's already an account with the name: " + data.name);
                 }
@@ -134,10 +133,10 @@ function startup() {
                         clients[cid] = accounts[data.name];
                         clients[cid].conn = conn;
                         game.updatePlayerPosition(clients[cid]);
-						game.sendToClient(conn, {
-							world: world,
-							player: clients[cid].position
-						});
+                        game.sendToClient(conn, {
+                            world: world.getProperties(),
+                            player: clients[cid].position
+                        });
                     } else {
                         console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
                     }

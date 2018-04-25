@@ -46,27 +46,27 @@ con.onclose = function(err) {
 
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
-	
+
     // get the client id from the server
     if (data.id !== undefined) {
         Story.intro();
         Client.playerID = data.id.toString();
         console.log("playerID set to " + Client.playerID);
-        //autoLogin();
+        autoLogin();
     }
-	
-	console.log( data );
-	
-	// get the world from the server
+
+    console.log(data);
+
+    // get the world from the server
     if (data.player !== undefined) {
         Object.assign(Client, data.player);
-		console.log( data.player );
+        console.log(data.player);
     }
-	
-	// get the world from the server
+
+    // get the world from the server
     if (data.world !== undefined) {
-        world = data.world;
-        renderer.update(world, Client.x, Client.y);
+        world = Object.assign(world, data.world);
+        //renderer.update(world, Client.x, Client.y);
         Story.log("<1-you now see the vast world->");
     }
 
@@ -91,6 +91,11 @@ con.onmessage = function(msg) {
             // player say
             else if (update.say) {
                 Story.log("<a-" + update.name + "->: " + update.say);
+            }
+
+            //get new chunks
+            else if (update.chunk) {
+                world.chunks[update.chunk.x + '-' + update.chunk.y] = update.chunk;
             }
         });
         renderer.update(world, Client.x, Client.y);

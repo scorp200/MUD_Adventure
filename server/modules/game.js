@@ -28,13 +28,16 @@ module.exports = function(world, rate, clients) {
         //fancy amazing 11/10 stuff
         clients.forEach(function(client) {
             var key = change.key = getPlayerChunk(client);
-            if (opts.key) {
+            if (opts.key && !client.active[opts.key])
+                return;
+            client.update.push(change);
+            /*{
                 var pos = key.split('-');
                 var changePos = opts.key.split('-');
                 if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2)
                     return;
-            }
-            client.update.push(change);
+            }*/
+
         });
     }
     /**
@@ -43,16 +46,41 @@ module.exports = function(world, rate, clients) {
     this.updatePlayerPosition = function(player) {
         var key = world.getChunk(player.position);
         var chunk = world.chunks[key];
-        if (player.chunk != '' && key != player.chunk) {
-            world.chunks[player.chunk].players[player.id] = null;
-            world.chunks[player.chunk].playerCount--;
+        if (player.chunk != key) {
+            if (player.chunk != '') {
+                world.chunks[player.chunk].players[player.id] = null;
+                world.chunks[player.chunk].playerCount--;
+            }
+            player.chunk = key;
+            chunk.playerCount++;
+
+            //Set new active chunks
+            for (x = -1; x < 2; x++) {
+                for (y = -1; y < 2; y++) {
+                    var active = (chunk.x + x) + '-' + (chunk.y + y);
+                    if (world.chunks[active]) {
+                        if (!player.active[active]) {
+                            game.pushUpdate({
+                                chunk: world.chunks[active]
+                            });
+                        }
+                        player.active[active] = true;
+                    }
+                }
+            }
+            //remove old keys
+            var keys = Object.keys(player.active);
+            keys.forEach(function(aKey) {
+                var pos = key.split('-');
+                var changePos = aKey.split('-');
+                if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2)
+                    delete player.active[aKey];
+            });
         }
-        player.chunk = key;
         chunk.players[player.id] = {
             x: player.position.x - chunk.x * world.chunkWidth,
             y: player.position.y - chunk.y * world.chunkWidth
         };
-        chunk.playerCount++;
         console.log(player.name + ' has moved to chunk ' + key + ' with position: ' + player.position.x + ',' + player.position.y);
     }
 
