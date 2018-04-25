@@ -74,7 +74,7 @@ function startup() {
     });
     world.generate();
     // I know, WTF
-    World.world = world;
+    //World.world = world;
 
     //
     console.log("starting simulation...");
