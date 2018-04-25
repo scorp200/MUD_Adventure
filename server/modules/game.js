@@ -22,93 +22,64 @@ module.exports = function(world, rate, clients) {
 
     /**
      * queue changes to send to players.
-     *synax: change = {chunk: 'x-x', change: [a>b], player: [{id:id, pos: pos}], playerCount: x}
      */
     this.pushUpdate = function(change, opts = {}) {
-        //fancy amazing 11/10 stuff
         clients.forEach(function(client) {
-            var key = change.key = getPlayerChunk(client);
-            if (opts.key && !client.active[opts.key])
+            if (opts.index && !client.active[opts.index])
                 return;
             client.update.push(change);
-            /*{
-                var pos = key.split('-');
-                var changePos = opts.key.split('-');
-                if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2)
-                    return;
-            }*/
-
         });
     }
     /**
      * update player position in the world
      */
     this.updatePlayerPosition = function(player) {
-		
-		var oldKey = player.chunk;
-        var key = world.getChunk(player.position);
-        var chunk = world.chunks[key];
-        if (player.chunk !== key) {
-            if (player.chunk !== -1) {
-                world.chunks[player.chunk].players[player.id] = null;
-                world.chunks[player.chunk].playerCount--;
-            }
-            player.chunk = key;
-            chunk.playerCount++;
 
+        var oldIndex = player.index;
+        var index = world.getChunk(player.position);
+        var chunk = world.chunks[index];
+        if (oldIndex != index) {
+            if (oldIndex > -1) {
+                delete world.chunks[oldIndex].players[player.id];
+                world.chunks[oldIndex].playerCount--;
+            }
+            player.index = index;
+            chunk.playerCount++;
             //Set new active chunks
             for (x = -1; x < 2; x++) {
                 for (y = -1; y < 2; y++) {
-					var chunkID = (chunk.y + y) * world.width + (chunk.x + x);
-                    if (world.chunks[chunkID]) {
-                        if (!player.active[chunkID]) {
+                    var activeIndex = (chunk.y + y) * world.width + (chunk.x + x);
+                    if (world.chunks[activeIndex]) {
+                        if (!player.active[activeIndex]) {
                             game.pushUpdate({
-                                chunk: world.chunks[chunkID]
+                                chunk: world.chunks[activeIndex]
                             });
                         }
-                        player.active[chunkID] = true;
+                        player.active[activeIndex] = true;
                     }
                 }
             }
-			
-            //remove old keys
-			//if ( oldKey !== key ) {
-				//console.log( oldKey, key );
-				//delete player.active[oldKey];
-			//}
-			
-			var idToPos = function( id ) {
-				var y = ~~(id / world.width);
-				var x = id % world.width;
-				return [x, y];
-			}
-			
-            var keys = Object.keys(player.active);
-            keys.forEach(function(aKey) {
-                var pos = idToPos( key );//key.split('-');
-                var changePos = idToPos( aKey );//aKey.split('-');
-				console.log(pos, changePos);
+
+            Object.keys(player.active).forEach(function(aIndex) {
+                var pos = [~~(player.position.x / world.chunkWidth), ~~(player.position.y / world.chunkHeight)];
+                var changePos = [world.chunks[aIndex].x, world.chunks[aIndex].y];
                 if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2)
-					delete player.active[aKey];
-				
-				//if ( aKey !== key )
-                    //delete player.active[aKey];
+                    delete player.active[aIndex];
             });
-			
+
         }
-		
+
         chunk.players[player.id] = {
             x: player.position.x - chunk.x * world.chunkWidth,
             y: player.position.y - chunk.y * world.chunkWidth
         };
-		
-        console.log(player.name + ' has moved to chunk ' + key + ' with position: ' + player.position.x + ',' + player.position.y);
+        console.log(player.name + ' has moved to chunk ' + index + ' with position: ' + player.position.x + ',' + player.position.y);
     }
 
     var getPlayerChunk = function(player) {
-		var x = ~~(player.position.x / world.chunkWidth),
-			y = ~~(player.position.y / world.chunkHeight),
-			index = y * world.width + x;
+        var x = ~~(player.position.x / world.chunkWidth),
+            y = ~~(player.position.y / world.chunkHeight),
+            index = y * world.width + x;
         return index;
     }
 
@@ -129,7 +100,6 @@ module.exports = function(world, rate, clients) {
         clients.forEach(function(client) {
             if (!client || client.update.length == 0)
                 return;
-            var key = getPlayerChunk(client);
             var data = {
                 update: client.update
             };

@@ -175,26 +175,26 @@
         Story.log("You take a look around at your surroundings...");
 
         var getCell = function(x, y) {
-			
-			var chunkX = ~~(x / world.chunkWidth),
-				chunkY = ~~(y / world.chunkHeight),
-				chunkIndex = chunkY * world.width + chunkX,
-				chunk = world.chunks[chunkIndex];
-			
+
+            var chunkX = ~~(x / world.chunkWidth),
+                chunkY = ~~(y / world.chunkHeight),
+                chunkIndex = chunkY * world.width + chunkX,
+                chunk = world.chunks[chunkIndex];
+
             var cellX = x - chunk.x * world.chunkWidth,
-				cellY = y - chunk.y * world.chunkHeight,
-				cellIndex = cellY * world.chunkWidth + cellX,
-				cell = chunk.data[cellIndex];
-			
+                cellY = y - chunk.y * world.chunkHeight,
+                cellIndex = cellY * world.chunkWidth + cellX,
+                cell = chunk.data[cellIndex];
+
             return cell;
-			
+
         }
 
         //
-        var north = Cell.getName( getCell(Client.x, Client.y - 1) );
-        var east = Cell.getName( getCell(Client.x + 1, Client.y) );
-        var south = Cell.getName( getCell(Client.x, Client.y + 1) );
-        var west = Cell.getName( getCell(Client.x - 1, Client.y) );
+        var north = Cell.getName(getCell(Client.x, Client.y - 1));
+        var east = Cell.getName(getCell(Client.x + 1, Client.y));
+        var south = Cell.getName(getCell(Client.x, Client.y + 1));
+        var west = Cell.getName(getCell(Client.x - 1, Client.y));
         Story.log("There's " + north + " to the north.");
         Story.log("There's " + east + " to the east.");
         Story.log("There's " + south + " to the south.");
@@ -258,14 +258,15 @@
                 newPos.y >= 0 &&
                 newPos.x < opts.world.width * opts.world.chunkWidth &&
                 newPos.y < opts.world.height * opts.world.chunkHeight) {
-
                 Object.assign(player.position, newPos);
+                var index = opts.world.getChunk(newPos);
                 command.game.updatePlayerPosition(player);
                 command.game.pushUpdate({
                     move: player.id.toString(),
-                    position: newPos
+                    position: newPos,
+                    index: index
                 }, {
-                    key: opts.world.getChunk(newPos)
+                    index: index
                 });
             }
 

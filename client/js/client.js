@@ -16,7 +16,7 @@ Client = {
 }
 
 //
-var world;// = new World();
+var world; // = new World();
 var renderer = new Renderer();
 
 //world.generate();
@@ -60,15 +60,15 @@ con.onmessage = function(msg) {
 
     // get the world from the server
     if (data.player !== undefined) {
-		console.log( "data.player" );
+        console.log("data.player");
         Object.assign(Client, data.player);
     }
 
     // get the world from the server
     if (data.world !== undefined) {
-        world = new World( data.world );
+        world = new World(data.world);
         //renderer.update(world, Client.x, Client.y);
-		console.log( "data.world" );
+        console.log("data.world");
         Story.log("<1-you now see the vast world->");
     }
 
@@ -77,15 +77,13 @@ con.onmessage = function(msg) {
         data.update.forEach(function(update) {
             console.log(update);
             if (update.change) {
-				console.log( "update.change" );
+                console.log("update.change");
                 //cell change code goes here it should be 11/10 and no less
             }
 
             // player moved
             else if (update.move) {
-				console.log( "update.move", update.key, world.chunks );
-                world.chunks[update.key].players[update.move] = update.position;
-                console.log(update.move == Client.playerID);
+                world.chunks[update.index].players[update.move] = update.position;
                 if (update.move.toString() == Client.playerID) {
                     Client.x = update.position.x;
                     Client.y = update.position.y;
@@ -94,16 +92,16 @@ con.onmessage = function(msg) {
 
             // player say
             else if (update.say) {
-				console.log( "update.say" );
+                console.log("update.say");
                 Story.log("<a-" + update.name + "->: " + update.say);
             }
 
             //get new chunks
             else if (update.chunk) {
-				console.log( "update.chunk" );
-				var x = update.chunk.x,
-					y = update.chunk.y,
-					i = y * world.width + x;
+                console.log("update.chunk");
+                var x = update.chunk.x,
+                    y = update.chunk.y,
+                    i = y * world.width + x;
                 world.chunks[i] = update.chunk;
             }
         });

@@ -8,7 +8,7 @@ module.exports = function(cid, conn, name, pos = {}) {
         x: 0,
         y: 0
     };
-    this.chunk = -1;
+    this.index = -1;
     this.active = {};
     this.update = [];
 }
