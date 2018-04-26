@@ -82,12 +82,13 @@ con.onmessage = function(msg) {
             // player moved
             else if (update.move) {
                 world.chunks[update.index].players[update.move] = update.position;
+                if (update.index != update.oldIndex)
+                    delete world.chunks[update.oldIndex].players[update.move];
                 if (update.move.toString() == Client.playerID) {
                     Client.x = update.position.x;
                     Client.y = update.position.y;
                 }
             }
-
             // player say
             else if (update.say) {
                 console.log("update.say");
@@ -103,6 +104,10 @@ con.onmessage = function(msg) {
                     i = y * world.width + x;
                 world.chunks[i] = update.chunk;
             }
+        });
+        Object.keys(world.chunks).forEach(function(index) {
+            var chunk = world.chunks[index];
+            console.log(index, chunk.playerCount);
         });
         renderer.update(world, Client.x, Client.y);
     }

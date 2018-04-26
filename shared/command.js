@@ -23,6 +23,9 @@
         "move": {
             _execute: exeMove
         },
+        "moveChunk": {
+            _execute: exeMoveChunk
+        },
         "look": {
             _execute: exeLook
         },
@@ -226,6 +229,31 @@
         //Story.log("<a-" + Client.characterName + "->: " + text);
     }
 
+    /**
+     * Move to next chunk
+     * ONLY FOR TESTING
+     */
+    function exeMoveChunk(dir, opts = {}) {
+        if (server) {
+            opts.amount = 64;
+            exeMove(dir, opts);
+        } else {
+            if (dir == 'n' || dir == 'e' || dir == 's' || dir == 'w') {
+                Story.log('Moving ' + dir);
+                try {
+                    var cmd = {
+                        command: 'moveChunk ' + dir
+                    };
+                    socket.send(JSON.stringify(cmd));
+                } catch (e) {
+                    console.log('error sending command data: ' + e);
+                }
+            } else {
+                Story.log('Please use n, e, s or w for direction!');
+            }
+        }
+    }
+
 
     /**
      * Move to a specified direction
@@ -241,16 +269,16 @@
             var newPos = Object.assign({}, player.position);
             switch (dir) {
                 case ("n"):
-                    newPos.y -= 1;
+                    newPos.y -= opts.amount || 1;
                     break;
                 case ("e"):
-                    newPos.x += 1;
+                    newPos.x += opts.amount || 1;
                     break;
                 case ("s"):
-                    newPos.y += 1;
+                    newPos.y += opts.amount || 1;
                     break;
                 case ("w"):
-                    newPos.x -= 1;
+                    newPos.x -= opts.amount || 1;
                     break;
             }
             //test if cell is walkable
@@ -258,13 +286,15 @@
                 newPos.y >= 0 &&
                 newPos.x < opts.world.width * opts.world.chunkWidth &&
                 newPos.y < opts.world.height * opts.world.chunkHeight) {
+                var oldIndex = opts.world.getChunk(player.position);
                 Object.assign(player.position, newPos);
                 var index = opts.world.getChunk(newPos);
                 command.game.updatePlayerPosition(player);
                 command.game.pushUpdate({
                     move: player.id.toString(),
                     position: newPos,
-                    index: index
+                    index: index,
+                    oldIndex: oldIndex
                 }, {
                     index: index
                 });
