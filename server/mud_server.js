@@ -66,8 +66,8 @@ function startup() {
     // create world
     console.log("creating world...");
     world = new World({
-        width: 2,
-        height: 2,
+        width: 10,
+        height: 10,
         chunkWidth: 64,
         chunkHeight: 64,
         name: settings.world_name
@@ -132,8 +132,8 @@ function startup() {
                         console.log('LOGIN: Client ' + cid + ' is now ' + data.name);
                         clients[cid] = accounts[data.name];
                         clients[cid].conn = conn;
-						clients[cid].active = {};
-						clients[cid].chunk = -1;
+                        clients[cid].active = {};
+                        clients[cid].chunk = -1;
                         game.updatePlayerPosition(clients[cid]);
                         game.sendToClient(conn, {
                             world: world.getProperties(),
@@ -157,6 +157,9 @@ function startup() {
             }
         });
         conn.on('close', function() {
+            game.updateChunkPlayers(clients[cid], {
+                delete: true
+            })
             clients[cid] = null;
             console.log('Client ' + cid + ' has left.')
         });
