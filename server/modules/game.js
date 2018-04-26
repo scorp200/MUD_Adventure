@@ -92,7 +92,8 @@ module.exports = function(world, rate, clients) {
 
         chunk.players[player.id] = {
             x: player.position.x - chunk.x * world.chunkWidth,
-            y: player.position.y - chunk.y * world.chunkWidth
+            y: player.position.y - chunk.y * world.chunkWidth,
+			color: player.color
         };
         console.log(player.name + ' has moved to chunk ' + index + ' with position: ' + player.position.x + ',' + player.position.y);
     }
