@@ -40,11 +40,15 @@ module.exports = function(world, rate, clients) {
         var chunk = world.chunks[index];
         if (oldIndex != index) {
             if (oldIndex > -1) {
-                delete world.chunks[oldIndex].players[player.id];
-                world.chunks[oldIndex].playerCount--;
+				var oldChunk = world.chunks[oldIndex];
+                delete oldChunk.players[player.id];
+				oldChunk.playerCount = Object.keys(oldChunk.players).length;
+                //world.chunks[oldIndex].playerCount--;
             }
             player.index = index;
-            chunk.playerCount++;
+			chunk.playerCount = Object.keys(chunk.players).length;
+            //chunk.playerCount++;
+			
             //Set new active chunks
             for (x = -1; x < 2; x++) {
                 for (y = -1; y < 2; y++) {
