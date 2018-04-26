@@ -134,6 +134,7 @@ function startup() {
                         clients[cid].conn = conn;
 						clients[cid].active = {};
 						clients[cid].chunk = -1;
+						clients[cid].index = -1;
                         game.updatePlayerPosition(clients[cid]);
                         game.sendToClient(conn, {
                             world: world.getProperties(),
