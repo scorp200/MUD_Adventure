@@ -134,7 +134,7 @@
 			var chunk = chunks[key];
 			Object.assign( players, chunk.players );
 		} );
-			
+		
 		Object.keys(players).forEach( function( key ) {
 			
 			var p = players[key];

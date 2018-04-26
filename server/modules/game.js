@@ -63,8 +63,9 @@ module.exports = function(world, rate, clients) {
             Object.keys(player.active).forEach(function(aIndex) {
                 var pos = [~~(player.position.x / world.chunkWidth), ~~(player.position.y / world.chunkHeight)];
                 var changePos = [world.chunks[aIndex].x, world.chunks[aIndex].y];
-                if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2)
+                if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2) {
                     delete player.active[aIndex];
+				}
             });
 
         }

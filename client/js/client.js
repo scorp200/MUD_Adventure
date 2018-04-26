@@ -56,8 +56,6 @@ con.onmessage = function(msg) {
         autoLogin();
     }
 
-    console.log(data);
-
     // get the world from the server
     if (data.player !== undefined) {
         console.log("data.player");
@@ -75,7 +73,7 @@ con.onmessage = function(msg) {
     // received update from server
     if (data.update) {
         data.update.forEach(function(update) {
-            console.log(update);
+            
             if (update.change) {
                 console.log("update.change");
                 //cell change code goes here it should be 11/10 and no less
@@ -99,6 +97,7 @@ con.onmessage = function(msg) {
             //get new chunks
             else if (update.chunk) {
                 console.log("update.chunk");
+				console.log(update.chunk.players);
                 var x = update.chunk.x,
                     y = update.chunk.y,
                     i = y * world.width + x;
