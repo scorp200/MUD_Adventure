@@ -1,17 +1,18 @@
 module.exports = function(world, rate, clients) {
-    var game = this;
-    console.log("rate = " + rate);
-    setInterval(update, rate);
-    console.log('game world has started');
+	
+	//
     var commandList = [];
     var commandLimit = {};
     var commands = require('../../shared/command.js');
-    commands.game = this;
     var living = {};
-
+	
+	// cache references
+	var game = this;
+	commands.game = this;
 
     /**
-     * add a player command into an array.
+     * Add a player command into an array.
+	 * @param {string} cmd
      */
     this.push = function(cmd) {
         if (!commandLimit[cmd.player.id]) {
@@ -21,7 +22,9 @@ module.exports = function(world, rate, clients) {
     }
 
     /**
-     * queue changes to send to players.
+     * Queue changes to send to players.
+	 * @param {object} change
+	 * @param {object} opts
      */
     this.pushUpdate = function(change, opts = {}) {
         clients.forEach(function(client) {
@@ -30,8 +33,23 @@ module.exports = function(world, rate, clients) {
             client.update.push(change);
         });
     }
+	
+	/**
+	 * Send some data to a client.
+	 * @param {WebSocket} conn
+	 * @param {object} data
+	 */
+    this.sendToClient = function(conn, data) {
+        try {
+            conn.send(JSON.stringify(data));
+        } catch (e) {
+            console.log(e);
+        }
+    }
+	
     /**
-     * update player position in the world
+     * Update player position in the world.
+	 * @param {object} player
      */
     this.updatePlayerPosition = function(player) {
 
@@ -81,19 +99,25 @@ module.exports = function(world, rate, clients) {
         console.log(player.name + ' has moved to chunk ' + index + ' with position: ' + player.position.x + ',' + player.position.y);
     }
 
-    var getPlayerChunk = function(player) {
+	/**
+	 * Returns the ID of the chunk that the given player is currently in.
+	 * @param {object} player
+	 */
+    var getPlayerChunkIndex = function(player) {
         var x = ~~(player.position.x / world.chunkWidth),
             y = ~~(player.position.y / world.chunkHeight),
             index = y * world.width + x;
         return index;
     }
 
-    function update() {
-        //do stuff
-
+	/**
+	 * Sends current list of updates to all connected clients.
+	 */
+    var update = function() {
+		
+        // execute commands
         while (commandList.length > 0) {
             var command = commandList.shift();
-            //execute the commands
             commands.execute('' + command.command, {
                 player: command.player,
                 clients: clients,
@@ -101,9 +125,10 @@ module.exports = function(world, rate, clients) {
             });
             commandLimit[command.player.id] = null;
         }
+		
         //update all clients
         clients.forEach(function(client) {
-            if (!client || client.update.length == 0)
+            if (!client || client.update.length === 0)
                 return;
             var data = {
                 update: client.update
@@ -111,13 +136,11 @@ module.exports = function(world, rate, clients) {
             game.sendToClient(client.conn, data);
             client.update.length = 0;
         })
+		
     }
+	
+	//
+	setInterval(update, rate);
+    console.log('game world simulation started at ' + rate + "ms");
 
-    this.sendToClient = function(conn, data) {
-        try {
-            conn.send(JSON.stringify(data));
-        } catch (e) {
-            console.log(e);
-        }
-    }
 }
