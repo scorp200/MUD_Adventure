@@ -4,6 +4,8 @@
  */
 var player = function(cid, conn, name, pos = {}) {
     this.hp = 100;
+	this.hunger = 100;
+	this.hydration = 100;
     this.inventory = {};
     this.name = name;
     this.id = cid;
@@ -23,7 +25,9 @@ var player = function(cid, conn, name, pos = {}) {
 player.prototype.getStats = function() {
 	return {
 		hp: this.hp,
-		position: this.position
+		position: this.position,
+		hunger: this.hunger,
+		hydration: this.hydration
 	}
 }
 

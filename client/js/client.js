@@ -13,7 +13,16 @@ Client = {
 		x: 80,
 		y: 40
 	},
-    socket: null
+    socket: null,
+	
+	refreshStats: function() {
+		var elHP = document.querySelector( "#character .health" );
+		var elHUN = document.querySelector( "#character .hunger" );
+		var elHYD = document.querySelector( "#character .hydration" );
+		elHP.textContent = "HP: " + (Client.hp || 0);
+		elHUN.textContent = "HUN: " + (Client.hunger || 0);
+		elHYD.textContent = "HYD: " + (Client.hydration || 0);
+	}
 
 }
 
@@ -60,15 +69,13 @@ con.onmessage = function(msg) {
 
     // get the world from the server
     if (data.player !== undefined) {
-        console.log("data.player");
         Object.assign(Client, data.player);
-		console.log( data.player );
+		Client.refreshStats();
     }
 
     // get the world from the server
     if (data.world !== undefined) {
         world = new World(data.world);
-        //renderer.update(world, Client.x, Client.y);
         console.log("data.world");
         Story.log("<1-you now see the vast world->");
     }
@@ -129,9 +136,7 @@ con.onmessage = function(msg) {
  *
  */
 function autoLogin() {
-
     Command.execute("new");
     Command.execute("test");
     Command.execute("pass");
-
 }

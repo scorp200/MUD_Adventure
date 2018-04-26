@@ -2,12 +2,7 @@
 
 	// cache
 	var domMap = document.getElementById("map");
-
-	//
-	var permutation = [];
-	for (  var n=0; n<512; n++ ) {
-		permutation[n] = ~~( Math.random() * 512 );
-	}
+	var permutation = Simplex.permutation;
 
 	/**
 	 * @constructor
@@ -71,7 +66,7 @@
 		var time = Date.now();
 		var chunks = {};
 		var players = {};
-	
+		
 		// center view on given location
 		var wx = position.x;
 		var	wy = position.y;
@@ -126,15 +121,25 @@
 			
 		}
 		
-		// render players
-		var w = this.width,
-			h = this.height,
-			field = this.field;
-		 
+		//
 		Object.keys( chunks ).forEach( function( key ) {
 			var chunk = chunks[key];
 			Object.assign( players, chunk.players );
 		} );
+		
+		this.renderPlayers( world, wx, wy, players );
+
+	}
+	
+	/**
+	 *
+	 */
+	renderer.prototype.renderPlayers = function( world, wx, wy, players ) {
+		
+		// render players
+		var w = this.width,
+			h = this.height,
+			field = this.field;
 		
 		Object.keys(players).forEach( function( key ) {
 			
@@ -159,8 +164,6 @@
 					cellIndex = cellY * chunk.width + cellY,
 					cell = chunk.data[cellIndex];
 				
-				var cellDiv = field[y*w+x];
-				
 				if ( Client.playerID === key ) {
 					tile = "-24px -0px";
 					color = "#00ffff";
@@ -170,6 +173,7 @@
 				}
 				
 				//
+				var cellDiv = field[y*w+x];
 				cellDiv.backgroundColor = color;
 				cellDiv.backgroundPosition = tile;
 				
@@ -177,9 +181,6 @@
 			
 		} );
 		
-		//
-		//console.log( "Map rendered in " + (Date.now() - time) + "ms" );
-
 	}
 
 	// export
