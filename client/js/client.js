@@ -2,11 +2,14 @@
 var domTools = document.getElementById("tools"),
     domCharacter = document.getElementById("character");
 
-//
+/**
+ * @namespace
+ */
 Client = {
 
     characterName: "",
     characterPass: "",
+	color: "#FFFFFF",
     playerID: null,
     chunk: null,
 	position: {
@@ -15,6 +18,9 @@ Client = {
 	},
     socket: null,
 	
+	/**
+	 * Refreshes the player's stats in the DOM.
+	 */
 	refreshStats: function() {
 		var elHP = document.querySelector( "#character .health" );
 		var elHUN = document.querySelector( "#character .hunger" );

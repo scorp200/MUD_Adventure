@@ -166,7 +166,7 @@
 				
 				if ( Client.playerID === key ) {
 					tile = "-24px -0px";
-					color = "#00ffff";
+					color = Client.color;
 				} else {
 					tile = "-12px -0px"
 					color = "#ffff00";
