@@ -54,7 +54,7 @@ module.exports = function(world, rate, clients) {
     this.updatePlayerPosition = function(player) {
 
         var oldIndex = player.index;
-        var index = world.getChunk(player.position);
+        var index = world.getChunkIndex(player.position);
         var chunk = world.chunks[index];
         if (oldIndex != index) {
             if (oldIndex > -1) {
@@ -97,23 +97,16 @@ module.exports = function(world, rate, clients) {
         console.log(player.name + ' has moved to chunk ' + index + ' with position: ' + player.position.x + ',' + player.position.y);
     }
 
+
+    /**
+     * Updates player count in players or specified index
+     */
     this.updateChunkPlayers = function(player, opts = {}) {
         if (opts.delete) {
             delete world.chunks[opts.index || player.index].players[player.id];
             world.chunks[opts.index || player.index].playerCount--;
         } else
             world.chunks[opts.index || player.index].playerCount++;
-    }
-
-    /**
-     * Returns the ID of the chunk that the given player is currently in.
-     * @param {object} player
-     */
-    var getPlayerChunkIndex = function(player) {
-        var x = ~~(player.position.x / world.chunkWidth),
-            y = ~~(player.position.y / world.chunkHeight),
-            index = y * world.width + x;
-        return index;
     }
 
     /**

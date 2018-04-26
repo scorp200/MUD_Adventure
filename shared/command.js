@@ -286,9 +286,9 @@
                 newPos.y >= 0 &&
                 newPos.x < opts.world.width * opts.world.chunkWidth &&
                 newPos.y < opts.world.height * opts.world.chunkHeight) {
-                var oldIndex = opts.world.getChunk(player.position);
+                var oldIndex = opts.world.getChunkIndex(player.position);
                 Object.assign(player.position, newPos);
-                var index = opts.world.getChunk(newPos);
+                var index = opts.world.getChunkIndex(newPos);
                 command.game.updatePlayerPosition(player);
                 command.game.pushUpdate({
                     move: player.id.toString(),
