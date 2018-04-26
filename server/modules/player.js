@@ -1,4 +1,3 @@
-
 /**
  * @constructor
  */
@@ -37,3 +36,4 @@ player.prototype.getStats = function() {
 
 // export
 module.exports = player;
+
