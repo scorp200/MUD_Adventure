@@ -59,7 +59,7 @@ module.exports = function(world, rate, clients) {
         if (oldIndex != index) {
             if (oldIndex > -1) {
                 game.updateChunkPlayers(player, {
-                    delete: true,
+                    remove: true,
                     index: oldIndex
                 })
             }
@@ -102,7 +102,7 @@ module.exports = function(world, rate, clients) {
      * Updates player count in players or specified index
      */
     this.updateChunkPlayers = function(player, opts = {}) {
-        if (opts.delete) {
+        if (opts.remove) {
             delete world.chunks[opts.index || player.index].players[player.id];
             world.chunks[opts.index || player.index].playerCount--;
         } else

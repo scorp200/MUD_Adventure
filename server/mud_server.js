@@ -137,7 +137,7 @@ function startup() {
                         game.updatePlayerPosition(clients[cid]);
                         game.sendToClient(conn, {
                             world: world.getProperties(),
-                            player: clients[cid].getStats
+                            player: clients[cid].getStats()
                         });
                     } else {
                         console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
@@ -157,9 +157,10 @@ function startup() {
             }
         });
         conn.on('close', function() {
-            game.updateChunkPlayers(clients[cid], {
-                delete: true
-            })
+            if (clients[cid])
+                game.updateChunkPlayers(clients[cid], {
+                    remove: true
+                })
             clients[cid] = null;
             console.log('Client ' + cid + ' has left.')
         });
