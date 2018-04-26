@@ -7,8 +7,13 @@
 		permutation[n] = ~~( Math.random() * 256 );
 	}
 
-	//
+	/**
+	 *
+	 */
 	var simplex = {
+		
+		//
+		permutation: permutation,
 		
 		/**
 		 *

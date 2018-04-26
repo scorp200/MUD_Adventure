@@ -194,10 +194,11 @@
         }
 
         //
-        var north = Cell.getName(getCell(Client.x, Client.y - 1));
-        var east = Cell.getName(getCell(Client.x + 1, Client.y));
-        var south = Cell.getName(getCell(Client.x, Client.y + 1));
-        var west = Cell.getName(getCell(Client.x - 1, Client.y));
+		var pos = Client.position;
+        var north = Cell.getName(getCell(pos.x, pos.y - 1));
+        var east = Cell.getName(getCell(pos.x + 1, pos.y));
+        var south = Cell.getName(getCell(pos.x, pos.y + 1));
+        var west = Cell.getName(getCell(pos.x - 1, pos.y));
         Story.log("There's " + north + " to the north.");
         Story.log("There's " + east + " to the east.");
         Story.log("There's " + south + " to the south.");

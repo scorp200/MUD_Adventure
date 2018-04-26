@@ -1,12 +1,12 @@
 (function() {
 
     //
+	var server = false;
     if (typeof require !== "undefined") {
+		server = true;
         Simplex = require('../shared/simplex.js');
         Chunk = require('../shared/Chunk.js');
         Cell = require('../shared/Cell.js');
-        console.group = console.log;
-        console.groupEnd = console.log;
     }
 
     /**
@@ -43,43 +43,54 @@
      */
     world.prototype.generate = function() {
 
-            console.group("generating world...");
-            var totalSize = this.width * this.height,
-                currentSize = 0;
+		console.log("generating world...");
+		var totalSize = this.width * this.height,
+			currentSize = 0;
 
-            for (var x = 0; x < this.width; x++) {
-                for (var y = 0; y < this.height; y++) {
-                    currentSize++;
-                    var index = y * this.width + x;
-                    //console.log( "new chunk: " + index );
-                    this.chunks[index] = new Chunk({
-                        world: this,
-                        x: x,
-                        y: y,
-                        width: this.chunkWidth,
-                        height: this.chunkHeight,
-                        dataMethod: this.dataMethod
-                    });
-                }
-                var progress = ~~((currentSize / totalSize) * 100);
-                if (progress % 20 == 0)
-                    console.log("generation progress: " + progress + "%");
-            }
+		for (var x = 0; x < this.width; x++) {
+			for (var y = 0; y < this.height; y++) {
+				
+				// create new chunk
+				var index = y * this.width + x;
+				this.chunks[index] = new Chunk({
+					world: this,
+					x: x,
+					y: y,
+					width: this.chunkWidth,
+					height: this.chunkHeight,
+					dataMethod: this.dataMethod
+				});
+				
+				// report progress
+				var progress = ~~((++currentSize / totalSize) * 100);
+				var report = "generation progress: " + progress + "%";
+				if ( server ) {
+					process.stdout.clearLine();
+					process.stdout.cursorTo(0);
+					process.stdout.write(report);
+					if (currentSize === totalSize ) {
+						process.stdout.write("\n");
+					}
+				} else {
+					(progress % 20 == 0) && console.log(report);
+				}
+				
+			}
+			
+		}
+		
+	}
 
-            console.groupEnd();
-
-        },
-
-        /**
-         * Returns the ID of the chunk that the given player is currently in.
-         * @param {object} pos
-         */
-        world.prototype.getChunkIndex = function(pos) {
-            var x = ~~(pos.x / this.chunkWidth),
-                y = ~~(pos.y / this.chunkHeight),
-                index = y * this.width + x;
-            return index;
-        }
+	/**
+	 * Returns the ID of the chunk that the given player is currently in.
+	 * @param {object} pos
+	 */
+	world.prototype.getChunkIndex = function(pos) {
+		var x = ~~(pos.x / this.chunkWidth),
+			y = ~~(pos.y / this.chunkHeight),
+			index = y * this.width + x;
+		return index;
+	}
 
     // export
     if (typeof module === "undefined")
