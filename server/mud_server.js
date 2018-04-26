@@ -117,7 +117,7 @@ function startup() {
                     game.updatePlayerPosition(clients[cid]);
                     game.sendToClient(conn, {
                         world: world.getProperties(),
-                        player: clients[cid].position
+                        player: clients[cid].getStats()
                     });
                 } else {
                     console.log("There's already an account with the name: " + data.name);
@@ -137,7 +137,7 @@ function startup() {
                         game.updatePlayerPosition(clients[cid]);
                         game.sendToClient(conn, {
                             world: world.getProperties(),
-                            player: clients[cid].position
+                            player: clients[cid].getStats
                         });
                     } else {
                         console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);

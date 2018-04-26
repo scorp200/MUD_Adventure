@@ -66,13 +66,15 @@
 	/**
 	 * Iterates through the map and builds a HTML string.
 	 */
-	renderer.prototype.update = function( world, wx, wy ) {
+	renderer.prototype.update = function( world, position ) {
 
 		var time = Date.now();
 		var chunks = {};
 		var players = {};
 	
 		// center view on given location
+		var wx = position.x;
+		var	wy = position.y;
 		wx -= ~~(this.width / 2);
 		wy -= ~~(this.height / 2);
 
@@ -91,7 +93,6 @@
 				var cx = x - chunk.x * world.chunkWidth,
 					cy = y - chunk.y * world.chunkHeight,
 					index = cy * world.chunkWidth + cx;
-				//cell = chunk.data[cx+"-"+cy];
 				cell = chunk.data[index];
 			}
 

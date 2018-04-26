@@ -9,8 +9,10 @@ Client = {
     characterPass: "",
     playerID: null,
     chunk: null,
-    x: 80,
-    y: 40,
+	position: {
+		x: 80,
+		y: 40
+	},
     socket: null
 
 }
@@ -18,9 +20,9 @@ Client = {
 //
 var world; // = new World();
 var renderer = new Renderer();
+renderer.createField();
 
 //world.generate();
-renderer.createField();
 //renderer.update(world, Client.x, Client.y);
 
 //server connection
@@ -60,6 +62,7 @@ con.onmessage = function(msg) {
     if (data.player !== undefined) {
         console.log("data.player");
         Object.assign(Client, data.player);
+		console.log( data.player );
     }
 
     // get the world from the server
@@ -85,10 +88,11 @@ con.onmessage = function(msg) {
                 if (update.index != update.oldIndex)
                     delete world.chunks[update.oldIndex].players[update.move];
                 if (update.move.toString() == Client.playerID) {
-                    Client.x = update.position.x;
-                    Client.y = update.position.y;
+                    Client.position.x = update.position.x;
+                    Client.position.y = update.position.y;
                 }
             }
+			
             // player say
             else if (update.say) {
                 console.log("update.say");
@@ -107,9 +111,9 @@ con.onmessage = function(msg) {
         });
         Object.keys(world.chunks).forEach(function(index) {
             var chunk = world.chunks[index];
-            console.log(index, chunk.playerCount);
+            //console.log(index, chunk.playerCount);
         });
-        renderer.update(world, Client.x, Client.y);
+        renderer.update(world, Client.position);
     }
 
     // primarily for debugging
