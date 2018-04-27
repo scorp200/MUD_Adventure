@@ -209,7 +209,9 @@
         if (server) {
             command.game.pushUpdate({
                 say: text,
-                name: opts.player.name
+                name: opts.name || opts.player.name
+            }, {
+                client: opts.client || null
             });
         } else {
             sendToServer({
@@ -301,7 +303,6 @@
         if (server) {
             var player = opts.player;
             var cutPos = Object.assign({}, player.position);
-
             switch (dir) {
                 case ("n"):
                     cutPos.y -= 1;
@@ -321,13 +322,10 @@
             if (cell.action == 'cut')
                 command.game.dropItem(player, cell);
             else
-                command.game.pushUpdate({
-                    say: 'nothing to cut here :(',
-                    name: 'Server'
-                }, {
+                exeSay('nothing to cut here :(', {
+                    name: 'Server',
                     client: player
                 });
-
         } else {
             if (isDirection(dir)) {
                 Story.log('Cutting ' + dir);
