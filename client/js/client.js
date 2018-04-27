@@ -36,6 +36,7 @@ Client = {
 var world; // = new World();
 var renderer = new Renderer();
 renderer.createField();
+renderer.renderImage();
 
 //world.generate();
 //renderer.update(world, Client.x, Client.y);

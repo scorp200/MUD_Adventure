@@ -182,6 +182,69 @@
 		} );
 		
 	}
+	
+	/**
+	 *
+	 */
+	renderer.prototype.renderImage = function( image ) {
+		
+		var that = this;
+		var image = new Image();
+		
+		image.onload = function() {
+			console.log( "image loaded!" );
+			
+			var canvas = document.createElement( "CANVAS" );
+			canvas.width = image.width;
+			canvas.height = image.height;
+			var ctx = canvas.getContext( "2d" );
+			ctx.drawImage( image, 0, 0 );
+			var data = ctx.getImageData( 0, 0, canvas.width, canvas.height ).data;
+			
+			console.log( data );
+			var i = 0;
+			for ( var y=0; y<that.height; y++ )
+			for ( var x=0; x<that.width; x++ ) {
+				var cellDiv = that.field[y*that.width+x];
+				
+				r = data[i];
+				g = data[i+1];
+				b = data[i+2];
+				i += 4;
+
+				var cell = "";
+				if ( r === 255 && g === 255 && b === 255 ) cell = "mountain";
+				if ( r === 0 && g === 255 && b === 0 ) cell = "grass";
+				if ( r === 255 && g === 0 && b === 0 ) cell = "drylands";
+				if ( r === 0 && g === 0 && b === 255 ) cell = "sea";
+
+				if ( cell !== "" ) {
+					
+					cell = { draw: Cell.getPropertiesByName( cell ) };
+					console.log( cell );
+					
+					var perm = permutation[(y + (y*48) + x) % 512],
+						tiles = cell.draw.tiles.length,
+						index = perm % tiles,
+						tile = cell.draw.tiles[index],
+						colors = cell.draw.color.length,
+						ci = perm % colors,
+						color = cell.draw.color[ci];
+					
+					cellDiv.backgroundColor = color;
+					cellDiv.backgroundPosition = tile;
+					
+				} else {
+					cellDiv.backgroundColor = "#000";
+				}
+
+			}
+			
+		}
+		
+		image.src = "test/title.png";
+		
+	}
 
 	// export
 	if ( typeof module === "undefined" )

@@ -51,6 +51,19 @@
 			}
 		}
 	}
+	
+	/**
+	 *
+	 */
+	cell.getPropertiesByName = function( name ) {
+		var keys = Object.keys( cell.mapping );
+		for ( var n=0; n<keys.length; n++ ) {
+			var key = keys[n];
+			if ( key === name ) {
+				return cell.mapping[key];
+			}
+		}
+	}
 
 	/**
 	 * object defining how each cell type is displayed, accepts multiple tile
