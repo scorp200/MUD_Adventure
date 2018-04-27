@@ -9,26 +9,26 @@ Client = {
 
     characterName: "",
     characterPass: "",
-	color: "#FFFFFF",
+    color: "#FFFFFF",
     playerID: null,
     chunk: null,
-	position: {
-		x: 80,
-		y: 40
-	},
+    position: {
+        x: 80,
+        y: 40
+    },
     socket: null,
-	
-	/**
-	 * Refreshes the player's stats in the DOM.
-	 */
-	refreshStats: function() {
-		var elHP = document.querySelector( "#character .health" );
-		var elHUN = document.querySelector( "#character .hunger" );
-		var elHYD = document.querySelector( "#character .hydration" );
-		elHP.textContent = "HP: " + (Client.hp || 0);
-		elHUN.textContent = "HUN: " + (Client.hunger || 0);
-		elHYD.textContent = "HYD: " + (Client.hydration || 0);
-	}
+
+    /**
+     * Refreshes the player's stats in the DOM.
+     */
+    refreshStats: function() {
+        var elHP = document.querySelector("#character .health");
+        var elHUN = document.querySelector("#character .hunger");
+        var elHYD = document.querySelector("#character .hydration");
+        elHP.textContent = "HP: " + (Client.hp || 0);
+        elHUN.textContent = "HUN: " + (Client.hunger || 0);
+        elHYD.textContent = "HYD: " + (Client.hydration || 0);
+    }
 
 }
 
@@ -76,7 +76,7 @@ con.onmessage = function(msg) {
     // get the world from the server
     if (data.player !== undefined) {
         Object.assign(Client, data.player);
-		Client.refreshStats();
+        Client.refreshStats();
     }
 
     // get the world from the server
@@ -89,7 +89,7 @@ con.onmessage = function(msg) {
     // received update from server
     if (data.update) {
         data.update.forEach(function(update) {
-            
+
             if (update.change) {
                 console.log("update.change");
                 //cell change code goes here it should be 11/10 and no less
@@ -105,7 +105,7 @@ con.onmessage = function(msg) {
                     Client.position.y = update.position.y;
                 }
             }
-			
+
             // player say
             else if (update.say) {
                 console.log("update.say");
@@ -115,7 +115,7 @@ con.onmessage = function(msg) {
             //get new chunks
             else if (update.chunk) {
                 console.log("update.chunk");
-				console.log(update.chunk.players);
+                console.log(update.chunk.players);
                 var x = update.chunk.x,
                     y = update.chunk.y,
                     i = y * world.width + x;
@@ -136,6 +136,14 @@ con.onmessage = function(msg) {
 
     return true;
 
+}
+
+var sendToServer = function(data) {
+    try {
+        socket.send(JSON.stringify(data));
+    } catch (e) {
+        console.log('error sending data: ' + e);
+    }
 }
 
 /**

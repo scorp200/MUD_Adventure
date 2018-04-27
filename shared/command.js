@@ -26,6 +26,9 @@
         "moveChunk": {
             _execute: exeMoveChunk
         },
+        "cut": {
+            _execute: exeCut
+        },
         "look": {
             _execute: exeLook
         },
@@ -93,16 +96,11 @@
         if (server)
             return;
 
-        try {
-            x = x.split(" ");
-            socket.send(JSON.stringify({
-                type: "login",
-                name: x[0],
-                pass: x[1]
-            }));
-        } catch (e) {
-            console.log('error sending client data: ' + e);
-        }
+        sendToServer({
+            type: "login",
+            name: x[0],
+            pass: x[1]
+        })
 
     }
 
@@ -151,15 +149,11 @@
                 Story.log("You now exist!");
                 Story.space();
                 command._capture = null;
-                try {
-                    socket.send(JSON.stringify({
-                        type: "new",
-                        name: Client.characterName,
-                        pass: Client.characterPass
-                    }));
-                } catch (e) {
-                    console.log('error sending client data: ' + e);
-                }
+                sendToServer({
+                    type: "new",
+                    name: Client.characterName,
+                    pass: Client.characterPass
+                });
             },
             fail: function() {
                 Story.log("Try again:");
@@ -194,7 +188,7 @@
         }
 
         //
-		var pos = Client.position;
+        var pos = Client.position;
         var north = Cell.getName(getCell(pos.x, pos.y - 1));
         var east = Cell.getName(getCell(pos.x + 1, pos.y));
         var south = Cell.getName(getCell(pos.x, pos.y + 1));
@@ -218,16 +212,10 @@
                 name: opts.player.name
             });
         } else {
-            try {
-                var cmd = {
-                    command: 'say ' + text
-                };
-                socket.send(JSON.stringify(cmd));
-            } catch (e) {
-                console.log('error sending command data: ' + e);
-            }
+            sendToServer({
+                command: 'say ' + text
+            });
         }
-        //Story.log("<a-" + Client.characterName + "->: " + text);
     }
 
     /**
@@ -239,16 +227,11 @@
             opts.amount = 64;
             exeMove(dir, opts);
         } else {
-            if (dir == 'n' || dir == 'e' || dir == 's' || dir == 'w') {
+            if (isDirection(dir)) {
                 Story.log('Moving ' + dir);
-                try {
-                    var cmd = {
-                        command: 'moveChunk ' + dir
-                    };
-                    socket.send(JSON.stringify(cmd));
-                } catch (e) {
-                    console.log('error sending command data: ' + e);
-                }
+                sendToServer({
+                    command: 'moveChunk ' + dir
+                });
             } else {
                 Story.log('Please use n, e, s or w for direction!');
             }
@@ -264,8 +247,6 @@
         var player = opts.player;
 
         if (server) {
-
-            var world = command.game.world;
 
             var newPos = Object.assign({}, player.position);
             switch (dir) {
@@ -302,20 +283,66 @@
             }
 
         } else {
-            if (dir == 'n' || dir == 'e' || dir == 's' || dir == 'w') {
+            if (isDirection(dir)) {
                 Story.log('Moving ' + dir);
-                try {
-                    var cmd = {
-                        command: 'move ' + dir
-                    };
-                    socket.send(JSON.stringify(cmd));
-                } catch (e) {
-                    console.log('error sending command data: ' + e);
-                }
+                sendToServer({
+                    command: 'move ' + dir
+                });
             } else {
                 Story.log('Please use n, e, s or w for direction!');
             }
         }
+    }
+
+    /**
+     * Attempt to cut in the specified direction
+     */
+    function exeCut(dir, opts = {}) {
+        if (server) {
+            var player = opts.player;
+            var cutPos = Object.assign({}, player.position);
+
+            switch (dir) {
+                case ("n"):
+                    cutPos.y -= 1;
+                    break;
+                case ("e"):
+                    cutPos.x += 1;
+                    break;
+                case ("s"):
+                    cutPos.y += 1;
+                    break;
+                case ("w"):
+                    cutPos.x -= 1;
+                    break;
+            }
+            var index = opts.world.getChunkIndex(cutPos);
+            var cell = opts.world.chunks[index].getCell(cutPos);
+            if (cell.action == 'cut')
+                command.game.dropItem(player, cell);
+            else
+                command.game.pushUpdate({
+                    say: 'nothing to cut here :(',
+                    name: 'Server'
+                }, {
+                    client: player
+                });
+
+        } else {
+            if (isDirection(dir)) {
+                Story.log('Cutting ' + dir);
+                sendToServer({
+                    command: 'cut ' + dir
+                });
+            } else {
+                Story.log('Please use n, e, s or w for direction!');
+            }
+        }
+
+    }
+
+    var isDirection = function(dir) {
+        return dir == 'n' || dir == 'e' || dir == 's' || dir == 'w';
     }
 
     /**
@@ -332,7 +359,7 @@
         domCommand.onkeydown = function(e) {
 
             //wait for connection
-            if (Client.socket == null)
+            if (socket == null)
                 return;
 
             // if enter key pressed

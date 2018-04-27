@@ -15,7 +15,7 @@
 		Object.assign( this, opts );
 		this.draw = cell.mapping[this.type];
 	}
-	
+
 	/**
 	 * Takes a tile type and returns the tile ID for it. The tile ID should be
 	 * between 0 and 255 (a byte).
@@ -25,7 +25,7 @@
 	cell.getID = function( type = "grass" ) {
 		return cell.mapping[type].id;
 	}
-	
+
 	/**
 	 *
 	 */
@@ -38,7 +38,7 @@
 			}
 		}
 	}
-	
+
 	/**
 	 *
 	 */
@@ -75,7 +75,7 @@
 				"#006600"
 			]
 		},
-		
+
 		"drylands": {
 			id: 2,
 			tiles: [
@@ -104,9 +104,13 @@
 			],
 			color: [
 				"#24A024"
+			],
+			action: "cut",
+			drop: [
+				"wood"
 			]
 		},
-		
+
 		"water": {
 			id: 4,
 			tiles: [
@@ -116,7 +120,7 @@
 				"#00cccc"
 			]
 		},
-		
+
 		"sea": {
 			id: 5,
 			desc: "Water, but too wavy to traverse safely.",
@@ -127,7 +131,7 @@
 				"#005555"
 			]
 		},
-		
+
 		"mountain": {
 			id: 6,
 			tiles: [
@@ -138,7 +142,7 @@
 				"#aaaaaa"
 			]
 		},
-		
+
 		"hill": {
 			id: 7,
 			tiles: [
@@ -151,11 +155,11 @@
 		}
 
 	}
-	
+
 	// export
 	if ( typeof module === "undefined" )
 		window["Cell"] = cell
 	else
 		module.exports = cell;
-	
+
 })();

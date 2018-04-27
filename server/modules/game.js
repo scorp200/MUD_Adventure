@@ -4,6 +4,7 @@ module.exports = function(world, rate, clients) {
     var commandList = [];
     var commandLimit = {};
     var commands = require('../../shared/command.js');
+    var items = require('../../shared/items.js');
     var living = {};
 
     // cache references
@@ -27,11 +28,14 @@ module.exports = function(world, rate, clients) {
      * @param {object} opts
      */
     this.pushUpdate = function(change, opts = {}) {
-        clients.forEach(function(client) {
-            if (opts.index && !client.active[opts.index])
-                return;
-            client.update.push(change);
-        });
+        if (opts.client) {
+            opts.client.update.push(change);
+        } else
+            clients.forEach(function(client) {
+                if (opts.index && !client.active[opts.index])
+                    return;
+                client.update.push(change);
+            });
     }
 
     /**
@@ -93,7 +97,7 @@ module.exports = function(world, rate, clients) {
         chunk.players[player.id] = {
             x: player.position.x - chunk.x * world.chunkWidth,
             y: player.position.y - chunk.y * world.chunkWidth,
-			color: player.color
+            color: player.color
         };
         console.log(player.name + ' has moved to chunk ' + index + ' with position: ' + player.position.x + ',' + player.position.y);
     }
@@ -110,6 +114,25 @@ module.exports = function(world, rate, clients) {
             world.chunks[opts.index || player.index].playerCount++;
     }
 
+    this.dropItem = function(player, cell) {
+        cell.drop.forEach(function(drop) {
+            item = items.mapping[drop];
+            if (Math.random() <= item.dropRate) {
+                // not sure how to make it more streamline
+                player.inventory[item.id] = player.inventory[item.id] ? 0 : player.inventory[item.id];
+                //
+                player.inventory[item.id] += item.dropAmount;
+                game.pushUpdate({
+                    say: 'You aquaired ' + item.dropAmount + ' ' + drop,
+                    name: 'Server'
+                }, {
+                    client: player
+                });
+                console.log(player.name + ' acquaired ' + item.dropAmount + ' ' + drop);
+            }
+        });
+    }
+
     /**
      * Sends current list of updates to all connected clients.
      */
@@ -118,12 +141,16 @@ module.exports = function(world, rate, clients) {
         // execute commands
         while (commandList.length > 0) {
             var command = commandList.shift();
-            commands.execute('' + command.command, {
-                player: command.player,
-                clients: clients,
-                world: world
-            });
-            commandLimit[command.player.id] = null;
+            try {
+                commands.execute('' + command.command, {
+                    player: command.player,
+                    clients: clients,
+                    world: world
+                });
+                commandLimit[command.player.id] = null;
+            } catch (e) {
+                console.log(e);
+            }
         }
 
         //update all clients
