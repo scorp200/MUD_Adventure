@@ -120,6 +120,7 @@
                 },
                 success: function(x) {
                     Client.characterName = x;
+					Story.append(" " + x);
                     Story.log("<a-" + x + "->, huh? I guess that'll do.");
                     Story.space();
                     exePassword();
@@ -146,6 +147,7 @@
             check: null,
             success: function(x) {
                 Client.characterPass = x;
+				Story.append(" " + x);
                 Story.log("You now exist!");
                 Story.space();
                 command._capture = null;

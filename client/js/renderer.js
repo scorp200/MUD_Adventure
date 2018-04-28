@@ -184,7 +184,7 @@
 	}
 	
 	/**
-	 *
+	 * @param {Image} image
 	 */
 	renderer.prototype.renderImage = function( image ) {
 		
@@ -192,7 +192,6 @@
 		var image = new Image();
 		
 		image.onload = function() {
-			console.log( "image loaded!" );
 			
 			var canvas = document.createElement( "CANVAS" );
 			canvas.width = image.width;
@@ -201,7 +200,6 @@
 			ctx.drawImage( image, 0, 0 );
 			var data = ctx.getImageData( 0, 0, canvas.width, canvas.height ).data;
 			
-			console.log( data );
 			var i = 0;
 			for ( var y=0; y<that.height; y++ )
 			for ( var x=0; x<that.width; x++ ) {
@@ -221,7 +219,6 @@
 				if ( cell !== "" ) {
 					
 					cell = { draw: Cell.getPropertiesByName( cell ) };
-					console.log( cell );
 					
 					var perm = permutation[(y + (y*48) + x) % 512],
 						tiles = cell.draw.tiles.length,

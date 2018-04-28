@@ -54,12 +54,12 @@ con.onopen = function() {
 
 con.onerror = function(err) {
     console.log('Socket error: ' + err);
-    Story.log('Whoops there was a problem entering the world...');
+    Story.log('<r-Whoops there was a problem entering the world...->');
 }
 
 con.onclose = function(err) {
     console.log('socket closed');
-    Story.log('The world has been lost... refresh?');
+    Story.log('<r-The world has been lost...-> <w-refresh?->');
     socket = null;
 }
 

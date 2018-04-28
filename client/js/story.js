@@ -6,9 +6,14 @@
 		domStory = document.querySelector("#story div"),
 		lines = [];
 
-	//
+	/**
+	 * @namespace
+	 */
 	var story = {
 		
+		/**
+		 * Scripted introduction.
+		 */
 		intro: function() {
 			
 			story.space();
@@ -23,18 +28,11 @@
 			
 		},
 		
+		/**
+		 * Prints the given text on a new line.
+		 * @param {string} text
+		 */
 		log: function( text ) {
-			
-			// add colors
-			var parseTags = function( text ) {
-				text = text.split( "<1-" ).join( "<span style='color: #555555;'>" );
-				text = text.split( "<r-" ).join( "<span style='color: #ff0000;'>" );
-				text = text.split( "<g-" ).join( "<span style='color: #00ff00;'>" );
-				text = text.split( "<b-" ).join( "<span style='color: #0000ff;'>" );
-				text = text.split( "<a-" ).join( "<span style='color: #00ffff;'>" );
-				text = text.split( "->" ).join( "</span>" );
-				return text;
-			}
 			
 			// final print + scroll
 			var atBottom = (el.scrollHeight - el.scrollTop === el.clientHeight);
@@ -46,13 +44,13 @@
 				var count = Number(child.textContent.slice(-1));
 				count = (isNaN(count)) ? 2 : count + 1;
 				text += " <1-x" + count + "->";
-				child.innerHTML = parseTags(text);
+				child.innerHTML = story.parseTags(text);
 				
 			} else {
 				
 				// original text, new p tag
 				var p = document.createElement( "P" );
-				p.innerHTML = parseTags(text);
+				p.innerHTML = story.parseTags(text);
 				domStory.appendChild( p );
 				lines[domStory.children.length-1] = text;
 				
@@ -64,12 +62,64 @@
 		},
 		
 		/**
-		 *
+		 * Completely removes the previously printed line.
+		 * @param {string} text
+		 */
+		remove: function() {
+			var child = domStory.children[lines.length-1];
+			domStory.removeChild( child );
+		},
+		
+		/**
+		 * Replces the text on the previously printed line with the given text.
+		 * @param {string} text
+		 */
+		replace: function( text ) {
+			story.remove();
+			story.log( text );
+		},
+		
+		/**
+		 * Appends the given text to the previously printed line.
+		 * @param {string} text
+		 */
+		append: function( text ) {
+			var child = domStory.children[lines.length-1];
+			story.parseTags( text );
+			child.innerHTML += text;
+		},
+		
+		/**
+		 * Adds an empty line.
 		 */
 		space: function() {
 			var atBottom = (el.scrollHeight - el.scrollTop === el.clientHeight);
 			domStory.innerHTML += "<br/>";
 			if (atBottom) el.scrollTop = el.scrollHeight;
+		},
+		
+		/**
+		 * Completely removes all text from the story box.
+		 */
+		clear: function() {
+			domStory.innerHTML = "";;
+			lines = [];
+		},
+		
+		/**
+		 * Parses the tags in a given text string.
+		 * @param {string}
+		 */
+		parseTags: function( text ) {
+			var prefix = "<span style='color: ";
+			text = text.split( "<w-" ).join( prefix + "#ffffff;'>" );
+			text = text.split( "<1-" ).join( prefix + "#555555;'>" );
+			text = text.split( "<r-" ).join( prefix + "#ff0000;'>" );
+			text = text.split( "<g-" ).join( prefix + "#00ff00;'>" );
+			text = text.split( "<b-" ).join( prefix + "#0000ff;'>" );
+			text = text.split( "<a-" ).join( prefix + "#00ffff;'>" );
+			text = text.split( "->" ).join( "</span>" );
+			return text;
 		}
 		
 	}
