@@ -65,6 +65,11 @@ con.onclose = function(err) {
 
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
+	
+	// error
+    if ( data.error ) {
+        Story.log("<r-" + data.error + "->");
+    }
 
     // get the client id from the server
     if (data.id !== undefined) {
@@ -121,6 +126,7 @@ con.onmessage = function(msg) {
                     y = update.chunk.y,
                     i = y * world.width + x;
                 world.chunks[i] = update.chunk;
+				console.log(msg);
             }
         });
         Object.keys(world.chunks).forEach(function(index) {

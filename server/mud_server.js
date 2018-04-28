@@ -66,15 +66,13 @@ function startup() {
     // create world
     console.log("creating world...");
     world = new World({
-        width: 2,
-        height: 2,
+        width: 3,
+        height: 3,
         chunkWidth: 64,
         chunkHeight: 64,
-        name: settings.world_name
+        name: settings.world_name,
+		generate: true
     });
-    world.generate();
-    // I know, WTF
-    //World.world = world;
 
     //
     console.log("starting simulation...");
@@ -103,6 +101,8 @@ function startup() {
         // message from client
         conn.on('message', function(msg) {
             var data = JSON.parse(msg);
+			
+			console.log( data );
 
             // new character
             if (!clients[cid] && data.type === "new" && data.name && data.pass) {
@@ -141,9 +141,15 @@ function startup() {
                         });
                     } else {
                         console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
+						game.sendToClient(conn, {
+                            error: "FAILED LOGIN: Incorrect password!"
+                        });
                     }
                 } else {
                     console.log("FAILED LOGIN: Account with name doesn't exist: " + data.name);
+					game.sendToClient(conn, {
+						error: "FAILED LOGIN: No character with that name exists!"
+					});
                 }
             }
 

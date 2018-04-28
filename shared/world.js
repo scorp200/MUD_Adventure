@@ -22,6 +22,10 @@
         this.dataMethod = 1;
         this.chunks = {};
         this.name = opts.name || 'world';
+		
+		// generate self
+		if (opts.generate)
+			this.generate();
 
     }
 

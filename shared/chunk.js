@@ -22,7 +22,7 @@
 		//
 		this.dataMethod = opts.dataMethod || 0;
 		this.data = this.dataMethod
-			? new ArrayBuffer( this.size )
+			? new Uint8Array( this.size )
 			: {};
 
 		//
@@ -110,10 +110,13 @@
 			: new Cell({ type: type });
 	}
 
-  chunk.prototype.getCell = function(pos){
-    var index = pos.y * this.width + pos.x;
-    return Cell.getPropertiesById(this.data[index]);
-  }
+	/**
+	 *
+	 */
+	chunk.prototype.getCell = function(pos){
+		var index = pos.y * this.width + pos.x;
+		return Cell.getPropertiesById(this.data[index]);
+	}
 
 	// export
 	if ( typeof module === "undefined" )

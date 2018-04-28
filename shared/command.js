@@ -95,7 +95,8 @@
 
         if (server)
             return;
-
+		
+		x = x.split(" ");
         sendToServer({
             type: "login",
             name: x[0],
