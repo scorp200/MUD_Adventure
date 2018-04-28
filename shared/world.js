@@ -80,6 +80,15 @@
 		}
 		
 	}
+	
+	/**
+	 * Returns the chunk that the given player is currently in.
+	 * @param {object} pos
+	 */
+	world.prototype.getChunk = function(pos) {
+		var index = this.getChunkIndex(pos);
+		return this.chunks[index];
+	}
 
 	/**
 	 * Returns the ID of the chunk that the given player is currently in.

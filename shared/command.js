@@ -302,6 +302,7 @@
     function exeCut(dir, opts = {}) {
         if (server) {
             var player = opts.player;
+			var world = opts.world;
             var cutPos = Object.assign({}, player.position);
             switch (dir) {
                 case ("n"):
@@ -317,8 +318,12 @@
                     cutPos.x -= 1;
                     break;
             }
-            var index = opts.world.getChunkIndex(cutPos);
-            var cell = opts.world.chunks[index].getCell(cutPos);
+			
+            var chunk = world.getChunk(cutPos);
+			cutPos.x -= chunk.x * world.chunkWidth;
+			cutPos.y -= chunk.y * world.chunkHeight;
+            var cell = chunk.getCell(cutPos);
+			console.log( cutPos );
             if (cell.action == 'cut')
                 command.game.dropItem(player, cell);
             else
