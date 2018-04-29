@@ -66,8 +66,8 @@ function startup() {
     // create world
     console.log("creating world...");
     world = new World({
-        width: 3,
-        height: 3,
+        width: 20,
+        height: 20,
         chunkWidth: 64,
         chunkHeight: 64,
         name: settings.world_name,

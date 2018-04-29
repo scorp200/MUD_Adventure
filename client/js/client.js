@@ -76,7 +76,7 @@ con.onmessage = function(msg) {
         Story.intro();
         Client.playerID = data.id.toString();
         console.log("playerID set to " + Client.playerID);
-        autoLogin();
+        //autoLogin();
     }
 
     // get the world from the server
@@ -121,12 +121,10 @@ con.onmessage = function(msg) {
             //get new chunks
             else if (update.chunk) {
                 console.log("update.chunk");
-                console.log(update.chunk.players);
                 var x = update.chunk.x,
                     y = update.chunk.y,
                     i = y * world.width + x;
                 world.chunks[i] = update.chunk;
-				console.log(msg);
             }
         });
         Object.keys(world.chunks).forEach(function(index) {
