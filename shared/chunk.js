@@ -117,6 +117,45 @@
 		var index = pos.y * this.width + pos.x;
 		return Cell.getPropertiesById(this.data[index]);
 	}
+	
+	/**
+	 *
+	 */
+	chunk.prototype.bufferToString = function() {
+		var s;
+		s = encodeRLE(this.data);
+		s = String.fromCharCode.apply(null, s);
+		s = encodeURI(s);
+		return s;
+	}
+	
+	/**
+	 *
+	 */
+	var encodeRLE = function(x) {
+		var rle = [],
+			nVal = x[0],
+			nCount = 1;
+		for ( var n=1; n<x.length; n++ ) {
+			var c = x[n];
+			if ( c === nVal && nCount < 9 && n !== x.length-1 ) {
+				nCount += 1;
+			} else {
+				//console.log( nCount, String.fromCharCode(nVal) );
+				if ( nCount >= 3 ) {
+					rle.push(48 + nCount);
+					rle.push(nVal);
+				} else {
+					for ( var i=0; i<nCount; i++ ) {
+						rle.push(nVal);
+					}
+				}
+				nCount = 1;
+				nVal = c;
+			}
+		}
+		return rle;
+	}
 
 	// export
 	if ( typeof module === "undefined" )

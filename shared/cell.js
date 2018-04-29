@@ -73,7 +73,7 @@
 	cell.mapping = {
 
 		"grass": {
-			id: 1,
+			id: 65,
 			tiles: [
 				"-0px -0px",
 				"-24px -24px",
@@ -90,7 +90,7 @@
 		},
 
 		"drylands": {
-			id: 2,
+			id: 66,
 			tiles: [
 				"-0px -0px",
 				"-24px -24px",
@@ -109,7 +109,7 @@
 		},
 
 		"tree": {
-			id: 3,
+			id: 67,
 			tiles: [
 				"-60px -0px",
 				"-72px -0px",
@@ -125,7 +125,7 @@
 		},
 
 		"water": {
-			id: 4,
+			id: 68,
 			tiles: [
 				"-84px -180px"
 			],
@@ -135,7 +135,7 @@
 		},
 
 		"sea": {
-			id: 5,
+			id: 69,
 			desc: "Water, but too wavy to traverse safely.",
 			tiles: [
 				"-84px -180px"
@@ -146,7 +146,7 @@
 		},
 
 		"mountain": {
-			id: 6,
+			id: 70,
 			tiles: [
 				"-168px -12px",
 				"-168px -60px"
@@ -157,7 +157,7 @@
 		},
 
 		"hill": {
-			id: 7,
+			id: 71,
 			tiles: [
 				"-168px -60px",
 				"-168px -84px"
