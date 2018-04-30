@@ -64,10 +64,17 @@ function startup() {
     // create world
     console.log("creating world...");
     world = new World({
+<<<<<<< HEAD
         width: 5,
         height: 5,
         chunkWidth: 64,
         chunkHeight: 64,
+=======
+        width: 2,
+        height: 2,
+        chunkWidth: 8,
+        chunkHeight: 8,
+>>>>>>> eb35aca7c6a01cb6c7062627a9c73fbeddad7198
         name: settings.world_name,
         generate: true
     });

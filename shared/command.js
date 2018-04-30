@@ -116,9 +116,9 @@
             Story.space();
             Story.log("Please enter the name of your character:");
             command._capture = {
-                check: function(x) {
-                    return x !== "fuck";
-                },
+                check: Filter.test,//function(x) {
+                    //return x !== "fuck";
+                //},
                 success: function(x) {
                     Client.characterName = x;
                     Story.append(" " + x);
