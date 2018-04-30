@@ -224,7 +224,7 @@
 		var index = pos.y * this.width + pos.x;
 		return Cell.getPropertiesById(this.data[index]);
 	}
-	
+
 	/**
 	 *
 	 */
@@ -235,7 +235,7 @@
 		s = encodeURI(s);
 		return s;
 	}
-	
+
 	/**
 	 *
 	 */

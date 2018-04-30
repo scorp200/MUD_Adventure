@@ -60,31 +60,17 @@ function writeProperties() {
  *
  */
 function startup() {
-    var db = new PouchDB('worlds/' + settings.world_name);
+    //var db = new PouchDB('worlds/' + settings.world_name);
     // create world
     console.log("creating world...");
     world = new World({
-<<<<<<< HEAD
-        width: 5,
-        height: 5,
-        chunkWidth: 64,
-        chunkHeight: 64,
-=======
         width: 2,
         height: 2,
-        chunkWidth: 8,
-        chunkHeight: 8,
->>>>>>> eb35aca7c6a01cb6c7062627a9c73fbeddad7198
+        chunkWidth: 64,
+        chunkHeight: 64,
         name: settings.world_name,
         generate: true
     });
-    Object.keys(world.chunks).forEach(function(index) {
-    var chunk = {
-        "_id": index.toString(),
-        "chunk": world.chunks[index].bufferToString();
-    };
-    db.put(chunk);
-});
     //
     console.log("starting simulation...");
     game = new Game(world, settings.server_tick, clients);
