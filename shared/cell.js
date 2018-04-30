@@ -51,7 +51,7 @@
 			}
 		}
 	}
-	
+
 	/**
 	 *
 	 */
@@ -165,7 +165,23 @@
 			color: [
 				"#966045"
 			]
-		}
+		},
+
+		"sand": {
+			id: 72,
+			desc: "Sand, it get's everywhere!",
+			tiles: [
+				"-24px -24px",
+				"-144px -24px",
+				"-168px -24px",
+				"-84px -24px",
+				"-108px -180px",
+				"-120px -180px"
+			],
+			color: [
+				"#FFFF00"
+			]
+		},
 
 	}
 
