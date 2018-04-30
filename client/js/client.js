@@ -65,9 +65,8 @@ con.onclose = function(err) {
 
 con.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
-	
-	// error
-    if ( data.error ) {
+    // error
+    if (data.error) {
         Story.log("<r-" + data.error + "->");
     }
 
@@ -125,6 +124,10 @@ con.onmessage = function(msg) {
                     y = update.chunk.y,
                     i = y * world.width + x;
                 world.chunks[i] = update.chunk;
+<<<<<<< HEAD
+                console.log(msg);
+=======
+>>>>>>> eb35aca7c6a01cb6c7062627a9c73fbeddad7198
             }
         });
         Object.keys(world.chunks).forEach(function(index) {
