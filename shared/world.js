@@ -82,12 +82,7 @@
 			}
 			
 		}
-		
-		// CHUNK COMPRESSION TESTING!
-		for (var chunk in this.chunks) {
-			console.log(this.chunks[chunk].bufferToString());
-		}
-		
+
 	}
 	
 	/**
