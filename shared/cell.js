@@ -152,7 +152,12 @@
 				"-168px -60px"
 			],
 			color: [
-				"#aaaaaa"
+				"#888888",
+				"#999999",
+				"#aaaaaa",
+				"#bbbbbb",
+				"#cccccc",
+				"#dddddd"
 			]
 		},
 
@@ -175,6 +180,28 @@
 			],
 			color: [
 				"#FFFF00"
+			]
+		},
+		
+		"gold": {
+			id: 73,
+			desc: "Gold, it's so shiny!",
+			tiles: [
+				"-84px -120px"
+			],
+			color: [
+				"#FFBA00"
+			]
+		},
+		
+		"stone": {
+			id: 74,
+			desc: "Stone, it's hard.",
+			tiles: [
+				"-84px -120px"
+			],
+			color: [
+				"#777777"
 			]
 		},
 

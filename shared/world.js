@@ -17,8 +17,8 @@
         // get values or set defaults
         this.chunkWidth = opts.chunkWidth || 64;
         this.chunkHeight = opts.chunkHeight || 64;
-        this.width = opts.width || 1;
-        this.height = opts.height || 1;
+        this.width = opts.width || 4;
+        this.height = opts.height || 4;
         this.dataMethod = 1;
         this.chunks = {};
         this.name = opts.name || 'world';
@@ -161,7 +161,6 @@
 		canv.toBlob(function(blob) {
 			var download = document.createElement("A");
 			download.href = URL.createObjectURL(blob);
-			console.log( "duh" );
 			download.download = "test.png";
 			download.click();
 		});

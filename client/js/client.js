@@ -33,14 +33,14 @@ Client = {
 }
 
 //
-var world = new World();
+var world;// = new World();
 var renderer = new Renderer();
 renderer.createField();
-//renderer.renderImage();
+renderer.renderImage();
 
-world.generate();
-renderer.update(world, Client.x, Client.y);
-world.saveAsPNG();
+//world.generate();
+//renderer.update(world, {x:64, y:64});
+//world.saveAsPNG();
 
 //server connection
 Story.log("<1-Connecting...->");

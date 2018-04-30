@@ -56,32 +56,44 @@
 			distX = Math.pow(distX, 0.5*world.width);
 			distY = Math.pow(distY, 0.5*world.height);
 			var dist = 1-Math.max(distX, distY);
-
+			
 			//
-			var river = Math.pow(Math.abs( Simplex.getHeight( cX, cY, 1, 0.0025, 3 ) ), 2.5 );
+			var river = Math.pow(Math.abs( Simplex.getHeight( cX, cY, 1, 0.0025, 4 ) ), 2.5 );
 			var tributary = Math.pow( Math.abs( Simplex.getHeight( cX, cY, 1, 0.04, 1 ) ), 2 );
 			var moisture = river*0.8 + Simplex.getHeight( cX, cY, 1, 0.16, 1 ) * 0.2;
 
 			if ( moisture > 1.5 ) {
 				type = "drylands";
 			}
-
+			
 			// forests
 			var forest = Simplex.getHeight( cX, cY, 1, 0.24, 1 );
 			if ( forest > 0.8 || (forest > 0.4 && moisture < 0.5) ) type = "tree";
 
 			// mountain
-			var height = 1 + Simplex.getHeight( cX, cY, 1, 0.01, 1 ) * 0.6;
-				height += Simplex.getHeight( cX, cY, 1, 0.04, 1 ) * 0.2;
-				height += Simplex.getHeight( cX, cY, 1, 0.16, 1 ) * 0.2;
+			var height = 1 + Simplex.getHeight( cX, cY, 1, 0.04, 1 ) * 0.4;
+				height += Simplex.getHeight( cX, cY, 1, 0.02, 1 ) * 0.6;
+				height += Simplex.getHeight( cX, cY, 1, 0.16, 1 ) * 0.6;
 				height *= river;
 				height *= dist;
 			if (height > 1.2) type = "mountain";
+			
+			// mineral deposits
+			var mineral = Math.abs( Simplex.getHeight( cX+1000, cY+1000, 1, 0.02, 1 ) );
+			mineral += Math.abs( Simplex.getHeight( cX+937, cY+cX+379, 1, 1.0, 1 ) );
+			if (height > 1.2) mineral /= height / 2;
+			if ( mineral < 0.2 ) type = "stone";
+			
+			var mineral = Math.abs( Simplex.getHeight( cX+1000, cY+1000, 1, 0.02, 1 ) );
+			mineral += Math.abs( Simplex.getHeight( cY+937, cX+cY+379, 1, 1.0, 1 ) );
+			if (height > 1.2) mineral /= height / 1;
+			if ( mineral < 0.1 ) type = "gold";
 
 			// hills
-			height *= 0.8;
-			height += 1+Simplex.getHeight( cY, cX, 1, 0.16, 1 ) * 0.2;
-			if ( height > 1.15 && height <= 1.2 ) type = "hill";
+			//height *= 0.8;
+			height += 0.5+Simplex.getHeight( cY, cX, 1, 0.16, 1 ) * 0.5;
+			if ( height > 1.1 && height <= 1.2 ) type = "hill";
+			height += 0.8;
 
 			// rivers
 			if ( river < 0.001 ) type = "water";

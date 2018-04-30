@@ -68,8 +68,8 @@
 		var players = {};
 		
 		// center view on given location
-		var wx = position.x || 16;
-		var	wy = position.y || 16;
+		var wx = position.x || 0;
+		var	wy = position.y || 0;
 		wx -= ~~(this.width / 2);
 		wy -= ~~(this.height / 2);
 
