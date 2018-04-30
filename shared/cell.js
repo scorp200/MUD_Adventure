@@ -127,7 +127,7 @@
 		"water": {
 			id: 68,
 			tiles: [
-				"-84px -180px"
+				"-168px -84px"
 			],
 			color: [
 				"#00cccc"
@@ -138,7 +138,7 @@
 			id: 69,
 			desc: "Water, but too wavy to traverse safely.",
 			tiles: [
-				"-84px -180px"
+				"-168px -84px"
 			],
 			color: [
 				"#005555"
@@ -171,12 +171,7 @@
 			id: 72,
 			desc: "Sand, it get's everywhere!",
 			tiles: [
-				"-24px -24px",
-				"-144px -24px",
-				"-168px -24px",
-				"-84px -24px",
-				"-108px -180px",
-				"-120px -180px"
+				"-156px -36px"
 			],
 			color: [
 				"#FFFF00"

@@ -61,15 +61,15 @@
 	/**
 	 * Iterates through the map and builds a HTML string.
 	 */
-	renderer.prototype.update = function( world, position ) {
+	renderer.prototype.update = function( world, position = {} ) {
 
 		var time = Date.now();
 		var chunks = {};
 		var players = {};
 		
 		// center view on given location
-		var wx = position.x;
-		var	wy = position.y;
+		var wx = position.x || 16;
+		var	wy = position.y || 16;
 		wx -= ~~(this.width / 2);
 		wy -= ~~(this.height / 2);
 
@@ -78,27 +78,28 @@
 		for ( var x=wx; x<wx+this.width; x++ ) {
 
 			// get chunk and cell
-			var cX = ~~(x/world.chunkWidth);
-			var cY = ~~(y/world.chunkHeight);
-			var cKey = cY * world.width + cX;
-			var chunk = world.chunks[cKey];
 			var cell = undefined;
-			if ( chunk ) {
-				chunks[cKey] = chunk;
-				var cx = x - chunk.x * world.chunkWidth,
-					cy = y - chunk.y * world.chunkHeight,
-					index = cy * world.chunkWidth + cx;
-				cell = chunk.data[index];
+			if ( x>=0 && y>=0 ) {
+				var cX = ~~(x/world.chunkWidth);
+				var cY = ~~(y/world.chunkHeight);
+				var cKey = cY * world.width + cX;
+				var chunk = world.chunks[cKey];
+				if ( chunk ) {
+					chunks[cKey] = chunk;
+					var cx = x - chunk.x * world.chunkWidth,
+						cy = y - chunk.y * world.chunkHeight,
+						index = cy * world.chunkWidth + cx;
+					cell = chunk.data[index];
+				}
 			}
 
 			//
 			var cellDiv = this.field[(y-wy)*this.width+(x-wx)];
-			//console.log( cell );
 			if ( cell ) {
 				
-				if ( typeof cell === "number" )
+				if ( typeof cell === "number" ) {
 					cell = { draw: Cell.getPropertiesById( cell ) };
-				//console.log( cell );
+				}
 
 				// if valid/in bounds
 				var perm = permutation[(y + (y*48) + x) % 512],

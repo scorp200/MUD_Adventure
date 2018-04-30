@@ -90,6 +90,7 @@
 
 			height *= dist;
 			height -= (1+Simplex.getHeight( cX, cY, 1, 0.08, 1 )) * 0.2;
+			if (height <= 0.12) type = "sand";
 			if (height <= 0.1) type = "water";
 			if (height <= 0.02) type = "sea";
 
