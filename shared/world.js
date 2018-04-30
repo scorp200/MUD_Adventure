@@ -17,8 +17,8 @@
         // get values or set defaults
         this.chunkWidth = opts.chunkWidth || 64;
         this.chunkHeight = opts.chunkHeight || 64;
-        this.width = opts.width || 2;
-        this.height = opts.height || 2;
+        this.width = opts.width || 20;
+        this.height = opts.height || 20;
         this.dataMethod = 1;
         this.chunks = {};
         this.name = opts.name || 'world';
@@ -103,6 +103,65 @@
 			y = ~~(pos.y / this.chunkHeight),
 			index = y * this.width + x;
 		return index;
+	}
+	
+	/**
+	 *
+	 */
+	world.prototype.saveAsPNG = function() {
+		
+		var hexToRgb = function( hex ) {
+			var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+			return result ? {
+				r: parseInt( result[1], 16 ),
+				g: parseInt( result[2], 16 ),
+				b: parseInt( result[3], 16 )
+			} : null;
+		}
+	
+		var w = this.width * this.chunkWidth,
+			h = this.height * this.chunkHeight;
+		
+		var canv = document.createElement("CANVAS");
+		canv.width = w;
+		canv.height = h;
+		
+		var ctx = canv.getContext("2d");
+		var canvasData = ctx.getImageData(0, 0, w, h);
+		
+		//
+		var i = 0;
+		for ( var y=0; y<h; y++ )
+		for ( var x=0; x<w; x++ ) {
+			
+			var cX = ~~(x/this.chunkWidth);
+			var cY = ~~(y/this.chunkHeight);
+			var cKey = cY * this.width + cX;
+			var chunk = this.chunks[cKey];
+			var cx = x - chunk.x * this.chunkWidth,
+				cy = y - chunk.y * this.chunkHeight,
+				index = cy * this.chunkWidth + cx;
+			var cell = Cell.getPropertiesById(chunk.data[index]);
+			
+			var perm = Simplex.permutation[(y + (y*48) + x) % 512],
+				colors = cell.color.length,
+				ci = perm % colors,
+				color = hexToRgb(cell.color[ci]);
+			
+			canvasData.data[i+0] = color.r;
+			canvasData.data[i+1] = color.g;
+			canvasData.data[i+2] = color.b;
+			canvasData.data[i+3] = 255;
+			i += 4;
+		}
+		
+		ctx.putImageData(canvasData, 0, 0);
+		
+		var download = document.createElement("A");
+		download.href = canv.toDataURL("image/png");
+		download.download = "test.png";
+		download.click();
+	
 	}
 
     // export
