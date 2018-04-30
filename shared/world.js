@@ -17,8 +17,8 @@
         // get values or set defaults
         this.chunkWidth = opts.chunkWidth || 64;
         this.chunkHeight = opts.chunkHeight || 64;
-        this.width = opts.width || 20;
-        this.height = opts.height || 20;
+        this.width = opts.width || 1;
+        this.height = opts.height || 1;
         this.dataMethod = 1;
         this.chunks = {};
         this.name = opts.name || 'world';
@@ -157,10 +157,15 @@
 		
 		ctx.putImageData(canvasData, 0, 0);
 		
-		var download = document.createElement("A");
-		download.href = canv.toDataURL("image/png");
-		download.download = "test.png";
-		download.click();
+		//
+		canv.toBlob(function(blob) {
+			var download = document.createElement("A");
+			download.href = URL.createObjectURL(blob);
+			console.log( "duh" );
+			download.download = "test.png";
+			download.click();
+		});
+		
 	
 	}
 
