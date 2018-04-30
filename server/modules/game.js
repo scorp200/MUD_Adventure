@@ -69,28 +69,7 @@ module.exports = function(world, rate, clients) {
             }
             player.index = index;
             game.updateChunkPlayers(player);
-            //Set new active chunks
-            for (x = -1; x < 2; x++) {
-                for (y = -1; y < 2; y++) {
-                    var activeIndex = (chunk.y + y) * world.width + (chunk.x + x);
-                    if (world.chunks[activeIndex]) {
-                        if (!player.active[activeIndex]) {
-                            game.pushUpdate({
-                                chunk: world.chunks[activeIndex]
-                            });
-                        }
-                        player.active[activeIndex] = true;
-                    }
-                }
-            }
-
-            Object.keys(player.active).forEach(function(aIndex) {
-                var pos = [~~(player.position.x / world.chunkWidth), ~~(player.position.y / world.chunkHeight)];
-                var changePos = [world.chunks[aIndex].x, world.chunks[aIndex].y];
-                if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2) {
-                    delete player.active[aIndex];
-                }
-            });
+            setActiveChunks(player, chunk);
 
         }
 
@@ -129,6 +108,35 @@ module.exports = function(world, rate, clients) {
                     client: player
                 });
                 console.log(player.name + ' acquaired ' + item.dropAmount + ' ' + drop);
+            }
+        });
+    }
+
+    /**
+     * Set active chunks for the player and the server
+     * @param {object} player
+     */
+    var setActiveChunks = function(player, chunk) {
+        //Set new active chunks
+        for (x = -1; x < 2; x++) {
+            for (y = -1; y < 2; y++) {
+                var activeIndex = (chunk.y + y) * world.width + (chunk.x + x);
+                if (world.chunks[activeIndex]) {
+                    if (!player.active[activeIndex]) {
+                        game.pushUpdate({
+                            chunk: world.chunks[activeIndex]
+                        });
+                    }
+                    player.active[activeIndex] = true;
+                }
+            }
+        }
+
+        Object.keys(player.active).forEach(function(aIndex) {
+            var pos = [~~(player.position.x / world.chunkWidth), ~~(player.position.y / world.chunkHeight)];
+            var changePos = [world.chunks[aIndex].x, world.chunks[aIndex].y];
+            if (Math.abs(pos[0] - changePos[0]) > 2 && Math.abs(pos[1] - changePos[1]) > 2) {
+                delete player.active[aIndex];
             }
         });
     }
