@@ -95,8 +95,8 @@
 
         if (server)
             return;
-		
-		x = x.split(" ");
+
+        x = x.split(" ");
         sendToServer({
             type: "login",
             name: x[0],
@@ -121,7 +121,7 @@
                 },
                 success: function(x) {
                     Client.characterName = x;
-					Story.append(" " + x);
+                    Story.append(" " + x);
                     Story.log("<a-" + x + "->, huh? I guess that'll do.");
                     Story.space();
                     exePassword();
@@ -148,7 +148,7 @@
             check: null,
             success: function(x) {
                 Client.characterPass = x;
-				Story.append(" " + x);
+                Story.append(" " + x);
                 Story.log("You now exist!");
                 Story.space();
                 command._capture = null;
@@ -305,7 +305,7 @@
     function exeCut(dir, opts = {}) {
         if (server) {
             var player = opts.player;
-			var world = opts.world;
+            var world = opts.world;
             var cutPos = Object.assign({}, player.position);
             switch (dir) {
                 case ("n"):
@@ -321,12 +321,12 @@
                     cutPos.x -= 1;
                     break;
             }
-			
+
             var chunk = world.getChunk(cutPos);
-			cutPos.x -= chunk.x * world.chunkWidth;
-			cutPos.y -= chunk.y * world.chunkHeight;
+            cutPos.x -= chunk.x * world.chunkWidth;
+            cutPos.y -= chunk.y * world.chunkHeight;
             var cell = chunk.getCell(cutPos);
-			console.log( cutPos );
+            console.log(cutPos);
             if (cell.action == 'cut')
                 command.game.dropItem(player, cell);
             else

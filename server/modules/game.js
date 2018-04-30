@@ -113,7 +113,9 @@ module.exports = function(world, rate, clients) {
         } else
             world.chunks[opts.index || player.index].playerCount++;
     }
-
+    /**
+     * attempt to drop the items in the cell drop list.
+     */
     this.dropItem = function(player, cell) {
         cell.drop.forEach(function(drop) {
             item = items.mapping[drop];

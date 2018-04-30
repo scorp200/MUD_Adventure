@@ -1,11 +1,9 @@
 const fs = require('fs');
-const EventEmitter = require('events');
-//const reload = require('require-reload')(require);
-//const sqlite3 = require('sqlite3').verbose();
 const ws = require('ws');
 const World = require('../shared/world.js');
 const Game = require('./modules/game.js');
 const Player = require('./modules/player.js');
+const PouchDB = require('pouchdb');
 var modules = {};
 var game = null;
 var world = {};
@@ -62,22 +60,27 @@ function writeProperties() {
  *
  */
 function startup() {
-
+    var db = new PouchDB('worlds/' + settings.world_name);
     // create world
     console.log("creating world...");
     world = new World({
-        width: 3,
-        height: 3,
+        width: 5,
+        height: 5,
         chunkWidth: 64,
         chunkHeight: 64,
         name: settings.world_name,
-		generate: true
+        generate: true
     });
-
+    Object.keys(world.chunks).forEach(function(index) {
+    var chunk = {
+        "_id": index.toString(),
+        "chunk": world.chunks[index].bufferToString();
+    };
+    db.put(chunk);
+});
     //
     console.log("starting simulation...");
     game = new Game(world, settings.server_tick, clients);
-
     // create server
     console.log("creating server...");
     var server = new ws.Server({
@@ -101,8 +104,6 @@ function startup() {
         // message from client
         conn.on('message', function(msg) {
             var data = JSON.parse(msg);
-			
-			console.log( data );
 
             // new character
             if (!clients[cid] && data.type === "new" && data.name && data.pass) {
@@ -141,15 +142,15 @@ function startup() {
                         });
                     } else {
                         console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
-						game.sendToClient(conn, {
+                        game.sendToClient(conn, {
                             error: "FAILED LOGIN: Incorrect password!"
                         });
                     }
                 } else {
                     console.log("FAILED LOGIN: Account with name doesn't exist: " + data.name);
-					game.sendToClient(conn, {
-						error: "FAILED LOGIN: No character with that name exists!"
-					});
+                    game.sendToClient(conn, {
+                        error: "FAILED LOGIN: No character with that name exists!"
+                    });
                 }
             }
 
@@ -171,4 +172,6 @@ function startup() {
             console.log('Client ' + cid + ' has left.')
         });
     });
+    var usage = process.memoryUsage();
+    console.log(usage);
 }
