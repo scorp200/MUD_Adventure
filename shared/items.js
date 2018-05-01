@@ -1,6 +1,6 @@
 (function() {
     var items = function() {
-      
+
     }
 
     items.mapping = {
@@ -13,6 +13,16 @@
             id: 2,
             dropAmount: 2,
             dropRate: 1
+        },
+        "gold": {
+            id: 3,
+            dropAmount: 2,
+            dropRate: 1
+        },
+        "sapling": {
+            id: 4,
+            dropAmount: 1,
+            dropRate: 0.3
         }
     }
 

@@ -7,43 +7,19 @@
 
         _capture: null,
 
-        // stop expanding these! They easily fit on one line
-        "test": {
-            _execute: exeTest
-        },
-        "say": {
-            _execute: exeSay
-        },
-        "new": {
-            _execute: exeNew
-        },
-        "login": {
-            _execute: exeLogin
-        },
-        "move": {
-            _execute: exeMove
-        },
-        "moveChunk": {
-            _execute: exeMoveChunk
-        },
-        "cut": {
-            _execute: exeCut
-        },
-        "look": {
-            _execute: exeLook
-        },
-        "n": {
-            _execute: exeMove.bind(null, "n")
-        },
-        "e": {
-            _execute: exeMove.bind(null, "e")
-        },
-        "s": {
-            _execute: exeMove.bind(null, "s")
-        },
-        "w": {
-            _execute: exeMove.bind(null, "w")
-        }
+        // there happy? :D
+        "test": { _execute: exeTest },
+        "say": { _execute: exeSay },
+        "new": { _execute: exeNew },
+        "login": { _execute: exeLogin },
+        "move": { _execute: exeMove },
+        "movechunk": { _execute: exeMoveChunk },
+        "!": { _execute: exeAction },
+        "look": { _execute: exeLook },
+        "n": { _execute: exeMove.bind(null, "n") },
+        "e": { _execute: exeMove.bind(null, "e") },
+        "s": { _execute: exeMove.bind(null, "s") },
+        "w": { _execute: exeMove.bind(null, "w") }
 
     }
     var server = false;
@@ -56,7 +32,7 @@
 
         // if console is not waiting to capture input
         if (command._capture === null) {
-
+            cmd = cmd.toLowerCase();
             // separate root command and send anything else as a parameter
             var index = cmd.indexOf(" "),
                 first = cmd.substr(0, (index === -1) ? cmd.length : index),
@@ -116,8 +92,8 @@
             Story.space();
             Story.log("Please enter the name of your character:");
             command._capture = {
-                check: Filter.test,//function(x) {
-                    //return x !== "fuck";
+                check: Filter.test, //function(x) {
+                //return x !== "fuck";
                 //},
                 success: function(x) {
                     Client.characterName = x;
@@ -217,9 +193,7 @@
                 client: opts.client || null
             });
         } else {
-            sendToServer({
-                command: 'say ' + text
-            });
+            sendToServer({ command: 'say ' + text });
         }
     }
 
@@ -234,9 +208,7 @@
         } else {
             if (isDirection(dir)) {
                 Story.log('Moving ' + dir);
-                sendToServer({
-                    command: 'moveChunk ' + dir
-                });
+                sendToServer({ command: 'moveChunk ' + dir });
             } else {
                 Story.log('Please use n, e, s or w for direction!');
             }
@@ -273,78 +245,34 @@
                 newPos.y >= 0 &&
                 newPos.x < opts.world.width * opts.world.chunkWidth &&
                 newPos.y < opts.world.height * opts.world.chunkHeight) {
-                var oldIndex = opts.world.getChunkIndex(player.position);
+                //  var oldIndex = opts.world.getChunkIndex(player.position);
                 Object.assign(player.position, newPos);
                 var index = opts.world.getChunkIndex(newPos);
                 command.game.updatePlayerPosition(player);
                 command.game.pushUpdate({
                     move: player.id.toString(),
                     position: newPos,
-                    index: index,
-                    oldIndex: oldIndex
-                }, {
                     index: index
-                });
+                }, { index: index });
             }
 
         } else {
             if (isDirection(dir)) {
                 Story.log('Moving ' + dir);
-                sendToServer({
-                    command: 'move ' + dir
-                });
+                sendToServer({ command: 'move ' + dir });
             } else {
                 Story.log('Please use n, e, s or w for direction!');
             }
         }
     }
 
-    /**
-     * Attempt to cut in the specified direction
-     */
-    function exeCut(dir, opts = {}) {
+    function exeAction(action, opts = {}) {
         if (server) {
-            var player = opts.player;
-            var world = opts.world;
-            var cutPos = Object.assign({}, player.position);
-            switch (dir) {
-                case ("n"):
-                    cutPos.y -= 1;
-                    break;
-                case ("e"):
-                    cutPos.x += 1;
-                    break;
-                case ("s"):
-                    cutPos.y += 1;
-                    break;
-                case ("w"):
-                    cutPos.x -= 1;
-                    break;
-            }
-
-            var chunk = world.getChunk(cutPos);
-            cutPos.x -= chunk.x * world.chunkWidth;
-            cutPos.y -= chunk.y * world.chunkHeight;
-            var cell = chunk.getCell(cutPos);
-            console.log(cutPos);
-            if (cell.action == 'cut')
-                command.game.dropItem(player, cell);
-            else
-                exeSay('nothing to cut here :(', {
-                    name: 'Server',
-                    client: player
-                });
+            command.game.actions.execute(action, opts);
         } else {
-            if (isDirection(dir)) {
-                Story.log('Cutting ' + dir);
-                sendToServer({
-                    command: 'cut ' + dir
-                });
-            } else {
-                Story.log('Please use n, e, s or w for direction!');
-            }
+            //Story.log(action);
+            sendToServer({ command: '! ' + action });
         }
-
     }
 
     var isDirection = function(dir) {

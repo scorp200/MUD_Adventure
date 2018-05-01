@@ -5,11 +5,14 @@ module.exports = function(world, rate, clients) {
     var commandLimit = {};
     var commands = require('../../shared/command.js');
     var items = require('../../shared/items.js');
+    var actions = require('../modules/actions.js');
     var living = {};
 
     // cache references
     var game = this;
+    game.actions = actions;
     commands.game = this;
+    actions.game = this;
 
     /**
      * Add a player command into an array.
@@ -32,9 +35,8 @@ module.exports = function(world, rate, clients) {
             opts.client.update.push(change);
         } else
             clients.forEach(function(client) {
-                if (opts.index && !client.active[opts.index])
-                    return;
-                client.update.push(change);
+                if (client.active[opts.index])
+                    client.update.push(change);
             });
     }
 
@@ -86,11 +88,13 @@ module.exports = function(world, rate, clients) {
      * Updates player count in players or specified index
      */
     this.updateChunkPlayers = function(player, opts = {}) {
+        var index = opts.index || player.index;
         if (opts.remove) {
-            delete world.chunks[opts.index || player.index].players[player.id];
-            world.chunks[opts.index || player.index].playerCount--;
+            delete world.chunks[index].players[player.id];
+            world.chunks[index].playerCount--;
+            game.pushUpdate({ delete: player.id.toString(), index: index }, { index: index });
         } else
-            world.chunks[opts.index || player.index].playerCount++;
+            world.chunks[index].playerCount++;
     }
     /**
      * attempt to drop the items in the cell drop list.
@@ -123,9 +127,7 @@ module.exports = function(world, rate, clients) {
                 var activeIndex = (chunk.y + y) * world.width + (chunk.x + x);
                 if (world.chunks[activeIndex]) {
                     if (!player.active[activeIndex]) {
-                        game.pushUpdate({
-                            chunk: world.chunks[activeIndex]
-                        });
+                        game.pushUpdate({ chunk: world.chunks[activeIndex] }, { client: player });
                     }
                     player.active[activeIndex] = true;
                 }

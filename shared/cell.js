@@ -120,7 +120,8 @@
 			],
 			action: "cut",
 			drop: [
-				"wood"
+				"wood",
+				"sapling"
 			]
 		},
 
@@ -158,6 +159,10 @@
 				"#bbbbbb",
 				"#cccccc",
 				"#dddddd"
+			],
+			action: "mine",
+			drop: [
+				"rock"
 			]
 		},
 
@@ -182,7 +187,7 @@
 				"#FFFF00"
 			]
 		},
-		
+
 		"gold": {
 			id: 73,
 			desc: "Gold, it's so shiny!",
@@ -191,9 +196,13 @@
 			],
 			color: [
 				"#FFBA00"
+			],
+			action: "mine",
+			drop: [
+				"gold"
 			]
 		},
-		
+
 		"stone": {
 			id: 74,
 			desc: "Stone, it's hard.",
@@ -202,6 +211,10 @@
 			],
 			color: [
 				"#777777"
+			],
+			action: "mine",
+			drop: [
+				"rock"
 			]
 		},
 

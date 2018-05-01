@@ -64,8 +64,8 @@ function startup() {
     // create world
     console.log("creating world...");
     world = new World({
-        width: 10,
-        height: 10,
+        width: 5,
+        height: 5,
         chunkWidth: 64,
         chunkHeight: 64,
         name: settings.world_name,
@@ -135,15 +135,11 @@ function startup() {
                         });
                     } else {
                         console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
-                        game.sendToClient(conn, {
-                            error: "FAILED LOGIN: Incorrect password!"
-                        });
+                        game.sendToClient(conn, { error: "FAILED LOGIN: Incorrect password!" });
                     }
                 } else {
                     console.log("FAILED LOGIN: Account with name doesn't exist: " + data.name);
-                    game.sendToClient(conn, {
-                        error: "FAILED LOGIN: No character with that name exists!"
-                    });
+                    game.sendToClient(conn, { error: "FAILED LOGIN: No character with that name exists!" });
                 }
             }
 

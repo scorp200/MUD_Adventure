@@ -33,7 +33,7 @@ Client = {
 }
 
 //
-var world;// = new World();
+var world; // = new World();
 var renderer = new Renderer();
 renderer.createField();
 renderer.renderImage();
@@ -76,7 +76,7 @@ con.onmessage = function(msg) {
         Story.intro();
         Client.playerID = data.id.toString();
         console.log("playerID set to " + Client.playerID);
-        //autoLogin();
+        autoLogin();
     }
 
     // get the world from the server
@@ -96,16 +96,25 @@ con.onmessage = function(msg) {
     if (data.update) {
         data.update.forEach(function(update) {
 
-            if (update.change) {
+            if (update.error) {
+                Story.log("<a-Server:-> " + update.error);
+            }
+
+            // cell change
+            else if (update.change) {
                 console.log("update.change");
                 //cell change code goes here it should be 11/10 and no less
+            }
+
+
+            //delete player
+            else if (update.delete) {
+                delete world.chunks[update.index].players[update.delete];
             }
 
             // player moved
             else if (update.move) {
                 world.chunks[update.index].players[update.move] = update.position;
-                if (update.index != update.oldIndex)
-                    delete world.chunks[update.oldIndex].players[update.move];
                 if (update.move.toString() == Client.playerID) {
                     Client.position.x = update.position.x;
                     Client.position.y = update.position.y;
@@ -157,6 +166,6 @@ var sendToServer = function(data) {
  */
 function autoLogin() {
     Command.execute("new");
-    Command.execute("test");
+    Command.execute(Date.now());
     Command.execute("pass");
 }
