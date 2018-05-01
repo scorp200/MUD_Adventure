@@ -165,7 +165,14 @@ var sendToServer = function(data) {
  *
  */
 function autoLogin() {
+    var name = '';
+    var seed = Array.from(Date.now().toString());
+    while (name.length < 5) {
+        var char = 97 + parseInt(seed[seed.length - name.length]);
+        console.log(char);
+        name += String.fromCharCode(char);
+    }
     Command.execute("new");
-    Command.execute(Date.now());
+    Command.execute(name);
     Command.execute("pass");
 }
