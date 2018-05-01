@@ -2,7 +2,7 @@
 (function() {
 	
 	// cache DOM
-	var el = document.querySelector( "#story" ),
+	var el = document.querySelector( "#story-text" ),
 		domStory = document.querySelector("#story div"),
 		lines = [];
 

@@ -71,11 +71,13 @@
      */
     function exeHelp(x) {
 		
+		Story.space();
 		Story.log("All commands:");
 		Object.keys( command.user ).forEach( function( name ) {
 			var desc = command.user[name]._execute.desc || "NO_DESC";
 			Story.log("<g-"+name + "-> - <1-" + desc + "->");
 		});
+		Story.space();
 		
     }
 
@@ -96,6 +98,7 @@
         })
 
     }
+	
 	exeLogin.desc = "Login with your character. Takes 2 extra parameters; your username and your password.";
 
     /**
