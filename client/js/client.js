@@ -129,12 +129,12 @@ con.onmessage = function(msg) {
 
             //get new chunks
             else if (update.chunk) {
-                console.log("update.chunk");
+                //console.log("update.chunk");
                 var x = update.chunk.x,
                     y = update.chunk.y,
                     i = y * world.width + x;
                 world.chunks[i] = update.chunk;
-                console.log(msg);
+                //console.log(msg);
             }
         });
         Object.keys(world.chunks).forEach(function(index) {

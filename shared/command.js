@@ -1,29 +1,32 @@
 (function() {
-
-    // cache DOM
-    var domCommand;
+	
+	//
+	var server = typeof module !== "undefined";
+	
     //
     var command = {
 
         _capture: null,
+		game: null,
 
         // there happy? :D
-        "test": { _execute: exeTest },
-        "say": { _execute: exeSay },
-        "new": { _execute: exeNew },
-        "login": { _execute: exeLogin },
-        "move": { _execute: exeMove },
-        "movechunk": { _execute: exeMoveChunk },
-        "!": { _execute: exeAction },
-        "look": { _execute: exeLook },
-        "n": { _execute: exeMove.bind(null, "n") },
-        "e": { _execute: exeMove.bind(null, "e") },
-        "s": { _execute: exeMove.bind(null, "s") },
-        "w": { _execute: exeMove.bind(null, "w") }
+		user: {
+			"help": { _execute: exeHelp },
+			"say": { _execute: exeSay },
+			"new": { _execute: exeNew },
+			"login": { _execute: exeLogin },
+			"move": { _execute: exeMove },
+			"movechunk": { _execute: exeMoveChunk },
+			"!": { _execute: exeAction },
+			"look": { _execute: exeLook },
+			"n": { _execute: exeMove.bind(null, "n") },
+			"e": { _execute: exeMove.bind(null, "e") },
+			"s": { _execute: exeMove.bind(null, "s") },
+			"w": { _execute: exeMove.bind(null, "w") }
+		}
 
     }
-    var server = false;
-    command.game = null;
+	
     /**
      * Attemps to execute the given command.
      * @param {string} cmd The command the execute.
@@ -32,15 +35,16 @@
 
         // if console is not waiting to capture input
         if (command._capture === null) {
-            cmd = cmd.toLowerCase();
+            
             // separate root command and send anything else as a parameter
+			cmd = cmd.toLowerCase();
             var index = cmd.indexOf(" "),
                 first = cmd.substr(0, (index === -1) ? cmd.length : index),
                 theRest = cmd.replace(first + " ", "");
 
             // if command exists, execute it with remaining text as parameter
-            if (typeof command[first] !== "undefined")
-                command[first]._execute(theRest, opts);
+            if (typeof command.user[first] !== "undefined")
+                command.user[first]._execute(theRest, opts);
             else if (server)
                 console.log('Attempted to execute unknown command ' + first);
             else
@@ -61,7 +65,19 @@
         }
 
     }
-
+	
+	/**
+     * 
+     */
+    function exeHelp(x) {
+		
+		Story.log("All commands:");
+		Object.keys( command.user ).forEach( function( name ) {
+			var desc = command.user[name]._execute.desc || "NO_DESC";
+			Story.log("<g-"+name + "-> - <1-" + desc + "->");
+		});
+		
+    }
 
     /**
      * Asks for a new character name, with basic filter system.
@@ -80,7 +96,7 @@
         })
 
     }
-
+	exeLogin.desc = "Login with your character. Takes 2 extra parameters; your username and your password.";
 
     /**
      * Asks for a new character name, with basic filter system.
@@ -179,7 +195,6 @@
 
     }
 
-
     /**
      * Prints a string to the Story, with the current character's name.
      * @param {string} text The text to "say"
@@ -214,7 +229,6 @@
             }
         }
     }
-
 
     /**
      * Move to a specified direction
@@ -266,6 +280,9 @@
         }
     }
 
+	/**
+	 *
+	 */
     function exeAction(action, opts = {}) {
         if (server) {
             command.game.actions.execute(action, opts);
@@ -275,21 +292,16 @@
         }
     }
 
+	/**
+	 *
+	 */
     var isDirection = function(dir) {
         return dir == 'n' || dir == 'e' || dir == 's' || dir == 'w';
     }
-
-    /**
-     * Just a test function. If this doesn't work, something is very wrong!
-     */
-    function exeTest() {
-        Story.log("Yep, the command system seems to be working...");
-    }
-
-    // export
-    if (typeof module === "undefined") {
-        window["Command"] = command;
-        domCommand = document.querySelector("#command input");
+	
+	// Setup command input box in DOM
+	if ( !server ) {
+		var domCommand = document.querySelector("#command input");
         domCommand.onkeydown = function(e) {
 
             //wait for connection
@@ -304,8 +316,12 @@
             }
 
         }
+	}
+
+    // export
+    if (!server) {
+        window["Command"] = command;
     } else {
-        server = true;
         module.exports = command;
     }
 
