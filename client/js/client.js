@@ -95,7 +95,7 @@ con.onmessage = function(msg) {
     // received update from server
     if (data.update) {
         data.update.forEach(function(update) {
-
+            //console.log(update);
             if (update.error) {
                 Story.log("<a-Server:-> " + update.error);
             }

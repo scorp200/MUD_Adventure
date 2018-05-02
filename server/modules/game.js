@@ -5,15 +5,17 @@ module.exports = function(world, rate, clients) {
     var commandLimit = {};
     var commands = require('../../shared/command.js');
     var items = require('../../shared/items.js');
-    var actions = require('../modules/actions.js');
+    var actions = require('../../shared/actions.js');
+    var utils = require('../../shared/utils.js');
     var living = {};
 
     // cache references
     var game = this;
-    game.actions = actions;
     commands.game = this;
+    game.actions = actions;
     actions.game = this;
-
+    commands.utils = actions.utils = utils;
+    actions.init(commands);
     /**
      * Add a player command into an array.
      * @param {string} cmd
@@ -35,8 +37,9 @@ module.exports = function(world, rate, clients) {
             opts.client.update.push(change);
         } else
             clients.forEach(function(client) {
-                if (client.active[opts.index])
-                    client.update.push(change);
+                if (!isNaN(opts.index) && !client.active[opts.index])
+                    return;
+                client.update.push(change);
             });
     }
 
@@ -62,6 +65,13 @@ module.exports = function(world, rate, clients) {
         var oldIndex = player.index;
         var index = world.getChunkIndex(player.position);
         var chunk = world.chunks[index];
+
+        chunk.players[player.id] = {
+            x: player.position.x - chunk.x * world.chunkWidth,
+            y: player.position.y - chunk.y * world.chunkWidth,
+            color: player.color
+        };
+
         if (oldIndex != index) {
             if (oldIndex > -1) {
                 game.updateChunkPlayers(player, {
@@ -72,14 +82,7 @@ module.exports = function(world, rate, clients) {
             player.index = index;
             game.updateChunkPlayers(player);
             setActiveChunks(player, chunk);
-
         }
-
-        chunk.players[player.id] = {
-            x: player.position.x - chunk.x * world.chunkWidth,
-            y: player.position.y - chunk.y * world.chunkWidth,
-            color: player.color
-        };
         console.log(player.name + ' has moved to chunk ' + index + ' with position: ' + player.position.x + ',' + player.position.y);
     }
 
@@ -173,7 +176,6 @@ module.exports = function(world, rate, clients) {
             game.sendToClient(client.conn, data);
             client.update.length = 0;
         })
-
     }
 
     //
