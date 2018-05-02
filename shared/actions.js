@@ -44,20 +44,24 @@
             else
                 actions.game.pushUpdate({ error: 'nothing to ' + action + ' here :(' }, { client: player });
         } else {
-            sendToServer({ command: action + ' ' + dir });
+            if (Utils.checkDir(dir))
+                sendToServer({ command: action + ' ' + dir });
+            else {
+                Story.log('Please use n, e, s or w for direction!');
+            }
         }
     }
 
-	//
-	if (!server) {
-		actions.init(Command);
-	}
-	
-	// Export
+    //
+    if (!server) {
+        actions.init(Command);
+    }
+
+    // Export
     if (!server) {
         window["Action"] = actions;
     } else {
         module.exports = actions;
     }
-	
+
 })();
