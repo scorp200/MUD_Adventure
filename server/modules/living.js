@@ -1,5 +1,5 @@
 module.exports = function () {
-    this.update() {
+    this.update = function() {
 
     }
 }

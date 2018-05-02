@@ -1,4 +1,7 @@
-
+/**
+ * @module
+ */
+ 
 (function() {
 	
 	// cache DOM
@@ -7,12 +10,13 @@
 		lines = [];
 
 	/**
-	 * @namespace
+	 * @namespace story
 	 */
 	var story = {
 		
 		/**
 		 * Scripted introduction.
+		 * @memberof story
 		 */
 		intro: function() {
 			
@@ -29,6 +33,7 @@
 		
 		/**
 		 * Prints the given text on a new line.
+		 * @memberof story
 		 * @param {string} text
 		 */
 		log: function( text ) {
@@ -62,6 +67,7 @@
 		
 		/**
 		 * Completely removes the previously printed line.
+		 * @memberof story
 		 * @param {string} text
 		 */
 		remove: function() {
@@ -71,6 +77,7 @@
 		
 		/**
 		 * Replces the text on the previously printed line with the given text.
+		 * @memberof story
 		 * @param {string} text
 		 */
 		replace: function( text ) {
@@ -80,6 +87,7 @@
 		
 		/**
 		 * Appends the given text to the previously printed line.
+		 * @memberof story
 		 * @param {string} text
 		 */
 		append: function( text ) {
@@ -90,6 +98,7 @@
 		
 		/**
 		 * Adds an empty line.
+		 * @memberof story
 		 */
 		space: function() {
 			var atBottom = (el.scrollHeight - el.scrollTop === el.clientHeight);
@@ -99,6 +108,7 @@
 		
 		/**
 		 * Completely removes all text from the story box.
+		 * @memberof story
 		 */
 		clear: function() {
 			domStory.innerHTML = "";;
@@ -107,6 +117,7 @@
 		
 		/**
 		 * Parses the tags in a given text string.
+		 * @memberof story
 		 * @param {string}
 		 */
 		parseTags: function( text ) {

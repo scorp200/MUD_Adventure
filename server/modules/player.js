@@ -1,5 +1,13 @@
 /**
+ * @module
+ */
+
+/**
  * @constructor
+ * @param {int} cid Connection ID.
+ * @param {WebSocket} conn Actual connection.
+ * @param {string} name Name of the new player.
+ * @param {*} pos An object containing "x" and "y" properties for coordinates.
  */
 var player = function(cid, conn, name, pos = {}) {
 	this.rank = 0;
