@@ -1,29 +1,28 @@
 (function() {
 
-	//
-	var server = typeof module !== "undefined";
+    //
+    var server = typeof module !== "undefined";
 
     //
     var command = {
 
         _capture: null,
-		game: null,
+        game: null,
 
         // there happy? :D
-		user: {
-			"help": { _execute: exeHelp },
-			"say": { _execute: exeSay },
-			"new": { _execute: exeNew },
-			"login": { _execute: exeLogin },
-			"move": { _execute: exeMove },
-			"movechunk": { _execute: exeMoveChunk },
-			"!": { _execute: exeAction },
-			"look": { _execute: exeLook },
-			"n": { _execute: exeMove.bind(null, "n") },
-			"e": { _execute: exeMove.bind(null, "e") },
-			"s": { _execute: exeMove.bind(null, "s") },
-			"w": { _execute: exeMove.bind(null, "w") }
-		}
+        user: {
+            "help": { _execute: exeHelp },
+            "say": { _execute: exeSay },
+            "new": { _execute: exeNew },
+            "login": { _execute: exeLogin },
+            "move": { _execute: exeMove },
+            "movechunk": { _execute: exeMoveChunk },
+            "look": { _execute: exeLook },
+            "n": { _execute: exeMove.bind(null, "n") },
+            "e": { _execute: exeMove.bind(null, "e") },
+            "s": { _execute: exeMove.bind(null, "s") },
+            "w": { _execute: exeMove.bind(null, "w") }
+        }
 
     }
 
@@ -37,14 +36,14 @@
         if (command._capture === null) {
 
             // separate root command and send anything else as a parameter
-			cmd = cmd.toLowerCase();
+            cmd = cmd.toLowerCase();
             var index = cmd.indexOf(" "),
                 first = cmd.substr(0, (index === -1) ? cmd.length : index),
                 theRest = cmd.replace(first + " ", "");
 
             // if command exists, execute it with remaining text as parameter
             if (typeof command.user[first] !== "undefined")
-                command.user[first]._execute(theRest, opts);
+                command.user[first]._execute(theRest, opts, first);
             else if (server)
                 console.log('Attempted to execute unknown command ' + first);
             else
@@ -66,18 +65,18 @@
 
     }
 
-	/**
+    /**
      *
      */
     function exeHelp(x) {
 
-		Story.space();
-		Story.log("All commands:");
-		Object.keys( command.user ).forEach( function( name ) {
-			var desc = command.user[name]._execute.desc || "NO_DESC";
-			Story.log("<g-"+name + "-> - <1-" + desc + "->");
-		});
-		Story.space();
+        Story.space();
+        Story.log("All commands:");
+        Object.keys(command.user).forEach(function(name) {
+            var desc = command.user[name]._execute.desc || "NO_DESC";
+            Story.log("<g-" + name + "-> - <1-" + desc + "->");
+        });
+        Story.space();
 
     }
 
@@ -99,7 +98,7 @@
 
     }
 
-	exeLogin.desc = "Login with your character. Takes 2 extra parameters; your username and your password.";
+    exeLogin.desc = "Login with your character. Takes 2 extra parameters; your username and your password.";
 
     /**
      * Asks for a new character name, with basic filter system.
@@ -224,7 +223,7 @@
             opts.amount = 64;
             exeMove(dir, opts);
         } else {
-            if (isDirection(dir)) {
+            if (Utils.checkDir(dir)) {
                 Story.log('Moving ' + dir);
                 sendToServer({ command: 'moveChunk ' + dir });
             } else {
@@ -274,7 +273,8 @@
             }
 
         } else {
-            if (isDirection(dir)) {
+            console.log(Utils);
+            if (Utils.checkDir(dir)) {
                 Story.log('Moving ' + dir);
                 sendToServer({ command: 'move ' + dir });
             } else {
@@ -283,28 +283,10 @@
         }
     }
 
-	/**
-	 *
-	 */
-    function exeAction(action, opts = {}) {
-        if (server) {
-            command.game.actions.execute(action, opts);
-        } else {
-            //Story.log(action);
-            sendToServer({ command: '! ' + action });
-        }
-    }
 
-	/**
-	 *
-	 */
-    var isDirection = function(dir) {
-        return dir == 'n' || dir == 'e' || dir == 's' || dir == 'w';
-    }
-
-	// Setup command input box in DOM
-	if ( !server ) {
-		var domCommand = document.querySelector("#command input");
+    // Setup command input box in DOM
+    if (!server) {
+        var domCommand = document.querySelector("#command input");
         domCommand.onkeydown = function(e) {
 
             //wait for connection
@@ -319,7 +301,7 @@
             }
 
         }
-	}
+    }
 
     // export
     if (!server) {

@@ -5,15 +5,17 @@ module.exports = function(world, rate, clients) {
     var commandLimit = {};
     var commands = require('../../shared/command.js');
     var items = require('../../shared/items.js');
-    var actions = require('../modules/actions.js');
+    var actions = require('../../shared/actions.js');
+    var utils = require('../../shared/utils.js');
     var living = {};
 
     // cache references
     var game = this;
-    game.actions = actions;
     commands.game = this;
+    game.actions = actions;
     actions.game = this;
-
+    commands.utils = actions.utils = utils;
+    actions.init(commands);
     /**
      * Add a player command into an array.
      * @param {string} cmd
@@ -174,7 +176,6 @@ module.exports = function(world, rate, clients) {
             game.sendToClient(client.conn, data);
             client.update.length = 0;
         })
-
     }
 
     //
