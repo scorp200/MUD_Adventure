@@ -220,6 +220,7 @@
 				if ( r === 0 && g === 255 && b === 0 ) cell = "grass";
 				if ( r === 255 && g === 0 && b === 0 ) cell = "drylands";
 				if ( r === 0 && g === 0 && b === 255 ) cell = "sea";
+				if ( r === 255 && g === 255 && b === 0 ) cell = "sand";
 
 				if ( cell !== "" ) {
 					
