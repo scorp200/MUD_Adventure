@@ -1,8 +1,8 @@
 (function() {
-	
+
 	//
 	var server = typeof module !== "undefined";
-	
+
     //
     var command = {
 
@@ -26,7 +26,7 @@
 		}
 
     }
-	
+
     /**
      * Attemps to execute the given command.
      * @param {string} cmd The command the execute.
@@ -35,7 +35,7 @@
 
         // if console is not waiting to capture input
         if (command._capture === null) {
-            
+
             // separate root command and send anything else as a parameter
 			cmd = cmd.toLowerCase();
             var index = cmd.indexOf(" "),
@@ -65,12 +65,12 @@
         }
 
     }
-	
+
 	/**
-     * 
+     *
      */
     function exeHelp(x) {
-		
+
 		Story.space();
 		Story.log("All commands:");
 		Object.keys( command.user ).forEach( function( name ) {
@@ -78,7 +78,7 @@
 			Story.log("<g-"+name + "-> - <1-" + desc + "->");
 		});
 		Story.space();
-		
+
     }
 
     /**
@@ -98,7 +98,7 @@
         })
 
     }
-	
+
 	exeLogin.desc = "Login with your character. Takes 2 extra parameters; your username and your password.";
 
     /**
@@ -301,7 +301,7 @@
     var isDirection = function(dir) {
         return dir == 'n' || dir == 'e' || dir == 's' || dir == 'w';
     }
-	
+
 	// Setup command input box in DOM
 	if ( !server ) {
 		var domCommand = document.querySelector("#command input");
