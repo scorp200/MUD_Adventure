@@ -48,11 +48,16 @@
         }
     }
 
+	//
+	if (!server) {
+		actions.init(Command);
+	}
+	
+	// Export
     if (!server) {
         window["Action"] = actions;
-        actions.init(Command);
     } else {
-        if (Utils.checkDir(dir))
-            module.exports = actions;
+        module.exports = actions;
     }
+	
 })();
