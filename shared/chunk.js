@@ -147,18 +147,20 @@
 	}
 
 	/**
-	 *
+	 * Takes a chunk's data array and returns a new array.
+	 * Repeated entries are removed if there's more than 2.
+	 * Runs are represented by an entry that's char code is that of a number.
+	 * @param {array} x
 	 */
 	var encodeRLE = function(x) {
 		var rle = [],
 			nVal = x[0],
 			nCount = 1;
-		for ( var n=1; n<x.length; n++ ) {
+		for ( var n=1; n<=x.length; n++ ) {
 			var c = x[n];
 			if ( c === nVal && nCount < 9 && n !== x.length-1 ) {
 				nCount += 1;
 			} else {
-				//console.log( nCount, String.fromCharCode(nVal) );
 				if ( nCount >= 3 ) {
 					rle.push(48 + nCount);
 					rle.push(nVal);
@@ -172,6 +174,25 @@
 			}
 		}
 		return rle;
+	}
+	
+	/**
+	 *
+	 */
+	var decodeRLE = function(x) {
+		var arr = [];
+		for ( var n=0; n<x.length; n++ ) {
+			if ( x[n] >= 48 && x[n] <= 57 ) {
+				var count = x[n] - 48;
+				n += 1;
+				for ( var i=0; i<count; i++ ) {
+					arr.push(x[n]);
+				}
+			} else {
+				arr.push(x[n]);
+			}
+		}
+		return arr;
 	}
 
 	// export
