@@ -31,6 +31,10 @@
 
 		//
         this.generate( opts.world );
+		
+		// ENCODING/DECODING
+		//var encoded = this.bufferToString();
+		//this.stringToBuffer(encoded);
 
 	}
 
@@ -144,6 +148,19 @@
 		s = String.fromCharCode.apply(null, s);
 		s = encodeURI(s);
 		return s;
+	}
+	
+	/**
+	 *
+	 */
+	chunk.prototype.stringToBuffer = function(str) {
+		var decoded = decodeURI(str);
+		var arr = [];
+		for(var i=0; i<str.length; i++) {
+			var code = str.charCodeAt(i);
+			arr.push(code);
+		}
+		this.data.set(decodeRLE(arr), 0);
 	}
 
 	/**
