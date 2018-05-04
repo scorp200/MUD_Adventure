@@ -36,7 +36,9 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
         console.log('previous properties have been loaded');
         writeProperties();
     }
-    db = new PouchDB('worlds/' + settings.world_name);
+    try {
+        db = new PouchDB('worlds/' + settings.world_name);
+    } catch (err) { throw err }
     var world_settings = {};
     db.get('settings')
         .then(function(doc) {
