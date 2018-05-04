@@ -1,6 +1,7 @@
 const fs = require('fs');
 const ws = require('ws');
 const World = require('../shared/world.js');
+const logger = require('./modules/logger.js');
 const Game = require('./modules/game.js');
 const Player = require('./modules/player.js');
 const Chunk = require('../shared/chunk.js');
@@ -39,13 +40,14 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
     try {
         db = new PouchDB('worlds/' + settings.world_name);
     } catch (err) { throw err }
+    //attempt to load world, else generate a new one
     var world_settings = {};
     db.get('settings')
         .then(function(doc) {
             Object.assign(world_settings, doc.data);
             console.log('loading existing world');
+            create_world(world_settings);
         })
-        .then(function() { create_world(world_settings); })
         .catch(function(err) {
             world_settings = {
                 width: 20,
@@ -56,12 +58,9 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
             };
             console.log('creating a new world');
             db.put({ _id: 'settings', data: world_settings })
-                .catch(function(err) { console.log(err); });
+                .catch(function(err) { logger.log(err); });
             create_world(world_settings, true);
-        })
-    // start
-    //startup();
-
+        });
 });
 
 /**
@@ -81,10 +80,12 @@ function writeProperties() {
 }
 
 function create_world(world_settings, generate = false) {
+    //set generate options to auto generate world
     if (generate)
         world_settings.generate = true;
     world = new World(world_settings);
     if (generate) {
+        //generate a new world and bulk save it into the db
         console.log('writing world to disk...');
         var bulk = [];
         for (i = 0; i < (world_settings.width * world_settings.height); i++) {
@@ -96,8 +97,10 @@ function create_world(world_settings, generate = false) {
             };
             bulk.push(prop);
         }
-        db.bulkDocs(bulk).then(function() { startup() }).catch(function(err) { console.log(err) });
+        db.bulkDocs(bulk).then(function() { startup() })
+            .catch(function(err) { logger.log(err) });
     } else {
+        //load all docs and loop trough them all loading all the chunks.
         db.allDocs({ include_docs: true })
             .then(function(docs) {
                 console.log('loading world...');
@@ -111,7 +114,7 @@ function create_world(world_settings, generate = false) {
                     world.chunks[index] = chunk;
                 });
                 startup();
-            }).catch(function(err) { console.log(err); });
+            }).catch(function(err) { logger.log(err); });
     }
 }
 
@@ -128,7 +131,6 @@ function startup() {
     }, function() {
         console.log('Websockets server up on port ' + settings.server_port);
     });
-
     // handle connection
     server.on('connection', function(conn) {
 
@@ -161,7 +163,7 @@ function startup() {
                         player: clients[cid].getStats()
                     });
                 } else {
-                    console.log("There's already an account with the name: " + data.name);
+                    logger.log("There's already an account with the name: " + data.name);
                 }
             }
 

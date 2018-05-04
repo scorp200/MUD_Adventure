@@ -12,7 +12,6 @@
         return dir == 'n' || dir == 'e' || dir == 's' || dir == 'w';
     }
 
-
     // export
     if (!server) {
         window["Utils"] = utils;

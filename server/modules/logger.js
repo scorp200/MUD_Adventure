@@ -1,9 +1,10 @@
 const fs = require('fs');
-var log = '';
+var date = new Date(Date.now());
+var log = date.toLocaleString() + ' Logging has started';
 fs.readFile('./server.log', 'utf8', function(err, data) {
-    if (!err)
-        log = data;
-    else
+    if (!err) {
+        //log = data;
+    } else
         fs.writeFile("./server.log", log, 'utf8', function(err) {
             if (err) {
                 throw err;
@@ -11,6 +12,11 @@ fs.readFile('./server.log', 'utf8', function(err, data) {
         });
 });
 this.log = function(msg) {
-    logger.log(msg);
-    fs.appendFile("./server.log", Date.getDate() + ': ' + msg + '\n', 'utf8')
+    date.setTime(Date.now());
+    console.log(msg);
+    fs.appendFile("./server.log", date.toLocaleString() + ': ' + msg + '\n', 'utf8', function(err) {
+        if (err) {
+            console.log(err);
+        }
+    })
 }
