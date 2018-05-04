@@ -1,4 +1,4 @@
-module.exports = function(world, rate, clients) {
+module.exports = function(world, rate, clients, db) {
 
     //
     var commandList = [];
