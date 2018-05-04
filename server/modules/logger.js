@@ -1,6 +1,10 @@
 const fs = require('fs');
 var date = new Date(Date.now());
 var log = date.toLocaleString() + ' Logging has started';
+process.on('uncaughtException', function(err) {
+    this.log(err);
+    process.exit(0);
+});
 fs.readFile('./server.log', 'utf8', function(err, data) {
     if (!err) {
         //log = data;
