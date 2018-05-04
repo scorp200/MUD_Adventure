@@ -88,7 +88,7 @@
 			
 			// mineral deposits
 			var mineral = Math.abs( Simplex.getHeight( cX+1000, cY+1000, 1, 0.02, 1 ) );
-			mineral += Math.abs( Simplex.getHeight( cX+937, cY+cX+379, 1, 1.0, 1 ) );
+			mineral += Math.abs( Simplex.getHeight( cX+937, cY*cX+379, 1, 1.0, 1 ) );
 			if (height > 1.2) mineral /= height / 2;
 			if ( mineral < 0.2 ) type = "stone";
 			
@@ -140,7 +140,8 @@
 	}
 
 	/**
-	 *
+	 * Encodes the chunk data into a relatively small string.
+	 * @returns {string} String of encoded data.
 	 */
 	chunk.prototype.bufferToString = function() {
 		var s;
@@ -151,7 +152,9 @@
 	}
 	
 	/**
-	 *
+	 * Decodes the given string, as encoded by this.prototype.bufferToString.
+	 * Decoded data is applied directly to chunk's data buffer.
+	 * @param {string} String of encoded data.
 	 */
 	chunk.prototype.stringToBuffer = function(str) {
 		var decoded = decodeURI(str);
