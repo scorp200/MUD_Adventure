@@ -19,7 +19,7 @@
         this.y = opts.y || 0;
         this.width = opts.width || 16;
         this.height = opts.height || 16;
-		this.size = this.width * this.height;
+        this.size = this.width * this.height;
         this.players = {};
         this.playerCount = 0;
 
@@ -30,13 +30,29 @@
 			: {};
 
 		//
-        this.generate( opts.world );
+        if (opts.stringData)
+            this.stringToBuffer(opts.stringData);
+        else
+            this.generate(opts.world);
 		
 		// ENCODING/DECODING
 		//var encoded = this.bufferToString();
 		//this.stringToBuffer(encoded);
 
 	}
+	
+	/**
+	 *
+	 */
+	chunk.prototype.getProperties = function() {
+        return {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height,
+            dataMethod: this.dataMethod
+        }
+    }
 
 	/**
 	 *

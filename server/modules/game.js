@@ -1,4 +1,4 @@
-module.exports = function(world, rate, clients) {
+module.exports = function(world, rate, clients, db, logger) {
 
     //
     var commandList = [];
@@ -52,7 +52,7 @@ module.exports = function(world, rate, clients) {
         try {
             conn.send(JSON.stringify(data));
         } catch (e) {
-            console.log(e);
+            logger.log(e);
         }
     }
 
@@ -162,7 +162,7 @@ module.exports = function(world, rate, clients) {
                 });
                 commandLimit[command.player.id] = null;
             } catch (e) {
-                console.log(e);
+                logger.log(e);
             }
         }
 

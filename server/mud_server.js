@@ -1,14 +1,17 @@
 const fs = require('fs');
 const ws = require('ws');
 const World = require('../shared/world.js');
+const logger = require('./modules/logger.js');
 const Game = require('./modules/game.js');
 const Player = require('./modules/player.js');
+const Chunk = require('../shared/chunk.js');
 const PouchDB = require('pouchdb');
 var modules = {};
 var game = null;
 var world = {};
 var accounts = {};
 var clients = [];
+var db = null;
 //setup default server setings incase .properties is missing or damaged
 var settings = {
     world_name: 'world',
@@ -22,7 +25,7 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
     if (err) {
         // just write the default server.properties
         writeProperties();
-        console.log("using default server settings");
+        console.log("creating default server properties");
     } else {
         // load existing server properties
         data = data.split('\n');
@@ -31,13 +34,33 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
             if (settings[e[0]])
                 settings[e[0]] = e[1];
         });
-        console.log('previous settings have been loaded');
+        console.log('previous properties have been loaded');
         writeProperties();
     }
-
-    // start
-    startup();
-
+    try {
+        db = new PouchDB('worlds/' + settings.world_name);
+    } catch (err) { throw err }
+    //attempt to load world, else generate a new one
+    var world_settings = {};
+    db.get('settings')
+        .then(function(doc) {
+            Object.assign(world_settings, doc.data);
+            console.log('loading existing world');
+            create_world(world_settings);
+        })
+        .catch(function(err) {
+            world_settings = {
+                width: 20,
+                height: 20,
+                chunkWidth: 64,
+                chunkHeight: 64,
+                name: settings.world_name
+            };
+            console.log('creating a new world');
+            db.put({ _id: 'settings', data: world_settings })
+                .catch(function(err) { logger.log(err); });
+            create_world(world_settings, true);
+        });
 });
 
 /**
@@ -56,24 +79,51 @@ function writeProperties() {
     });
 }
 
+function create_world(world_settings, generate = false) {
+    //set generate options to auto generate world
+    if (generate)
+        world_settings.generate = true;
+    world = new World(world_settings);
+    if (generate) {
+        //generate a new world and bulk save it into the db
+        console.log('writing world to disk...');
+        var bulk = [];
+        for (i = 0; i < (world_settings.width * world_settings.height); i++) {
+            var chunk = world.chunks[i];
+            var prop = {
+                _id: i.toString(),
+                properties: chunk.getProperties(),
+                data: chunk.bufferToString()
+            };
+            bulk.push(prop);
+        }
+        db.bulkDocs(bulk).then(function() { startup() })
+            .catch(function(err) { logger.log(err) });
+    } else {
+        //load all docs and loop trough them all loading all the chunks.
+        db.allDocs({ include_docs: true })
+            .then(function(docs) {
+                console.log('loading world...');
+                docs.rows.forEach(function(data) {
+                    var doc = data.doc;
+                    if (doc._id == 'settings')
+                        return;
+                    var index = parseInt(doc._id);
+                    doc.properties.stringData = doc.data;
+                    var chunk = new Chunk(doc.properties);
+                    world.chunks[index] = chunk;
+                });
+                startup();
+            }).catch(function(err) { logger.log(err); });
+    }
+}
+
 /**
  *
  */
 function startup() {
-    //var db = new PouchDB('worlds/' + settings.world_name);
-    // create world
-    console.log("creating world...");
-    world = new World({
-        width: 5,
-        height: 5,
-        chunkWidth: 64,
-        chunkHeight: 64,
-        name: settings.world_name,
-        generate: true
-    });
-    //
     console.log("starting simulation...");
-    game = new Game(world, settings.server_tick, clients);
+    game = new Game(world, settings.server_tick, clients, db);
     // create server
     console.log("creating server...");
     var server = new ws.Server({
@@ -81,7 +131,6 @@ function startup() {
     }, function() {
         console.log('Websockets server up on port ' + settings.server_port);
     });
-
     // handle connection
     server.on('connection', function(conn) {
 
@@ -114,7 +163,7 @@ function startup() {
                         player: clients[cid].getStats()
                     });
                 } else {
-                    console.log("There's already an account with the name: " + data.name);
+                    logger.log("There's already an account with the name: " + data.name);
                 }
             }
 
