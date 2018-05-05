@@ -1,7 +1,7 @@
 /**
  * @module
  */
- 
+
 (function() {
 
 	/**
@@ -122,11 +122,12 @@
 			color: [
 				"#24A024"
 			],
-			action: "cut",
-			drop: [
-				"wood",
-				"sapling"
-			]
+      actions:{
+        "cut":{
+          drop: ["wood","sapling"],
+          change: "grass"
+        }
+      }
 		},
 
 		"water": {
@@ -164,10 +165,12 @@
 				"#cccccc",
 				"#dddddd"
 			],
-			action: "mine",
-			drop: [
-				"rock"
-			]
+      actions:{
+        "mine":{
+          drop:["rock"],
+          change:"drylands"
+        }
+      }
 		},
 
 		"hill": {
@@ -201,10 +204,12 @@
 			color: [
 				"#FFBA00"
 			],
-			action: "mine",
-			drop: [
-				"gold"
-			]
+      actions:{
+        "mine":{
+          drop:["gold"],
+          change:"drylands"
+        }
+      }
 		},
 
 		"stone": {
@@ -216,10 +221,12 @@
 			color: [
 				"#777777"
 			],
-			action: "mine",
-			drop: [
-				"rock"
-			]
+      actions:{
+        "mine":{
+          drop:["rock"],
+          change:"drylands"
+        }
+      }
 		},
 
 	}

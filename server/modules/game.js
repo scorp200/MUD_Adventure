@@ -102,8 +102,8 @@ module.exports = function(world, rate, clients, db, logger) {
     /**
      * attempt to drop the items in the cell drop list.
      */
-    this.dropItem = function(player, cell) {
-        cell.drop.forEach(function(drop) {
+    this.dropItem = function(player, drop) {
+        drop.forEach(function(drop) {
             item = items.mapping[drop];
             if (Math.random() <= item.dropRate) {
                 // not sure how to make it more streamline
@@ -145,7 +145,6 @@ module.exports = function(world, rate, clients, db, logger) {
             }
         });
     }
-
     /**
      * Sends current list of updates to all connected clients.
      */

@@ -246,20 +246,7 @@
         if (server) {
 
             var newPos = Object.assign({}, player.position);
-            switch (dir) {
-                case ("n"):
-                    newPos.y -= opts.amount || 1;
-                    break;
-                case ("e"):
-                    newPos.x += opts.amount || 1;
-                    break;
-                case ("s"):
-                    newPos.y += opts.amount || 1;
-                    break;
-                case ("w"):
-                    newPos.x -= opts.amount || 1;
-                    break;
-            }
+            command.utils.applyDir(newPos);
             //test if cell is walkable
             if (newPos.x >= 0 &&
                 newPos.y >= 0 &&

@@ -14,44 +14,45 @@
         Object.assign(commands.user, actions.user);
     }
 
-    function exeAction(dir, opts = {}, action) {
+    function exeAction(dir, opts = {}, toAction) {
         if (server) {
             var player = opts.player;
             var world = opts.world;
             var aPos = Object.assign({}, player.position);
-            switch (dir) {
-                case ("n"):
-                    aPos.y -= 1;
-                    break;
-                case ("e"):
-                    aPos.x += 1;
-                    break;
-                case ("s"):
-                    aPos.y += 1;
-                    break;
-                case ("w"):
-                    aPos.x -= 1;
-                    break;
-            }
+
+            actions.utils.applyDir(aPos, dir);
 
             var chunk = world.getChunk(aPos);
             aPos.x -= chunk.x * world.chunkWidth;
             aPos.y -= chunk.y * world.chunkHeight;
             var cell = chunk.getCell(aPos);
-            console.log(aPos);
-            if (cell.action == action)
-                actions.game.dropItem(player, cell);
-            else
-                actions.game.pushUpdate({ error: 'nothing to ' + action + ' here :(' }, { client: player });
+            if (cell.actions) {
+                var action = cell.actions[toAction];
+                action.drop ? drop(action.drop, player) : null;
+                action.change ? change(action.change, cell) : null;
+                action.required ? required(action.required, player);
+            } else
+                actions.game.pushUpdate({ error: 'nothing to ' + toAction + ' here :(' }, { client: player });
         } else {
             if (Utils.checkDir(dir))
-                sendToServer({ command: action + ' ' + dir });
+                sendToServer({ command: toAction + ' ' + dir });
             else {
                 Story.log('Please use n, e, s or w for direction!');
             }
         }
     }
 
+    function drop(drop, player) {
+        actions.game.dropItem(player, drop);
+    }
+
+    function change(change, cell) {
+        console.log(change)
+    }
+
+    function required(req, player) {
+        console.log(req);
+    }
     //
     if (!server) {
         actions.init(Command);

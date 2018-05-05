@@ -123,7 +123,7 @@ function create_world(world_settings, generate = false) {
  */
 function startup() {
     console.log("starting simulation...");
-    game = new Game(world, settings.server_tick, clients, db);
+    game = new Game(world, settings.server_tick, clients, db, logger);
     // create server
     console.log("creating server...");
     var server = new ws.Server({
