@@ -111,10 +111,16 @@ module.exports = function(world, rate, clients, db, logger) {
 		drop.forEach(function(drop) {
 			item = items.mapping[drop];
 			if (Math.random() <= item.dropRate) {
+				
 				// not sure how to make it more streamline
-				player.inventory[item.id] = player.inventory[item.id] ? 0 : player.inventory[item.id];
-				//
+				player.inventory[item.id] = player.inventory[item.id] || 0;
 				player.inventory[item.id] += item.dropAmount;
+				
+				game.pushUpdate(
+					{inventory: player.inventory},
+					{client: player}
+				);
+				
 				commands.execute('say You aquaired ' + item.dropAmount + ' ' + drop, {
 					name: 'Server',
 					client: player
@@ -158,6 +164,7 @@ module.exports = function(world, rate, clients, db, logger) {
 			}
 		});
 	}
+	
 	/**
 	 * Sends current list of updates to all connected clients.
 	 */

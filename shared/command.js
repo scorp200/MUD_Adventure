@@ -90,8 +90,8 @@
 		
 		Story.space();
 		Story.log("Inventory:");
-		Object.keys(Client.inventory).forEach(function(name) {
-			Story.log("<g-" + name + "-> - <1-" + Client.inventory[name] + "->");
+		Object.keys(Client.inventory).forEach(function(id) {
+			Story.log("<g-" + Items.getName(id) + "-> - <1-" + Client.inventory[id] + "->");
 		});
 		Story.space();
 		

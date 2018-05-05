@@ -97,9 +97,16 @@ con.onmessage = function(msg) {
     // received update from server
     if (data.update) {
         data.update.forEach(function(update) {
+			
             //console.log(update);
             if (update.error) {
                 Story.log("<a-Server:-> " + update.error);
+            }
+			
+			//delete player
+            else if (update.inventory) {
+				console.log("updating inventory", update.inventory);
+                Object.assign(Client.inventory, update.inventory);
             }
 
             // cell change

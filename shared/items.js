@@ -1,8 +1,29 @@
+/**
+ * @module Items
+ */
+
 (function() {
 	var items = function() {
 
 	}
+	
+	/**
+	 *
+	 */
+	items.getName = function(id) {
+		var keys = Object.keys(items.mapping);
+		for (var n = 0; n < keys.length; n++) {
+			var key = keys[n];
+			console.log( key, n, id );
+			if (items.mapping[key].id === Number(id)) {
+				return key;
+			}
+		}
+	}
 
+	/**
+	 * @namespace
+	 */
 	items.mapping = {
 		"wood": {
 			id: 1,
