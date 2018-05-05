@@ -103,11 +103,10 @@ con.onmessage = function(msg) {
                 Story.log("<a-Server:-> " + update.error);
             }
 			
-			//delete player
-            else if (update.inventory) {
-				console.log("updating inventory", update.inventory);
-                Object.assign(Client.inventory, update.inventory);
-            }
+			// update inventory
+			else if (update.inventory) {
+				Client.inventory = update.inventory;
+			}
 
             // cell change
             else if (update.cell) {
@@ -157,10 +156,10 @@ con.onmessage = function(msg) {
 				
             }
         });
-        Object.keys(world.chunks).forEach(function(index) {
-            var chunk = world.chunks[index];
+        //Object.keys(world.chunks).forEach(function(index) {
+            //var chunk = world.chunks[index];
             //console.log(index, chunk.playerCount);
-        });
+        //});
         renderer.update(world, Client.position);
     }
 

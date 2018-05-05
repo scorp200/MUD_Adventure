@@ -75,6 +75,8 @@
 	 *
 	 */
 	function exeHelp(x) {
+		
+		if (server) return;
 
 		Story.space();
 		Story.log("All commands:");
@@ -87,6 +89,8 @@
 	}
 	
 	function exeInventory(x) {
+		
+		if (server) return;
 		
 		Story.space();
 		Story.log("Inventory:");
@@ -103,8 +107,7 @@
 	 */
 	function exeLogin(x) {
 
-		if (server)
-			return;
+		if (server) return;
 
 		x = x.split(" ");
 		sendToServer({
@@ -123,8 +126,7 @@
 	 */
 	function exeNew() {
 		
-		if (server)
-			return;
+		if (server) return;
 		
 		Story.log("Creating a new character...");
 		Story.space();
@@ -153,8 +155,7 @@
 	 */
 	function exePassword() {
 
-		if (server)
-			return;
+		if (server) return;
 
 		Story.log("Please enter a password:");
 		command._capture = {
@@ -182,8 +183,7 @@
 	 */
 	function exeLook() {
 
-		if (server)
-			return;
+		if (server) return;
 
 		Story.log("You take a look around at your surroundings...");
 
