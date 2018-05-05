@@ -26,7 +26,7 @@
 		this.dataMethod = 1;
 		this.chunks = {};
 		this.name = opts.name || 'world';
-
+		this.changes = {};
 		// generate self
 		if (opts.generate)
 			this.generate();
@@ -47,12 +47,12 @@
 			name: this.name
 		};
 	}
-	
+
 	/**
 	 *
 	 */
 	world.prototype.blank = function() {
-		
+
 		var totalSize = this.width * this.height,
 			currentSize = 0;
 

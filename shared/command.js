@@ -27,7 +27,8 @@
 			"n": { _execute: exeMove.bind(null, "n") },
 			"e": { _execute: exeMove.bind(null, "e") },
 			"s": { _execute: exeMove.bind(null, "s") },
-			"w": { _execute: exeMove.bind(null, "w") }
+			"w": { _execute: exeMove.bind(null, "w") },
+			'save-world': { _execute: exeSave }
 		}
 
 	}
@@ -75,7 +76,7 @@
 	 *
 	 */
 	function exeHelp(x) {
-		
+
 		if (server) return;
 
 		Story.space();
@@ -87,18 +88,18 @@
 		Story.space();
 
 	}
-	
+
 	function exeInventory(x) {
-		
+
 		if (server) return;
-		
+
 		Story.space();
 		Story.log("Inventory:");
 		Object.keys(Client.inventory).forEach(function(id) {
 			Story.log("<g-" + Items.getName(id) + "-> - <1-" + Client.inventory[id] + "->");
 		});
 		Story.space();
-		
+
 	}
 
 	/**
@@ -125,9 +126,9 @@
 	 * When input is accepted, goes onto exePassword().
 	 */
 	function exeNew() {
-		
+
 		if (server) return;
-		
+
 		Story.log("Creating a new character...");
 		Story.space();
 		Story.log("Please enter the name of your character:");
@@ -262,7 +263,7 @@
 
 			var newPos = Object.assign({}, player.position);
 			command.utils.applyDir(newPos, dir);
-			
+
 			//test if cell is walkable
 			if (command.utils.positionInBounds(newPos, opts.world)) {
 				console.log("compare:", player.position, newPos);
@@ -285,6 +286,12 @@
 				Story.log('Please use n, e, s or w for direction!');
 			}
 		}
+	}
+
+	function exeSave() {
+		if (server)
+			return;
+		sendToServer({ command: 'save-world' });
 	}
 
 

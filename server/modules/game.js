@@ -18,7 +18,7 @@ module.exports = function(world, rate, clients, db, logger) {
 	crafting.game = this;
 	commands.utils = actions.utils = utils;
 	actions.init(commands);
-	
+
 	/**
 	 * Add a player command into an array.
 	 * @param {string} cmd
@@ -69,7 +69,6 @@ module.exports = function(world, rate, clients, db, logger) {
 		var oldIndex = player.index;
 		var index = world.getChunkIndex(player.position);
 		var chunk = world.chunks[index];
-
 		chunk.players[player.id] = {
 			x: player.position.x - chunk.x * world.chunkWidth,
 			y: player.position.y - chunk.y * world.chunkWidth,
@@ -103,7 +102,7 @@ module.exports = function(world, rate, clients, db, logger) {
 		} else
 			world.chunks[index].playerCount++;
 	}
-	
+
 	/**
 	 * attempt to drop the items in the cell drop list.
 	 */
@@ -111,16 +110,13 @@ module.exports = function(world, rate, clients, db, logger) {
 		drop.forEach(function(drop) {
 			item = items.mapping[drop];
 			if (Math.random() <= item.dropRate) {
-				
+
 				// not sure how to make it more streamline
 				player.inventory[item.id] = player.inventory[item.id] || 0;
 				player.inventory[item.id] += item.dropAmount;
-				
-				game.pushUpdate(
-					{inventory: player.inventory},
-					{client: player}
-				);
-				
+
+				game.pushUpdate({ inventory: player.inventory }, { client: player });
+
 				commands.execute('say You aquaired ' + item.dropAmount + ' ' + drop, {
 					name: 'Server',
 					client: player
@@ -142,14 +138,12 @@ module.exports = function(world, rate, clients, db, logger) {
 				if (world.chunks[activeIndex]) {
 					if (!player.active[activeIndex]) {
 						game.pushUpdate({
-								chunk: {
-									props: world.chunks[activeIndex].getProperties(),
-									players: world.chunks[activeIndex].players,
-									data: world.chunks[activeIndex].bufferToString()
-								}
-							},
-							{client: player}
-						);
+							chunk: {
+								props: world.chunks[activeIndex].getProperties(),
+								players: world.chunks[activeIndex].players,
+								data: world.chunks[activeIndex].bufferToString()
+							}
+						}, { client: player });
 					}
 					player.active[activeIndex] = true;
 				}
@@ -164,7 +158,7 @@ module.exports = function(world, rate, clients, db, logger) {
 			}
 		});
 	}
-	
+
 	/**
 	 * Sends current list of updates to all connected clients.
 	 */

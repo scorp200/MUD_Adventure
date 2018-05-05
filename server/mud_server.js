@@ -89,19 +89,7 @@ function create_world(world_settings, generate = false) {
 	world = new World(world_settings);
 	if (generate) {
 		//generate a new world and bulk save it into the db
-		console.log('writing world to disk...');
-		var bulk = [];
-		for (i = 0; i < (world_settings.width * world_settings.height); i++) {
-			var chunk = world.chunks[i];
-			var prop = {
-				_id: i.toString(),
-				properties: chunk.getProperties(),
-				data: chunk.bufferToString()
-			};
-			bulk.push(prop);
-		}
-		db.bulkDocs(bulk).then(function() { startup() })
-			.catch(function(err) { logger.log(err) });
+		saveTheWorld(true, true);
 	} else {
 		//load all docs and loop trough them all loading all the chunks.
 		db.allDocs({ include_docs: true })
@@ -121,12 +109,68 @@ function create_world(world_settings, generate = false) {
 	}
 }
 
+function saveTheWorld(all = true, firstTime = false) {
+	// *disclaimer no hero will actually save the world :,(
+	var now = Date.now();
+	var bulk = [];
+	var keys = [];
+	if (all) {
+		console.log('generate all');
+		Object.keys(world.chunks).forEach(function(key) { keys.push(key.toString()) });
+	} else {
+		Object.keys(world.changes).forEach(function(key) {
+			keys.push(key.toString());
+			delete world.changes[key];
+		});
+	}
+	if (firstTime) {
+		console.log('Saving world for the first time...');
+		keys.forEach(function(index) {
+			var chunk = world.chunks[parseInt(index)];
+			var prop = {
+				_id: index,
+				properties: chunk.getProperties(),
+				players: chunk.players,
+				data: chunk.bufferToString()
+			};
+			bulk.push(prop);
+		})
+		db.bulkDocs(bulk)
+			.then(function() { game ? null : startup(); })
+			.catch(function(err) { logger.log(err) });
+	} else
+		db.allDocs({ include_docs: true, keys: keys })
+		.then(function(docs) {
+			console.log('generating bulk action...');
+			docs.rows.forEach(function(data) {
+				var doc = data.doc;
+				var chunk = world.chunks[parseInt(doc._id)];
+				Object.assign(doc, {
+					properties: chunk.getProperties(),
+					players: chunk.players,
+					data: chunk.bufferToString()
+				});
+				bulk.push(doc);
+			});
+		})
+		.then(function() {
+			db.bulkDocs(bulk);
+			console.log('Bulk saving the world...');
+		})
+		.then(function() {
+			console.log('save succesfully');
+			game ? null : startup();
+		})
+		.catch(function(err) { logger.log(err); });
+}
+
 /**
  *
  */
 function startup() {
 	console.log("starting simulation...");
 	game = new Game(world, settings.server_tick, clients, db, logger);
+	setInterval(saveTheWorld.bind(true), 600000);
 	// create server
 	console.log("creating server...");
 	var server = new ws.Server({
@@ -197,6 +241,10 @@ function startup() {
 
 			// command
 			else if (clients[cid] && data.command) {
+				if (data.command == 'save-world') {
+					saveTheWorld(true);
+					return;
+				}
 				console.log(clients[cid].name + ' has send the command ' + data.command);
 				game.push({
 					player: clients[cid],
