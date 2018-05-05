@@ -6,6 +6,7 @@ module.exports = function(world, rate, clients, db, logger) {
 	var commands = require('../../shared/command.js');
 	var items = require('../../shared/items.js');
 	var actions = require('../../shared/actions.js');
+	var crafting = require('../../shared/crafting.js');
 	var utils = require('../../shared/utils.js');
 	var living = {};
 
@@ -14,6 +15,7 @@ module.exports = function(world, rate, clients, db, logger) {
 	commands.game = this;
 	game.actions = actions;
 	actions.game = this;
+	crafting.game = this;
 	commands.utils = actions.utils = utils;
 	actions.init(commands);
 	
@@ -36,12 +38,13 @@ module.exports = function(world, rate, clients, db, logger) {
 	this.pushUpdate = function(change, opts = {}) {
 		if (opts.client) {
 			opts.client.update.push(change);
-		} else
+		} else {
 			clients.forEach(function(client) {
 				if (!isNaN(opts.index) && !client.active[opts.index])
 					return;
 				client.update.push(change);
 			});
+		}
 	}
 
 	/**
@@ -132,7 +135,15 @@ module.exports = function(world, rate, clients, db, logger) {
 				var activeIndex = (chunk.y + y) * world.width + (chunk.x + x);
 				if (world.chunks[activeIndex]) {
 					if (!player.active[activeIndex]) {
-						game.pushUpdate({ chunk: world.chunks[activeIndex] }, { client: player });
+						game.pushUpdate({
+								chunk: {
+									props: world.chunks[activeIndex].getProperties(),
+									players: world.chunks[activeIndex].players,
+									data: world.chunks[activeIndex].bufferToString()
+								}
+							},
+							{client: player}
+						);
 					}
 					player.active[activeIndex] = true;
 				}

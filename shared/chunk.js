@@ -19,6 +19,8 @@
 		this.y = opts.y || 0;
 		this.width = opts.width || 16;
 		this.height = opts.height || 16;
+		this.realX = this.x * this.width;
+		this.realY = this.y * this.height;
 		this.size = this.width * this.height;
 		this.players = {};
 		this.playerCount = 0;
@@ -32,13 +34,9 @@
 		//
 		if (opts.stringData)
 			this.stringToBuffer(opts.stringData);
-		else
+		else if (opts.world)
 			this.generate(opts.world);
-
-		// ENCODING/DECODING
-		//var encoded = this.bufferToString();
-		//this.stringToBuffer(encoded);
-
+		
 	}
 
 	/**
@@ -48,6 +46,8 @@
 		return {
 			x: this.x,
 			y: this.y,
+			realX: this.realX,
+			realY: this.realY,
 			width: this.width,
 			height: this.height,
 			dataMethod: this.dataMethod

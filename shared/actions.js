@@ -29,7 +29,12 @@
 			if (cell.actions) {
 				var action = cell.actions[toAction];
 				action.drop ? drop(action.drop, player) : null;
-				action.change ? change(action.change, cell) : null;
+				action.change ? change({
+					tile: action.change,
+					chunk: chunk,
+					pos: aPos,
+					player: player
+				}) : null;
 				action.required ? required(action.required, player) : null;
 			} else
 				actions.game.pushUpdate({ error: 'nothing to ' + toAction + ' here :(' }, { client: player });
@@ -46,8 +51,18 @@
 		actions.game.dropItem(player, drop);
 	}
 
-	function change(change, cell) {
-		console.log(change)
+	function change(opts) {
+		//console.log(change, cell)
+		opts.chunk.setCell(opts.pos.x, opts.pos.y, opts.tile);
+		var x = opts.chunk.realX + opts.pos.x;
+		var y = opts.chunk.realY + opts.pos.y;
+		actions.game.pushUpdate({
+			cell: {
+				x: x,
+				y: y,
+				tile: opts.tile
+			}
+		});
 	}
 
 	function required(req, player) {

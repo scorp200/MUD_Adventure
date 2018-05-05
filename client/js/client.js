@@ -88,6 +88,7 @@ con.onmessage = function(msg) {
 
     // get the world from the server
     if (data.world !== undefined) {
+		console.log(data.world);
         world = new World(data.world);
         console.log("data.world");
         Story.log("<1-you now see the vast world->");
@@ -102,9 +103,16 @@ con.onmessage = function(msg) {
             }
 
             // cell change
-            else if (update.change) {
+            else if (update.cell) {
                 console.log("update.change");
-                //cell change code goes here it should be 11/10 and no less
+				console.log(update.cell);
+				
+                // cell change code goes here it should be 11/10 and no less
+				var chunk = world.getChunk(update.cell);
+				var cellX = update.cell.x - chunk.realX;
+				var cellY = update.cell.y - chunk.realY;
+				chunk.setCell(cellX, cellY, update.cell.tile);
+				console.log("cell changed!", cellX, cellY, update.cell.tile);
             }
 
             //delete player
@@ -129,12 +137,17 @@ con.onmessage = function(msg) {
 
             //get new chunks
             else if (update.chunk) {
-                //console.log("update.chunk");
-                var x = update.chunk.x,
-                    y = update.chunk.y,
+				
+				//
+                var x = update.chunk.props.x,
+                    y = update.chunk.props.y,
                     i = y * world.width + x;
-                world.chunks[i] = update.chunk;
-                //console.log(msg);
+					
+				//
+				Object.assign(world.chunks[i], update.chunk.props);
+				Object.assign(world.chunks[i].players, update.chunk.players);
+				world.chunks[i].stringToBuffer(update.chunk.data);
+				
             }
         });
         Object.keys(world.chunks).forEach(function(index) {

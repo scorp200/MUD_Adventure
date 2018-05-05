@@ -17,6 +17,7 @@
 		// User accessible commands
 		user: {
 			"help": { _execute: exeHelp },
+			"inventory": { _execute: exeInventory },
 			"say": { _execute: exeSay },
 			"new": { _execute: exeNew },
 			"login": { _execute: exeLogin },
@@ -83,6 +84,17 @@
 		});
 		Story.space();
 
+	}
+	
+	function exeInventory(x) {
+		
+		Story.space();
+		Story.log("Inventory:");
+		Object.keys(Client.inventory).forEach(function(name) {
+			Story.log("<g-" + name + "-> - <1-" + Client.inventory[name] + "->");
+		});
+		Story.space();
+		
 	}
 
 	/**

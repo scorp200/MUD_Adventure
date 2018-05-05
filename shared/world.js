@@ -30,6 +30,8 @@
 		// generate self
 		if (opts.generate)
 			this.generate();
+		else
+			this.blank();
 
 	}
 
@@ -44,6 +46,34 @@
 			height: this.height,
 			name: this.name
 		};
+	}
+	
+	/**
+	 *
+	 */
+	world.prototype.blank = function() {
+		
+		var totalSize = this.width * this.height,
+			currentSize = 0;
+
+		for (var x = 0; x < this.width; x++) {
+			for (var y = 0; y < this.height; y++) {
+
+				// create new chunk
+				var index = y * this.width + x;
+				this.chunks[index] = new Chunk({
+					//world: this,
+					x: x,
+					y: y,
+					width: this.chunkWidth,
+					height: this.chunkHeight,
+					dataMethod: this.dataMethod
+				});
+
+			}
+
+		}
+
 	}
 
 	/**
