@@ -7,7 +7,7 @@
 	/**
 	 * @constructor
 	 */
-	cell = function( opts = {} ) {
+	cell = function(opts = {}) {
 		this.type = opts.type || "grass";
 		this.draw = cell.mapping[this.type];
 	}
@@ -15,8 +15,8 @@
 	/**
 	 *
 	 */
-	cell.prototype.set = function( opts = {} ) {
-		Object.assign( this, opts );
+	cell.prototype.set = function(opts = {}) {
+		Object.assign(this, opts);
 		this.draw = cell.mapping[this.type];
 	}
 
@@ -26,18 +26,18 @@
 	 * @param {string} type Cell type.
 	 * @returns {int} Cell ID.
 	 */
-	cell.getID = function( type = "grass" ) {
+	cell.getID = function(type = "grass") {
 		return cell.mapping[type].id;
 	}
 
 	/**
 	 *
 	 */
-	cell.getName = function( id ) {
-		var keys = Object.keys( cell.mapping );
-		for ( var n=0; n<keys.length; n++ ) {
+	cell.getName = function(id) {
+		var keys = Object.keys(cell.mapping);
+		for (var n = 0; n < keys.length; n++) {
 			var key = keys[n];
-			if ( cell.mapping[key].id === id ) {
+			if (cell.mapping[key].id === id) {
 				return key;
 			}
 		}
@@ -46,11 +46,11 @@
 	/**
 	 *
 	 */
-	cell.getPropertiesById = function( id ) {
-		var keys = Object.keys( cell.mapping );
-		for ( var n=0; n<keys.length; n++ ) {
+	cell.getPropertiesById = function(id) {
+		var keys = Object.keys(cell.mapping);
+		for (var n = 0; n < keys.length; n++) {
 			var key = keys[n];
-			if ( cell.mapping[key].id === id ) {
+			if (cell.mapping[key].id === id) {
 				return cell.mapping[key];
 			}
 		}
@@ -59,11 +59,11 @@
 	/**
 	 *
 	 */
-	cell.getPropertiesByName = function( name ) {
-		var keys = Object.keys( cell.mapping );
-		for ( var n=0; n<keys.length; n++ ) {
+	cell.getPropertiesByName = function(name) {
+		var keys = Object.keys(cell.mapping);
+		for (var n = 0; n < keys.length; n++) {
 			var key = keys[n];
-			if ( key === name ) {
+			if (key === name) {
 				return cell.mapping[key];
 			}
 		}
@@ -122,12 +122,12 @@
 			color: [
 				"#24A024"
 			],
-      actions:{
-        "cut":{
-          drop: ["wood","sapling"],
-          change: "grass"
-        }
-      }
+			actions: {
+				"cut": {
+					drop: ["wood", "sapling"],
+					change: "grass"
+				}
+			}
 		},
 
 		"water": {
@@ -165,12 +165,12 @@
 				"#cccccc",
 				"#dddddd"
 			],
-      actions:{
-        "mine":{
-          drop:["rock"],
-          change:"drylands"
-        }
-      }
+			actions: {
+				"mine": {
+					drop: ["rock"],
+					change: "drylands"
+				}
+			}
 		},
 
 		"hill": {
@@ -204,12 +204,12 @@
 			color: [
 				"#FFBA00"
 			],
-      actions:{
-        "mine":{
-          drop:["gold"],
-          change:"drylands"
-        }
-      }
+			actions: {
+				"mine": {
+					drop: ["gold"],
+					change: "drylands"
+				}
+			}
 		},
 
 		"stone": {
@@ -221,18 +221,18 @@
 			color: [
 				"#777777"
 			],
-      actions:{
-        "mine":{
-          drop:["rock"],
-          change:"drylands"
-        }
-      }
+			actions: {
+				"mine": {
+					drop: ["rock"],
+					change: "drylands"
+				}
+			}
 		},
 
 	}
 
 	// export
-	if ( typeof module === "undefined" )
+	if (typeof module === "undefined")
 		window["Cell"] = cell
 	else
 		module.exports = cell;
