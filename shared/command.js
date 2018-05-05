@@ -12,8 +12,9 @@
 
 		_capture: null,
 		game: null,
+		utils: null,
 
-		// there happy? :D
+		// User accessible commands
 		user: {
 			"help": { _execute: exeHelp },
 			"say": { _execute: exeSay },
@@ -109,24 +110,26 @@
 	 * When input is accepted, goes onto exePassword().
 	 */
 	function exeNew() {
-		if (!server) {
-			Story.log("Creating a new character...");
-			Story.space();
-			Story.log("Please enter the name of your character:");
-			command._capture = {
-				check: Filter.test, //function(x) {
-				//return x !== "fuck";
-				//},
-				success: function(x) {
-					Client.characterName = x;
-					Story.append(" " + x);
-					Story.log("<a-" + x + "->, huh? I guess that'll do.");
-					Story.space();
-					exePassword();
-				},
-				fail: function() {
-					Story.log("Terrible name! Try again:");
-				}
+		
+		if (server)
+			return;
+		
+		Story.log("Creating a new character...");
+		Story.space();
+		Story.log("Please enter the name of your character:");
+		command._capture = {
+			check: Filter.test, //function(x) {
+			//return x !== "fuck";
+			//},
+			success: function(x) {
+				Client.characterName = x;
+				Story.append(" " + x);
+				Story.log("<a-" + x + "->, huh? I guess that'll do.");
+				Story.space();
+				exePassword();
+			},
+			fail: function() {
+				Story.log("Terrible name! Try again:");
 			}
 		}
 
@@ -246,13 +249,11 @@
 		if (server) {
 
 			var newPos = Object.assign({}, player.position);
-			command.utils.applyDir(newPos);
+			command.utils.applyDir(newPos, dir);
+			
 			//test if cell is walkable
-			if (newPos.x >= 0 &&
-				newPos.y >= 0 &&
-				newPos.x < opts.world.width * opts.world.chunkWidth &&
-				newPos.y < opts.world.height * opts.world.chunkHeight) {
-				//  var oldIndex = opts.world.getChunkIndex(player.position);
+			if (command.utils.positionInBounds(newPos, opts.world)) {
+				console.log("compare:", player.position, newPos);
 				Object.assign(player.position, newPos);
 				var index = opts.world.getChunkIndex(newPos);
 				command.game.updatePlayerPosition(player);

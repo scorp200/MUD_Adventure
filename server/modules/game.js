@@ -16,6 +16,7 @@ module.exports = function(world, rate, clients, db, logger) {
 	actions.game = this;
 	commands.utils = actions.utils = utils;
 	actions.init(commands);
+	
 	/**
 	 * Add a player command into an array.
 	 * @param {string} cmd
@@ -99,6 +100,7 @@ module.exports = function(world, rate, clients, db, logger) {
 		} else
 			world.chunks[index].playerCount++;
 	}
+	
 	/**
 	 * attempt to drop the items in the cell drop list.
 	 */

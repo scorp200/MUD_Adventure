@@ -38,7 +38,8 @@ player.prototype.getStats = function() {
 		hp: this.hp,
 		position: this.position,
 		hunger: this.hunger,
-		hydration: this.hydration
+		hydration: this.hydration,
+		inventory: this.inventory
 	}
 }
 

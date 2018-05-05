@@ -79,6 +79,9 @@ function writeProperties() {
 	});
 }
 
+/**
+ *
+ */
 function create_world(world_settings, generate = false) {
 	//set generate options to auto generate world
 	if (generate)

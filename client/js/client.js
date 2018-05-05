@@ -16,6 +16,7 @@ Client = {
         x: 80,
         y: 40
     },
+	inventory: {},
     socket: null,
 
     /**
@@ -79,7 +80,7 @@ con.onmessage = function(msg) {
         autoLogin();
     }
 
-    // get the world from the server
+    // get the client's player data
     if (data.player !== undefined) {
         Object.assign(Client, data.player);
         Client.refreshStats();
@@ -105,7 +106,6 @@ con.onmessage = function(msg) {
                 console.log("update.change");
                 //cell change code goes here it should be 11/10 and no less
             }
-
 
             //delete player
             else if (update.delete) {

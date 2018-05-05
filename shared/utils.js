@@ -2,6 +2,11 @@
 
 	var server = typeof module !== "undefined";
 	var utils = {};
+	var validDirections = [
+		"n", "e", "s", "w",
+		"north", "east", "south", "west",
+		"up", "right", "down", "left"
+	];
 
 
 	/**
@@ -9,25 +14,38 @@
 	 * @param {string} dir
 	 */
 	utils.checkDir = function(dir) {
-		return dir == 'n' || dir == 'e' || dir == 's' || dir == 'w';
+		return validDirections.includes( dir );
 	}
 
+	/**
+	 *
+	 */
 	utils.applyDir = function(pos, dir) {
 		switch (dir) {
-			case ("n"):
+			case ("n"): case ("north"): case ("up"):
 				pos.y -= 1;
 				break;
-			case ("e"):
+			case ("e"): case ("east"): case ("right"):
 				pos.x += 1;
 				break;
-			case ("s"):
+			case ("s"): case ("south"): case ("down"):
 				pos.y += 1;
 				break;
-			case ("w"):
+			case ("w"): case ("west"): case ("left"):
 				pos.x -= 1;
 				break;
 		}
 		return pos;
+	}
+	
+	/**
+	 *
+	 */
+	utils.positionInBounds = function(pos, world) {
+		return pos.x >= 0
+			&& pos.y >= 0
+			&& pos.x < world.width * world.chunkWidth
+			&& pos.y < world.height * world.chunkHeight;
 	}
 
 	// export
