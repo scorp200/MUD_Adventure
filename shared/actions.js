@@ -30,7 +30,7 @@
                 var action = cell.actions[toAction];
                 action.drop ? drop(action.drop, player) : null;
                 action.change ? change(action.change, cell) : null;
-                action.required ? required(action.required, player);
+                action.required ? required(action.required, player) : null;
             } else
                 actions.game.pushUpdate({ error: 'nothing to ' + toAction + ' here :(' }, { client: player });
         } else {
