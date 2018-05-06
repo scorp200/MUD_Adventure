@@ -43,5 +43,20 @@ player.prototype.getStats = function() {
 	}
 }
 
+player.prototype.getPlayer() {
+	var stats = this.getStats();
+	var player = {
+		rank: this.rank,
+		id: this.id
+	}
+	return Object.assign(stats, player);
+}
+
+player.prototype.setPlayer(opts = {}) {
+	Object.keys(opts).forEach(function(index) {
+		player[index] = opts[index];
+	});
+}
+
 // export
 module.exports = player;

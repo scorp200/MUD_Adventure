@@ -123,6 +123,7 @@ function saveTheWorld(all = true, firstTime = false) {
 			delete world.changes[key];
 		});
 	}
+	//keys.push('accounts');
 	if (firstTime) {
 		console.log('Saving world for the first time...');
 		keys.forEach(function(index) {
