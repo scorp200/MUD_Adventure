@@ -228,6 +228,17 @@
 				}
 			}
 		},
+		
+		"bridge": {
+			id: 75,
+			desc: "A bridge, maybe there's a troll beneath it.",
+			tiles: [
+				"-24px -132px"
+			],
+			color: [
+				"#966045"
+			]
+		},
 
 	}
 

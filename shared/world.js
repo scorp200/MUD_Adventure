@@ -27,6 +27,7 @@
 		this.chunks = {};
 		this.name = opts.name || 'world';
 		this.changes = {};
+		
 		// generate self
 		if (opts.generate)
 			this.generate();

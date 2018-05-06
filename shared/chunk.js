@@ -5,9 +5,11 @@
 (function() {
 
 	//
-	if (typeof require !== "undefined") {
+	var _server = typeof require !== "undefined";
+	if ( _server ) {
 		Simplex = require('../shared/simplex.js');
-		Cell = require('../shared/Cell.js');
+		Cell = require('../shared/cell.js');
+		Actions = require('../shared/actions.js');
 	}
 
 	/**
@@ -17,8 +19,8 @@
 
 		this.x = opts.x || 0;
 		this.y = opts.y || 0;
-		this.width = opts.width || 16;
-		this.height = opts.height || 16;
+		this.width = opts.width || 64;
+		this.height = opts.height || 64;
 		this.realX = this.x * this.width;
 		this.realY = this.y * this.height;
 		this.size = this.width * this.height;
@@ -140,11 +142,26 @@
 	/**
 	 *
 	 */
-	chunk.prototype.setCell = function(x, y, type) {
+	chunk.prototype.setCell = function(x, y, type, push=false) {
+		
+		//
 		var index = y * this.width + x;
 		this.data[index] = this.dataMethod ?
 			Cell.getID(type) :
 			new Cell({ type: type });
+		
+		// Server will add the change to push updates
+		if (_server && push) {
+			console.log( "pushing!!" );
+			Actions.game.pushUpdate({
+				cell: {
+					x: this.realX + x,
+					y: this.realY + y,
+					tile: type
+				}
+			});
+		}
+		
 	}
 
 	/**
