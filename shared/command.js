@@ -32,6 +32,12 @@
 		}
 
 	}
+	
+	// Aliases
+	command.user["n"]._execute.desc = "Alias for 'move n'";
+	command.user["e"]._execute.desc = "Alias for 'move e'";
+	command.user["s"]._execute.desc = "Alias for 'move s'";
+	command.user["w"]._execute.desc = "Alias for 'move w'";
 
 	/**
 	 * Attemps to execute the given command.
@@ -88,7 +94,12 @@
 		Story.space();
 
 	}
+	
+	exeHelp.desc = "You're looking at the help right now...";
 
+	/**
+	 *
+	 */
 	function exeInventory(x) {
 
 		if (server) return;
@@ -101,6 +112,8 @@
 		Story.space();
 
 	}
+	
+	exeInventory.desc = "Display a list of the items in your inventory.";
 
 	/**
 	 * Asks for a new character name, with basic filter system.
@@ -149,6 +162,8 @@
 		}
 
 	}
+	
+	exeNew.desc = "Create a new character.";
 
 	/**
 	 * Asks for a new character password.
@@ -216,6 +231,8 @@
 		Story.log("There's " + west + " to the west.");
 
 	}
+	
+	exeLook.desc = "Look around, take it all in.";
 
 	/**
 	 * Prints a string to the Story, with the current character's name.
@@ -233,6 +250,8 @@
 			sendToServer({ command: 'say ' + text });
 		}
 	}
+	
+	exeSay.desc = "Say something. Preferably something cool and not abusive. If you do say something abusive, well, back at you times infinity plus one!";
 
 	/**
 	 * Move to next chunk
@@ -285,7 +304,12 @@
 			}
 		}
 	}
+	
+	exeMove.desc = "Move. You can usually go n, e, s or w.";
 
+	/**
+	 *
+	 */
 	function exeSave() {
 		if (server)
 			return;
