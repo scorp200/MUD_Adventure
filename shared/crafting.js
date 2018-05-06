@@ -5,22 +5,37 @@
 	
 	// Is server?
 	var server = typeof module !== "undefined";
+	
+	if ( server ) {
+		Utils = ( server ) ? require('./utils.js') : Utils;
+		Command = ( server ) ? require('./command.js') : Command;
+	}
 
 	//
 	var crafting = {
+		
+		//
+		world: null,
+		
+		//
 		user: {
 			"craft": { _execute: exeCraft }
 		}
 	};
 	
+	//
+	console.log(Command);
+	Object.assign( Command.user, crafting.user );
+	
 	/**
 	 *
 	 */
-	function exeCraft( params ) {
+	function exeCraft( params, opts = {} ) {
 		
-		params = params.split(" ");
-		var item = params[0];
-		var dir = params[1];
+		var split = params.split( " " );
+		var item = split[0];
+		var dir = split[1];
+		var player = (server) ? opts.player : Client;
 		
 		console.log( "CRAFTING: ", item, dir );
 		
@@ -34,21 +49,37 @@
 			return;
 		}
 		
+		// Check player has all required resources
 		var map = crafting.mapping[item];
 		var consumes = map.consume;
-		
-		// Check player has all required resources
 		var hasAll = true;
 		for (var prop in consumes) {
-			if ((Client.inventory[prop] || 0) < consumes[prop]) {
+			if ((player.inventory[prop] || 0) < consumes[prop]) {
 				hasAll = false;
 			}
 		}
 		
 		// All requirements for crafting have been met
-		if (hasAll) {
-			// DO CRAFTING HERE!
+		//if ( hasAll ) {
+		if (server) {
+			
+			var pos = Object.assign({}, player.position);
+			Utils.applyDir(pos, dir);
+			var chunk = crafting.world.getChunk(pos);
+			pos.x -= chunk.realX;
+			pos.y -= chunk.realY;
+			chunk.setCell(pos.x, pos.y, map.change, true);
+			
+		} else {
+			
+			// send craft command to server
+			Story.log( "Crafting " + item );
+			sendToServer({
+				command: 'craft ' + params
+			});
+			
 		}
+		//}
 		
 	}
 	
@@ -73,11 +104,6 @@
 			}
 		}
 	
-	}
-	
-	//
-	if ( !server ) {
-		Object.assign( Command.user, crafting.user );
 	}
 	
 	// export

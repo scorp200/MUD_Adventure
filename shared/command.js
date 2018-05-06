@@ -257,16 +257,14 @@
 	 */
 	function exeMove(dir, opts = {}) {
 
-		var player = opts.player;
-
 		if (server) {
 
+			var player = opts.player;
 			var newPos = Object.assign({}, player.position);
 			command.utils.applyDir(newPos, dir);
 
 			//test if cell is walkable
 			if (command.utils.positionInBounds(newPos, opts.world)) {
-				console.log("compare:", player.position, newPos);
 				Object.assign(player.position, newPos);
 				var index = opts.world.getChunkIndex(newPos);
 				command.game.updatePlayerPosition(player);

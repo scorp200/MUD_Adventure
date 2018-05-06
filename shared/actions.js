@@ -23,8 +23,9 @@
 			actions.utils.applyDir(aPos, dir);
 
 			var chunk = world.getChunk(aPos);
-			aPos.x -= chunk.x * world.chunkWidth;
-			aPos.y -= chunk.y * world.chunkHeight;
+			aPos.x -= chunk.realX;
+			aPos.y -= chunk.realY;
+			console.log(aPos);
 			var cell = chunk.getCell(aPos);
 			if (cell.actions) {
 				var action = cell.actions[toAction];
@@ -52,17 +53,8 @@
 	}
 
 	function change(opts) {
-		//console.log(change, cell)
-		opts.chunk.setCell(opts.pos.x, opts.pos.y, opts.tile);
-		var x = opts.chunk.realX + opts.pos.x;
-		var y = opts.chunk.realY + opts.pos.y;
-		actions.game.pushUpdate({
-			cell: {
-				x: x,
-				y: y,
-				tile: opts.tile
-			}
-		});
+		console.log(opts.pos.x, opts.pos.y);
+		opts.chunk.setCell(opts.pos.x, opts.pos.y, opts.tile, true);
 	}
 
 	function required(req, player) {
