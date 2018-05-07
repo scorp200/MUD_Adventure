@@ -1,5 +1,5 @@
 /**
- * @module
+ * @module Renderer
  */
 
 (function() {
@@ -169,7 +169,7 @@
 					cellIndex = cellY * chunk.width + cellY,
 					cell = chunk.data[cellIndex];
 				
-				if ( Client.playerID === key ) {
+				if ( Client.playerID === Number(key) ) {
 					tile = "-24px -0px";
 					color = Client.color;
 				} else {
