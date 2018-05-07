@@ -20,6 +20,13 @@
 			}
 		}
 	}
+	
+	/**
+	 *
+	 */
+	items.getID = function(name) {
+		return items.mapping[name].id;
+	}
 
 	/**
 	 * @namespace

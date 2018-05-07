@@ -7,8 +7,9 @@
 	var server = typeof module !== "undefined";
 
 	if ( server ) {
-		Utils = ( server ) ? require('./utils.js') : Utils;
-		Command = ( server ) ? require('./command.js') : Command;
+		Utils = require('./utils.js');
+		Command = require('./command.js');
+		Items = require('./items.js');
 	}
 
 	//
@@ -55,9 +56,8 @@
 		var consumes = map.consume;
 		var hasAll = true;
 		for (var prop in consumes) {
-			var itemName = Items.getName(prop);
-			console.log(prop, itemName, consumes[prop])
-			if ((itemName || 0) < consumes[prop]) {
+			var itemID = Items.getID(prop);
+			if ((player.inventory[itemID] || 0) < consumes[prop]) {
 				hasAll = false;
 			}
 		}
