@@ -97,35 +97,12 @@ function create_world(world_settings, generate = false) {
 			.then(function(docs) {
 				console.log('loading world...');
 				var now = Date.now();
-				docs.rows.forEach(function(data) {
-					var doc = data.doc;
-					//ignore settings doc
-					if (doc._id == 'settings')
-						return;
-					else if (doc._id == 'accounts') {
-						var now = Date.now();
-						for (var i = 0, keys = Object.keys(doc.accounts); i < keys.length; i++) {
-							var acc = new Player(0, 0, '')
-							var key = keys[i];
-							acc.setPlayer(doc.accounts[key]);
-							accounts[key] = acc;
-						}
-					} else {
-						var index = parseInt(doc._id);
-						doc.properties.stringData = doc.data;
-						var chunk = new Chunk(doc.properties);
-						world.chunks[index] = chunk;
-					}
-				});
-				// MAGIC CODE THAT CAUSES NODEJS EXIST WITHOUT ERRORS
-				// LIKE WHAT ON EARTH IS GOING ON?
-				/*for (var i = 0; i < docs.total_rows; i++) {
+				for (var i = 0; i < docs.rows.length; i++) {
 					var doc = docs.rows[i].doc;
 					//ignore settings doc
 					if (doc._id == 'settings')
-						return;
+						continue;
 					else if (doc._id == 'accounts') {
-						var now = Date.now();
 						for (var y = 0, keys = Object.keys(doc.accounts); y < keys.length; y++) {
 							var acc = new Player(0, 0, '')
 							var key = keys[y];
@@ -138,7 +115,7 @@ function create_world(world_settings, generate = false) {
 						var chunk = new Chunk(doc.properties);
 						world.chunks[index] = chunk;
 					}
-				}*/
+				}
 				console.log(Date.now() - now);
 				startup();
 			}).catch(function(err) { logger.log(err); });
