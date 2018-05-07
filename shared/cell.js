@@ -78,6 +78,7 @@
 
 		"grass": {
 			id: 65,
+			canMove: true,
 			tiles: [
 				"-0px -0px",
 				"-24px -24px",
@@ -95,6 +96,7 @@
 
 		"drylands": {
 			id: 66,
+			canMove: true,
 			tiles: [
 				"-0px -0px",
 				"-24px -24px",
@@ -114,6 +116,7 @@
 
 		"tree": {
 			id: 67,
+			canMove: false,
 			tiles: [
 				"-60px -0px",
 				"-72px -0px",
@@ -132,6 +135,7 @@
 
 		"water": {
 			id: 68,
+			canMove: false,
 			tiles: [
 				"-168px -84px"
 			],
@@ -142,6 +146,7 @@
 
 		"sea": {
 			id: 69,
+			canMove: false,
 			desc: "Water, but too wavy to traverse safely.",
 			tiles: [
 				"-168px -84px"
@@ -153,6 +158,7 @@
 
 		"mountain": {
 			id: 70,
+			canMove: false,
 			tiles: [
 				"-168px -12px",
 				"-168px -60px"
@@ -175,6 +181,7 @@
 
 		"hill": {
 			id: 71,
+			canMove: true,
 			tiles: [
 				"-168px -60px",
 				"-168px -84px"
@@ -186,6 +193,7 @@
 
 		"sand": {
 			id: 72,
+			canMove: true,
 			desc: "Sand, it get's everywhere!",
 			tiles: [
 				"-156px -36px"
@@ -197,6 +205,7 @@
 
 		"gold": {
 			id: 73,
+			canMove: false,
 			desc: "Gold, it's so shiny!",
 			tiles: [
 				"-84px -120px"
@@ -214,6 +223,7 @@
 
 		"stone": {
 			id: 74,
+			canMove: false,
 			desc: "Stone, it's hard.",
 			tiles: [
 				"-84px -120px"
@@ -231,6 +241,7 @@
 		
 		"bridge": {
 			id: 75,
+			canMove: true,
 			desc: "A bridge, maybe there's a troll beneath it.",
 			tiles: [
 				"-24px -132px"

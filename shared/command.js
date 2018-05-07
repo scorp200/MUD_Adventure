@@ -283,10 +283,19 @@
 			command.utils.applyDir(newPos, dir, opts.amount);
 
 			//test if cell is walkable
-			if (command.utils.positionInBounds(newPos, opts.world)) {
+			var chunk = opts.world.getChunk(newPos.x, newPos.y);
+			var cell = chunk.getCell({
+				x: newPos.x-chunk.realX,
+				y: newPos.y-chunk.realY
+			});
+			
+			if (command.utils.positionInBounds(newPos, opts.world)
+			&&  cell.canMove) {
 				Object.assign(player.position, newPos);
 				var index = opts.world.getChunkIndex(newPos);
 				command.game.updatePlayerPosition(player);
+			} else {
+				console.log("cannot move to this location!");
 			}
 
 		} else {
