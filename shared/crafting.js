@@ -21,10 +21,10 @@
 		user: {
 			"craft": { _execute: exeCraft }
 		}
+		
 	};
 	
 	//
-	console.log(Command);
 	Object.assign( Command.user, crafting.user );
 	
 	/**
@@ -72,11 +72,20 @@
 			
 		} else {
 			
-			// send craft command to server
-			Story.log( "Crafting " + item );
-			sendToServer({
-				command: 'craft ' + params
-			});
+			if ( hasAll ) {
+				
+				// send craft command to server
+				Story.log( "Crafting " + item );
+				sendToServer({
+					command: 'craft ' + params
+				});
+				
+			} else {
+				
+				//
+				Story.log("Unablke to craft item, you are missing requirements!");
+				
+			}
 			
 		}
 		//}
