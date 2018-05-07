@@ -142,7 +142,6 @@ function saveTheWorld(all = true, firstTime = false) {
 				var prop = {
 					_id: index,
 					properties: chunk.getProperties(),
-					players: chunk.players,
 					data: chunk.bufferToString()
 				};
 			}
@@ -220,11 +219,11 @@ function startup() {
 					account.pass = data.pass;
 					clients[cid].account = account;
 					accounts[account.name] = account;
-					game.updatePlayerPosition(account);
 					game.sendToClient(conn, {
 						world: world.getProperties(),
 						player: account.getStats()
 					});
+					game.updatePlayerPosition(account);
 				} else {
 					logger.log("There's already an account with the name: " + data.name);
 					game.sendToClient(conn, { error: "Account with that name already exists!" })
@@ -234,7 +233,6 @@ function startup() {
 			// login character
 			else if (!account && data.type === "login" && data.name && data.pass) {
 				account = accounts[data.name];
-				console.log(account);
 				account.cid = cid;
 				if (account) {
 					if (account.pass === data.pass) {
@@ -242,11 +240,11 @@ function startup() {
 						clients[cid].account = account;
 						account.active = {};
 						account.index = -1;
-						game.updatePlayerPosition(account);
 						game.sendToClient(conn, {
 							world: world.getProperties(),
 							player: account.getStats()
 						});
+						game.updatePlayerPosition(account);
 					} else {
 						console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
 						game.sendToClient(conn, { error: "FAILED LOGIN: Incorrect password!" });
@@ -271,7 +269,7 @@ function startup() {
 			}
 		});
 		conn.on('close', function() {
-			if (clients[cid])
+			if (clients[cid] && account)
 				game.updateChunkPlayers(account, {
 					remove: true
 				})

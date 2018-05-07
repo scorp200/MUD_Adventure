@@ -75,7 +75,7 @@ con.onmessage = function(msg) {
 	// get the client id from the server
 	if (data.cid !== undefined) {
 		Story.intro();
-		Client.clientID = data.id.toString();
+		Client.clientID = data.cid.toString();
 		console.log("Client ID set to " + Client.clientID);
 		//autoLogin();
 	}

@@ -6,7 +6,7 @@
 
 	//
 	var _server = typeof require !== "undefined";
-	if ( _server ) {
+	if (_server) {
 		Simplex = require('../shared/simplex.js');
 		Cell = require('../shared/cell.js');
 		Actions = require('../shared/actions.js');
@@ -30,8 +30,7 @@
 		//
 		this.dataMethod = opts.dataMethod || 0;
 		this.data = this.dataMethod ?
-			new Uint8Array(this.size) :
-			{};
+			new Uint8Array(this.size) : {};
 
 		//
 		if (opts.stringData)
@@ -142,7 +141,7 @@
 	/**
 	 *
 	 */
-	chunk.prototype.setCell = function(x, y, type, push=false) {
+	chunk.prototype.setCell = function(x, y, type, push = false) {
 
 		//
 		var index = y * this.width + x;

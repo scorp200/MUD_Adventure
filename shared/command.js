@@ -287,11 +287,6 @@
 				Object.assign(player.position, newPos);
 				var index = opts.world.getChunkIndex(newPos);
 				command.game.updatePlayerPosition(player);
-				command.game.pushUpdate({
-					move: player.id.toString(),
-					position: newPos,
-					index: index
-				}, { index: index });
 			}
 
 		} else {

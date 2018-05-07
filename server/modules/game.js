@@ -71,11 +71,18 @@ module.exports = function(world, rate, clients, db, logger) {
 		var oldIndex = player.index;
 		var index = world.getChunkIndex(player.position);
 		var chunk = world.chunks[index];
+
 		chunk.players[player.id] = {
 			x: player.position.x - chunk.x * world.chunkWidth,
 			y: player.position.y - chunk.y * world.chunkWidth,
 			color: player.color
 		};
+
+		game.pushUpdate({
+			move: player.id.toString(),
+			position: player.position,
+			index: index
+		}, { index: index });
 
 		if (oldIndex != index) {
 			if (oldIndex > -1) {
@@ -101,8 +108,10 @@ module.exports = function(world, rate, clients, db, logger) {
 			delete world.chunks[index].players[player.id];
 			world.chunks[index].playerCount--;
 			game.pushUpdate({ delete: player.id.toString(), index: index }, { index: index });
-		} else
+		} else {
 			world.chunks[index].playerCount++;
+
+		}
 	}
 
 	/**
