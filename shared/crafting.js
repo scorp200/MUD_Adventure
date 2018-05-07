@@ -55,7 +55,9 @@
 		var consumes = map.consume;
 		var hasAll = true;
 		for (var prop in consumes) {
-			if ((player.inventory[prop] || 0) < consumes[prop]) {
+			var itemName = Items.getName(prop);
+			console.log(prop, itemName, consumes[prop])
+			if ((itemName || 0) < consumes[prop]) {
 				hasAll = false;
 			}
 		}
