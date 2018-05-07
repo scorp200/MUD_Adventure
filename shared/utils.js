@@ -20,7 +20,7 @@
 	/**
 	 *
 	 */
-	utils.applyDir = function(pos, dir, amount = {}) {
+	utils.applyDir = function(pos, dir, amount = null) {
 		switch (dir) {
 			case ("n"): case ("north"): case ("up"):
 				pos.y -= amount || 1;

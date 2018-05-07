@@ -40,6 +40,7 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
 	try {
 		db = new PouchDB('worlds/' + settings.world_name);
 	} catch (err) { throw err }
+
 	//attempt to load world, else generate a new one
 	var world_settings = {};
 	db.get('settings')
@@ -80,7 +81,7 @@ function writeProperties() {
 }
 
 /**
- *
+ * Load existing world if any, else generate a new world.
  */
 function create_world(world_settings, generate = false) {
 	//set generate options to auto generate world
@@ -88,23 +89,27 @@ function create_world(world_settings, generate = false) {
 		world_settings.generate = true;
 	world = new World(world_settings);
 	if (generate) {
-		//generate a new world and bulk save it into the db
+		//save the newly generated world
 		saveTheWorld(true, true);
 	} else {
-		//load all docs and loop trough them all loading all the chunks.
+		//load all docs and loop through them all loading all the chunks.
 		db.allDocs({ include_docs: true })
 			.then(function(docs) {
 				console.log('loading world...');
+				var now = Date.now();
 				docs.rows.forEach(function(data) {
 					var doc = data.doc;
+					//ignore settings doc
 					if (doc._id == 'settings')
 						return;
 					else if (doc._id == 'accounts') {
-						Object.keys(doc.accounts).forEach(function(key) {
+						var now = Date.now();
+						for (var i = 0, keys = Object.keys(doc.accounts); i < keys.length; i++) {
 							var acc = new Player(0, 0, '')
+							var key = keys[i];
 							acc.setPlayer(doc.accounts[key]);
 							accounts[key] = acc;
-						});
+						}
 					} else {
 						var index = parseInt(doc._id);
 						doc.properties.stringData = doc.data;
@@ -112,6 +117,29 @@ function create_world(world_settings, generate = false) {
 						world.chunks[index] = chunk;
 					}
 				});
+				// MAGIC CODE THAT CAUSES NODEJS EXIST WITHOUT ERRORS
+				// LIKE WHAT ON EARTH IS GOING ON?
+				/*for (var i = 0; i < docs.total_rows; i++) {
+					var doc = docs.rows[i].doc;
+					//ignore settings doc
+					if (doc._id == 'settings')
+						return;
+					else if (doc._id == 'accounts') {
+						var now = Date.now();
+						for (var y = 0, keys = Object.keys(doc.accounts); y < keys.length; y++) {
+							var acc = new Player(0, 0, '')
+							var key = keys[y];
+							acc.setPlayer(doc.accounts[key]);
+							accounts[key] = acc;
+						}
+					} else {
+						var index = parseInt(doc._id);
+						doc.properties.stringData = doc.data;
+						var chunk = new Chunk(doc.properties);
+						world.chunks[index] = chunk;
+					}
+				}*/
+				console.log(Date.now() - now);
 				startup();
 			}).catch(function(err) { logger.log(err); });
 	}
@@ -122,15 +150,19 @@ function saveTheWorld(all = true, firstTime = false) {
 	var now = Date.now();
 	var bulk = [];
 	var keys = [];
+	var keyList = [];
 	if (all) {
 		console.log('generate all');
-		Object.keys(world.chunks).forEach(function(key) { keys.push(key.toString()) });
+		keyList = Object.keys(world.chunks);
 	} else {
-		Object.keys(world.changes).forEach(function(key) {
-			keys.push(key.toString());
-			delete world.changes[key];
-		});
+		keyList = Object.keys(world.changes);
+		world.changes = {};
 	}
+	//toString() all the indexes for allDocs
+	for (var i = 0; i < keyList.length; i++) {
+		keys.push(keyList[i].toString());
+	}
+
 	keys.push('accounts');
 	if (firstTime) {
 		console.log('Saving world for the first time...');
