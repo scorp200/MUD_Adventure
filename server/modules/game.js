@@ -191,8 +191,10 @@ module.exports = function(world, rate, clients, db, logger) {
 		}
 
 		//update all players
-		clients.forEach(function(client) {
-			var player = client.account;
+		for (var i = 0; i < clients.length; i++) {
+			if (!clients[i])
+				continue;
+			var player = clients[i].account;
 			if (!player || player.update.length === 0)
 				return;
 			var data = {
@@ -200,7 +202,10 @@ module.exports = function(world, rate, clients, db, logger) {
 			};
 			game.sendToClient(clients[player.cid], data);
 			player.update.length = 0;
-		})
+		}
+		/*clients.forEach(function(client) {
+
+		})*/
 		//console.log(Date.now() - now + ' ms');
 	}
 
