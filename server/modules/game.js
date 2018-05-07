@@ -37,13 +37,14 @@ module.exports = function(world, rate, clients, db, logger) {
 	 * @param {object} opts
 	 */
 	this.pushUpdate = function(change, opts = {}) {
-		if (opts.client) {
-			opts.client.update.push(change);
+		if (opts.player) {
+			opts.player.update.push(change);
 		} else {
 			clients.forEach(function(client) {
-				if (!isNaN(opts.index) && !client.active[opts.index])
+				var player = client.account;
+				if (!isNaN(opts.index) && !player.active[opts.index])
 					return;
-				client.update.push(change);
+				player.update.push(change);
 			});
 		}
 	}
@@ -70,11 +71,18 @@ module.exports = function(world, rate, clients, db, logger) {
 		var oldIndex = player.index;
 		var index = world.getChunkIndex(player.position);
 		var chunk = world.chunks[index];
+
 		chunk.players[player.id] = {
 			x: player.position.x - chunk.x * world.chunkWidth,
 			y: player.position.y - chunk.y * world.chunkWidth,
 			color: player.color
 		};
+
+		game.pushUpdate({
+			move: player.id.toString(),
+			position: player.position,
+			index: index
+		}, { index: index });
 
 		if (oldIndex != index) {
 			if (oldIndex > -1) {
@@ -100,8 +108,10 @@ module.exports = function(world, rate, clients, db, logger) {
 			delete world.chunks[index].players[player.id];
 			world.chunks[index].playerCount--;
 			game.pushUpdate({ delete: player.id.toString(), index: index }, { index: index });
-		} else
+		} else {
 			world.chunks[index].playerCount++;
+
+		}
 	}
 
 	/**
@@ -116,11 +126,11 @@ module.exports = function(world, rate, clients, db, logger) {
 				player.inventory[item.id] = player.inventory[item.id] || 0;
 				player.inventory[item.id] += item.dropAmount;
 
-				game.pushUpdate({ inventory: player.inventory }, { client: player });
+				game.pushUpdate({ inventory: player.inventory }, { player: player });
 
 				commands.execute('say You aquaired ' + item.dropAmount + ' ' + drop, {
 					name: 'Server',
-					client: player
+					player: player
 				});
 				console.log(player.name + ' acquaired ' + item.dropAmount + ' ' + drop);
 			}
@@ -144,7 +154,7 @@ module.exports = function(world, rate, clients, db, logger) {
 								players: world.chunks[activeIndex].players,
 								data: world.chunks[activeIndex].bufferToString()
 							}
-						}, { client: player });
+						}, { player: player });
 					}
 					player.active[activeIndex] = true;
 				}
@@ -164,7 +174,7 @@ module.exports = function(world, rate, clients, db, logger) {
 	 * Sends current list of updates to all connected clients.
 	 */
 	var update = function() {
-
+		var now = Date.now();
 		// execute commands
 		while (commandList.length > 0) {
 			var command = commandList.shift();
@@ -180,16 +190,18 @@ module.exports = function(world, rate, clients, db, logger) {
 			}
 		}
 
-		//update all clients
+		//update all players
 		clients.forEach(function(client) {
-			if (!client || client.update.length === 0)
+			var player = client.account;
+			if (!player || player.update.length === 0)
 				return;
 			var data = {
-				update: client.update
+				update: player.update
 			};
-			game.sendToClient(client.conn, data);
-			client.update.length = 0;
+			game.sendToClient(clients[player.cid], data);
+			player.update.length = 0;
 		})
+		//console.log(Date.now() - now + ' ms');
 	}
 
 	//

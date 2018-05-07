@@ -25,7 +25,7 @@
 			var chunk = world.getChunk(aPos);
 			aPos.x -= chunk.realX;
 			aPos.y -= chunk.realY;
-			console.log(aPos);
+			//console.log(aPos);
 			var cell = chunk.getCell(aPos);
 			if (cell.actions) {
 				var action = cell.actions[toAction];
@@ -38,7 +38,7 @@
 				}) : null;
 				action.required ? required(action.required, player) : null;
 			} else
-				actions.game.pushUpdate({ error: 'nothing to ' + toAction + ' here :(' }, { client: player });
+				actions.game.pushUpdate({ error: 'nothing to ' + toAction + ' here :(' }, { player: player });
 		} else {
 			if (Utils.checkDir(dir))
 				sendToServer({ command: toAction + ' ' + dir });
@@ -53,7 +53,7 @@
 	}
 
 	function change(opts) {
-		console.log(opts.pos.x, opts.pos.y);
+		//console.log(opts.pos.x, opts.pos.y);
 		opts.chunk.setCell(opts.pos.x, opts.pos.y, opts.tile, true);
 	}
 

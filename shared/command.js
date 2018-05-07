@@ -32,7 +32,7 @@
 		}
 
 	}
-	
+
 	// Aliases
 	command.user["n"]._execute.desc = "Alias for 'move n'";
 	command.user["e"]._execute.desc = "Alias for 'move e'";
@@ -94,7 +94,7 @@
 		Story.space();
 
 	}
-	
+
 	exeHelp.desc = "You're looking at the help right now...";
 
 	/**
@@ -112,7 +112,7 @@
 		Story.space();
 
 	}
-	
+
 	exeInventory.desc = "Display a list of the items in your inventory.";
 
 	/**
@@ -162,7 +162,7 @@
 		}
 
 	}
-	
+
 	exeNew.desc = "Create a new character.";
 
 	/**
@@ -231,7 +231,7 @@
 		Story.log("There's " + west + " to the west.");
 
 	}
-	
+
 	exeLook.desc = "Look around, take it all in.";
 
 	/**
@@ -244,13 +244,13 @@
 				say: text,
 				name: opts.name || opts.player.name
 			}, {
-				client: opts.client || null
+				player: opts.player || null
 			});
 		} else {
 			sendToServer({ command: 'say ' + text });
 		}
 	}
-	
+
 	exeSay.desc = "Say something. Preferably something cool and not abusive. If you do say something abusive, well, back at you times infinity plus one!";
 
 	/**
@@ -280,22 +280,17 @@
 
 			var player = opts.player;
 			var newPos = Object.assign({}, player.position);
-			command.utils.applyDir(newPos, dir);
+			command.utils.applyDir(newPos, dir, opts.amount);
 
 			//test if cell is walkable
 			if (command.utils.positionInBounds(newPos, opts.world)) {
 				Object.assign(player.position, newPos);
 				var index = opts.world.getChunkIndex(newPos);
 				command.game.updatePlayerPosition(player);
-				command.game.pushUpdate({
-					move: player.id.toString(),
-					position: newPos,
-					index: index
-				}, { index: index });
 			}
 
 		} else {
-			console.log(Utils);
+			//console.log(Utils);
 			if (Utils.checkDir(dir)) {
 				Story.log('Moving ' + dir);
 				sendToServer({ command: 'move ' + dir });
@@ -304,7 +299,7 @@
 			}
 		}
 	}
-	
+
 	exeMove.desc = "Move. You can usually go n, e, s or w.";
 
 	/**
