@@ -99,10 +99,18 @@ function create_world(world_settings, generate = false) {
 					var doc = data.doc;
 					if (doc._id == 'settings')
 						return;
-					var index = parseInt(doc._id);
-					doc.properties.stringData = doc.data;
-					var chunk = new Chunk(doc.properties);
-					world.chunks[index] = chunk;
+					else if (doc._id == 'accounts') {
+						Object.keys(doc.accounts).forEach(function(key) {
+							var acc = new Player(0, 0, '')
+							acc.setPlayer(doc.accounts[key]);
+							accounts[key] = acc;
+						});
+					} else {
+						var index = parseInt(doc._id);
+						doc.properties.stringData = doc.data;
+						var chunk = new Chunk(doc.properties);
+						world.chunks[index] = chunk;
+					}
 				});
 				startup();
 			}).catch(function(err) { logger.log(err); });
@@ -123,17 +131,21 @@ function saveTheWorld(all = true, firstTime = false) {
 			delete world.changes[key];
 		});
 	}
-	//keys.push('accounts');
+	keys.push('accounts');
 	if (firstTime) {
 		console.log('Saving world for the first time...');
 		keys.forEach(function(index) {
-			var chunk = world.chunks[parseInt(index)];
-			var prop = {
-				_id: index,
-				properties: chunk.getProperties(),
-				players: chunk.players,
-				data: chunk.bufferToString()
-			};
+			if (index == 'accounts') {
+				prop = { _id: index, data: accounts };
+			} else {
+				var chunk = world.chunks[parseInt(index)];
+				var prop = {
+					_id: index,
+					properties: chunk.getProperties(),
+					players: chunk.players,
+					data: chunk.bufferToString()
+				};
+			}
 			bulk.push(prop);
 		})
 		db.bulkDocs(bulk)
@@ -145,12 +157,16 @@ function saveTheWorld(all = true, firstTime = false) {
 			console.log('generating bulk action...');
 			docs.rows.forEach(function(data) {
 				var doc = data.doc;
-				var chunk = world.chunks[parseInt(doc._id)];
-				Object.assign(doc, {
-					properties: chunk.getProperties(),
-					players: chunk.players,
-					data: chunk.bufferToString()
-				});
+				if (doc._id == 'accounts') {
+					doc.accounts = accounts;
+				} else {
+					var chunk = world.chunks[parseInt(doc._id)];
+					Object.assign(doc, {
+						properties: chunk.getProperties(),
+						players: chunk.players,
+						data: chunk.bufferToString()
+					});
+				}
 				bulk.push(doc);
 			});
 		})
@@ -187,48 +203,49 @@ function startup() {
 		var cid = clients.indexOf(null);
 		cid = cid == -1 ? clients.length : cid;
 		console.log('Client ' + cid + ' has connected');
-		game.sendToClient(conn, {
-			id: cid
-		});
-
+		clients[cid] = conn;
+		game.sendToClient(conn, { cid: cid });
+		var account = null;
 		// message from client
 		conn.on('message', function(msg) {
 			var data = JSON.parse(msg);
 
 			// new character
-			if (!clients[cid] && data.type === "new" && data.name && data.pass) {
+			if (!account && data.type === "new" && data.name && data.pass) {
 				if (!accounts[data.name]) {
 					console.log('NEW: Client ' + cid + ' is now ' + data.name);
-					accounts[data.name] = new Player(cid, conn, data.name, {
-						x: 62,
-						y: 62
-					});
-					accounts[data.name].pass = data.pass;
-					clients[cid] = accounts[data.name];
-					game.updatePlayerPosition(clients[cid]);
+					//get a new player id;
+					var pid = Object.keys(accounts).length;
+					account = new Player(pid, cid, data.name, { x: 62, y: 62 });
+					account.pass = data.pass;
+					clients[cid].account = account;
+					accounts[account.name] = account;
+					game.updatePlayerPosition(account);
 					game.sendToClient(conn, {
 						world: world.getProperties(),
-						player: clients[cid].getStats()
+						player: account.getStats()
 					});
 				} else {
 					logger.log("There's already an account with the name: " + data.name);
+					game.sendToClient(conn, { error: "Account with that name already exists!" })
 				}
 			}
 
 			// login character
-			if (!clients[cid] && data.type === "login" && data.name && data.pass) {
-				var acc = accounts[data.name];
-				if (acc) {
-					if (acc.pass === data.pass) {
+			else if (!account && data.type === "login" && data.name && data.pass) {
+				account = accounts[data.name];
+				console.log(account);
+				account.cid = cid;
+				if (account) {
+					if (account.pass === data.pass) {
 						console.log('LOGIN: Client ' + cid + ' is now ' + data.name);
-						clients[cid] = accounts[data.name];
-						clients[cid].conn = conn;
-						clients[cid].active = {};
-						clients[cid].index = -1;
-						game.updatePlayerPosition(clients[cid]);
+						clients[cid].account = account;
+						account.active = {};
+						account.index = -1;
+						game.updatePlayerPosition(account);
 						game.sendToClient(conn, {
 							world: world.getProperties(),
-							player: clients[cid].getStats()
+							player: account.getStats()
 						});
 					} else {
 						console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
@@ -241,21 +258,21 @@ function startup() {
 			}
 
 			// command
-			else if (clients[cid] && data.command) {
+			else if (account && data.command) {
 				if (data.command == 'save-world') {
 					saveTheWorld(true);
 					return;
 				}
-				console.log(clients[cid].name + ' has send the command ' + data.command);
+				console.log(account.name + ' has send the command ' + data.command);
 				game.push({
-					player: clients[cid],
+					player: account,
 					command: data.command
 				});
 			}
 		});
 		conn.on('close', function() {
 			if (clients[cid])
-				game.updateChunkPlayers(clients[cid], {
+				game.updateChunkPlayers(account, {
 					remove: true
 				})
 			clients[cid] = null;

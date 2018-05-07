@@ -38,7 +38,7 @@
 			this.stringToBuffer(opts.stringData);
 		else if (opts.world)
 			this.generate(opts.world);
-		
+
 	}
 
 	/**
@@ -143,16 +143,16 @@
 	 *
 	 */
 	chunk.prototype.setCell = function(x, y, type, push=false) {
-		
+
 		//
 		var index = y * this.width + x;
 		this.data[index] = this.dataMethod ?
 			Cell.getID(type) :
 			new Cell({ type: type });
-		
+
 		// Server will add the change to push updates
 		if (_server && push) {
-			console.log( "pushing!!" );
+			//console.log( "pushing!!" );
 			Actions.game.pushUpdate({
 				cell: {
 					x: this.realX + x,
@@ -161,7 +161,7 @@
 				}
 			});
 		}
-		
+
 	}
 
 	/**

@@ -4,21 +4,22 @@
 
 /**
  * @constructor
- * @param {int} cid Connection ID.
- * @param {WebSocket} conn Actual connection.
+ * @param {int} pid Player ID.
+ * @param {int}  cid Client ID
  * @param {string} name Name of the new player.
  * @param {*} pos An object containing "x" and "y" properties for coordinates.
  */
-var player = function(cid, conn, name, pos = {}) {
+var player = function(pid, cid, name, pos = {}) {
 	this.rank = 0;
 	this.hp = 100;
 	this.hunger = 100;
 	this.hydration = 100;
 	this.inventory = {};
 	this.name = name;
+	this.pass = '';
 	this.color = "#00FFFF";
-	this.id = cid;
-	this.conn = conn;
+	this.id = pid;
+	this.cid = cid;
 	this.position = pos || {
 		x: 0,
 		y: 0
@@ -39,23 +40,17 @@ player.prototype.getStats = function() {
 		position: this.position,
 		hunger: this.hunger,
 		hydration: this.hydration,
-		inventory: this.inventory
+		inventory: this.inventory,
+		playerID: this.id
 	}
 }
 
-player.prototype.getPlayer() {
-	var stats = this.getStats();
-	var player = {
-		rank: this.rank,
-		id: this.id
-	}
-	return Object.assign(stats, player);
+player.prototype.getPlayer = function() {
+	return player;
 }
 
-player.prototype.setPlayer(opts = {}) {
-	Object.keys(opts).forEach(function(index) {
-		player[index] = opts[index];
-	});
+player.prototype.setPlayer = function(newPlayer) {
+	Object.assign(this, newPlayer);
 }
 
 // export
