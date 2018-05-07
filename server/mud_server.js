@@ -224,8 +224,22 @@ function startup() {
 					console.log('NEW: Client ' + cid + ' is now ' + data.name);
 					//get a new player id;
 					var pid = Object.keys(accounts).length;
-					account = new Player(pid, cid, data.name, { x: 62, y: 62 });
-					account.pass = data.pass;
+					var x = 64,
+						y = 64;
+					//find a walkable spot to spawn
+					while (true) {
+						x = ~~(20 + Math.random() * (world.width * world.chunkWidth)) - 10;
+						y = ~~(20 + Math.random() * (world.height * world.chunkHeight)) - 10;
+						var chunk = world.getChunk({ x: x, y: y });
+						var cell = chunk.getCell({
+							x: x - chunk.realX,
+							y: y - chunk.realY
+						});
+						if (cell.canMove)
+							break;
+					}
+					account = new Player(pid, cid, data.name.trim(), { x: x, y: y });
+					account.pass = data.pass.trim();
 					clients[cid].account = account;
 					accounts[account.name] = account;
 					game.sendToClient(conn, {
@@ -242,8 +256,8 @@ function startup() {
 			// login character
 			else if (!account && data.type === "login" && data.name && data.pass) {
 				account = accounts[data.name];
-				account.cid = cid;
 				if (account) {
+					account.cid = cid;
 					if (account.pass === data.pass) {
 						console.log('LOGIN: Client ' + cid + ' is now ' + data.name);
 						clients[cid].account = account;
