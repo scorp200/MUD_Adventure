@@ -280,7 +280,7 @@
 
 			var player = opts.player;
 			var newPos = Object.assign({}, player.position);
-			command.utils.applyDir(newPos, dir);
+			command.utils.applyDir(newPos, dir, opts.amount);
 
 			//test if cell is walkable
 			if (command.utils.positionInBounds(newPos, opts.world)) {

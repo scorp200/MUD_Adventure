@@ -20,24 +20,24 @@
 	/**
 	 *
 	 */
-	utils.applyDir = function(pos, dir) {
+	utils.applyDir = function(pos, dir, amount = {}) {
 		switch (dir) {
 			case ("n"): case ("north"): case ("up"):
-				pos.y -= 1;
+				pos.y -= amount || 1;
 				break;
 			case ("e"): case ("east"): case ("right"):
-				pos.x += 1;
+				pos.x += amount || 1;
 				break;
 			case ("s"): case ("south"): case ("down"):
-				pos.y += 1;
+				pos.y += amount || 1;
 				break;
 			case ("w"): case ("west"): case ("left"):
-				pos.x -= 1;
+				pos.x -= amount || 1;
 				break;
 		}
 		return pos;
 	}
-	
+
 	/**
 	 *
 	 */
