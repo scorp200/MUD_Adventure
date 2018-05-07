@@ -21,10 +21,14 @@
 		user: {
 			"craft": { _execute: exeCraft }
 		}
+		
 	};
 
 	//
+<<<<<<< HEAD
+=======
 	//console.log(Command);
+>>>>>>> 52b57e3aa06b67f1ac4ac17b29b10409ae7f8e4f
 	Object.assign( Command.user, crafting.user );
 
 	/**
@@ -71,12 +75,21 @@
 			chunk.setCell(pos.x, pos.y, map.change, true);
 
 		} else {
-
-			// send craft command to server
-			Story.log( "Crafting " + item );
-			sendToServer({
-				command: 'craft ' + params
-			});
+			
+			if ( hasAll ) {
+				
+				// send craft command to server
+				Story.log( "Crafting " + item );
+				sendToServer({
+					command: 'craft ' + params
+				});
+				
+			} else {
+				
+				//
+				Story.log("Unablke to craft item, you are missing requirements!");
+				
+			}
 
 		}
 		//}
