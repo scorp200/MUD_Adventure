@@ -67,6 +67,7 @@ con.onclose = function(err) {
 
 con.onmessage = function(msg) {
 	var data = JSON.parse(msg.data);
+	
 	// error
 	if (data.error) {
 		Story.log("<r-" + data.error + "->");
@@ -77,7 +78,7 @@ con.onmessage = function(msg) {
 		Story.intro();
 		Client.clientID = data.cid.toString();
 		console.log("Client ID set to " + Client.clientID);
-		//autoLogin();
+		autoLogin();
 	}
 
 	// get the client's player data
@@ -156,10 +157,8 @@ con.onmessage = function(msg) {
 
 			}
 		});
-		//Object.keys(world.chunks).forEach(function(index) {
-		//var chunk = world.chunks[index];
-		//console.log(index, chunk.playerCount);
-		//});
+		
+		//
 		renderer.update(world, Client.position);
 	}
 

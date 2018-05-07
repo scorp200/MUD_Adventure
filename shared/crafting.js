@@ -16,6 +16,7 @@
 	var crafting = {
 
 		//
+		game: null,
 		world: null,
 
 		//
@@ -63,15 +64,27 @@
 		}
 
 		// All requirements for crafting have been met
-		//if ( hasAll ) {
 		if (server) {
 
-			var pos = Object.assign({}, player.position);
-			Utils.applyDir(pos, dir);
-			var chunk = crafting.world.getChunk(pos);
-			pos.x -= chunk.realX;
-			pos.y -= chunk.realY;
-			chunk.setCell(pos.x, pos.y, map.change, true);
+			if ( hasAll ) {
+				
+				var pos = Object.assign({}, player.position);
+				Utils.applyDir(pos, dir);
+				var chunk = crafting.world.getChunk(pos);
+				pos.x -= chunk.realX;
+				pos.y -= chunk.realY;
+				chunk.setCell(pos.x, pos.y, map.change, true);
+				
+				for (var prop in consumes) {
+					var itemID = Items.getID(prop);
+					player.inventory[itemID] -= consumes[prop];
+				}
+				
+				crafting.game.pushUpdate({
+					inventory: player.inventory
+				}, { player: player });
+				
+			}
 
 		} else {
 
@@ -86,12 +99,11 @@
 			} else {
 
 				//
-				Story.log("Unablke to craft item, you are missing requirements!");
+				Story.log("Unable to craft item, you are missing requirements!");
 
 			}
 
 		}
-		//}
 
 	}
 
