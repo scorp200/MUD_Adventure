@@ -78,7 +78,7 @@ con.onmessage = function(msg) {
 		Story.intro();
 		Client.clientID = data.cid.toString();
 		console.log("Client ID set to " + Client.clientID);
-		//autoLogin();
+		autoLogin();
 	}
 
 	// get the client's player data
@@ -91,6 +91,7 @@ con.onmessage = function(msg) {
 	if (data.world !== undefined) {
 		console.log(data.world);
 		world = new World(data.world);
+		Crafting.world = world;
 		console.log("data.world");
 		Story.log("<1-you now see the vast world->");
 	}

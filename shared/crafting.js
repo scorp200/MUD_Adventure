@@ -51,11 +51,28 @@
 			console.log( "Not a valid direction!" );
 			return;
 		}
+		
+		//
+		var map = crafting.mapping[item];
+		var hasAll = true;
+		
+		//
+		var pos = Object.assign({}, player.position);
+		Utils.applyDir(pos, dir);
+		var chunk = crafting.world.getChunk(pos);
+		pos.x -= chunk.realX;
+		pos.y -= chunk.realY;
+		var cell = chunk.getCell(pos).name;
+		console.log(chunk, pos, cell);
+		
+		//
+		if ( !map.tile.includes(cell) ) {
+			Story.warn("Cannot craft that item in this location");
+			hasAll = false;
+		}
 
 		// Check player has all required resources
-		var map = crafting.mapping[item];
 		var consumes = map.consume;
-		var hasAll = true;
 		for (var prop in consumes) {
 			var itemID = Items.getID(prop);
 			if ((player.inventory[itemID] || 0) < consumes[prop]) {
@@ -68,11 +85,7 @@
 
 			if ( hasAll ) {
 				
-				var pos = Object.assign({}, player.position);
-				Utils.applyDir(pos, dir);
-				var chunk = crafting.world.getChunk(pos);
-				pos.x -= chunk.realX;
-				pos.y -= chunk.realY;
+				//
 				chunk.setCell(pos.x, pos.y, map.change, true);
 				
 				for (var prop in consumes) {

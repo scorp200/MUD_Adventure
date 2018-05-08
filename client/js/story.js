@@ -66,6 +66,13 @@
 		},
 		
 		/**
+		 *
+		 */
+		warn: function( text ) {
+			Story.log("<r-" + text + "->");
+		},
+		
+		/**
 		 * Completely removes the previously printed line.
 		 * @memberof story
 		 * @param {string} text

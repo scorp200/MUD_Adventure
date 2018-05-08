@@ -51,7 +51,10 @@
 		for (var n = 0; n < keys.length; n++) {
 			var key = keys[n];
 			if (cell.mapping[key].id === id) {
-				return cell.mapping[key];
+				return Object.assign(
+					{name: key},
+					cell.mapping[key]
+				);
 			}
 		}
 	}
