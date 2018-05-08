@@ -5,9 +5,8 @@
 (function() {
 
 	//
-	var server = false;
-	if (typeof require !== "undefined") {
-		server = true;
+	var server = typeof require !== "undefined";
+	if (server) {
 		Simplex = require('../shared/simplex.js');
 		Chunk = require('../shared/Chunk.js');
 		Cell = require('../shared/Cell.js');
@@ -15,6 +14,13 @@
 
 	/**
 	 * @constructor
+	 * @param opts
+	 * @param opts.name Name of the world, use for saving.
+	 * @param opts.chunkWidth The width of each chunk in the world.
+	 * @param opts.chunkHeight The height of each chunk in the world.
+	 * @param opts.width The width, in chunks, of the world.
+	 * @param opts.height The height, in chunks, of the world.
+	 * @param opts.generate Whether the world should generate, or start blank.
 	 */
 	var world = function(opts = {}) {
 
@@ -33,7 +39,7 @@
 			this.generate();
 		else
 			this.blank();
-
+		
 	}
 
 	/**
@@ -50,35 +56,28 @@
 	}
 
 	/**
-	 *
+	 * In absence of generation, we can create a blank world.
 	 */
 	world.prototype.blank = function() {
+		
+		for (var x = 0; x < this.width; x++)
+		for (var y = 0; y < this.height; y++) {
 
-		var totalSize = this.width * this.height,
-			currentSize = 0;
-
-		for (var x = 0; x < this.width; x++) {
-			for (var y = 0; y < this.height; y++) {
-
-				// create new chunk
-				var index = y * this.width + x;
-				this.chunks[index] = new Chunk({
-					//world: this,
-					x: x,
-					y: y,
-					width: this.chunkWidth,
-					height: this.chunkHeight,
-					dataMethod: this.dataMethod
-				});
-
-			}
-
+			var index = y * this.width + x;
+			this.chunks[index] = new Chunk({
+				x: x,
+				y: y,
+				width: this.chunkWidth,
+				height: this.chunkHeight,
+				dataMethod: this.dataMethod
+			});
+			
 		}
-
+		
 	}
 
 	/**
-	 *
+	 * Generates the world.
 	 */
 	world.prototype.generate = function() {
 
@@ -86,34 +85,32 @@
 		var totalSize = this.width * this.height,
 			currentSize = 0;
 
-		for (var x = 0; x < this.width; x++) {
-			for (var y = 0; y < this.height; y++) {
+		for (var x = 0; x < this.width; x++)
+		for (var y = 0; y < this.height; y++) {
 
-				// create new chunk
-				var index = y * this.width + x;
-				this.chunks[index] = new Chunk({
-					world: this,
-					x: x,
-					y: y,
-					width: this.chunkWidth,
-					height: this.chunkHeight,
-					dataMethod: this.dataMethod
-				});
+			// create new chunk
+			var index = y * this.width + x;
+			this.chunks[index] = new Chunk({
+				world: this,
+				x: x,
+				y: y,
+				width: this.chunkWidth,
+				height: this.chunkHeight,
+				dataMethod: this.dataMethod
+			});
 
-				// report progress
-				var progress = ~~((++currentSize / totalSize) * 100);
-				var report = "generation progress: " + progress + "%";
-				if (server) {
-					process.stdout.clearLine();
-					process.stdout.cursorTo(0);
-					process.stdout.write(report);
-					if (currentSize === totalSize) {
-						process.stdout.write("\n");
-					}
-				} else {
-					(progress % 20 == 0) && console.log(report);
+			// report progress
+			var progress = ~~((++currentSize / totalSize) * 100);
+			var report = "generation progress: " + progress + "%";
+			if (server) {
+				process.stdout.clearLine();
+				process.stdout.cursorTo(0);
+				process.stdout.write(report);
+				if (currentSize === totalSize) {
+					process.stdout.write("\n");
 				}
-
+			} else {
+				(progress % 20 == 0) && console.log(report);
 			}
 
 		}
@@ -122,7 +119,7 @@
 
 	/**
 	 * Returns the chunk that the given player is currently in.
-	 * @param {object} pos
+	 * @param {object} pos Position object, must contain "x" and "y" properties.
 	 */
 	world.prototype.getChunk = function(pos) {
 		var index = this.getChunkIndex(pos);
@@ -131,7 +128,7 @@
 
 	/**
 	 * Returns the ID of the chunk that the given player is currently in.
-	 * @param {object} pos
+	 * @param {object} pos Position object, must contain "x" and "y" properties.
 	 */
 	world.prototype.getChunkIndex = function(pos) {
 		var x = ~~(pos.x / this.chunkWidth),
@@ -141,7 +138,7 @@
 	}
 
 	/**
-	 *
+	 * Just a nifty function to output the world as a bitmap, so it can be human observable in all it's glory!
 	 */
 	world.prototype.saveAsPNG = function() {
 
@@ -169,14 +166,10 @@
 		for (var y = 0; y < h; y++)
 			for (var x = 0; x < w; x++) {
 
-				var cX = ~~(x / this.chunkWidth);
-				var cY = ~~(y / this.chunkHeight);
-				var cKey = cY * this.width + cX;
-				var chunk = this.chunks[cKey];
-				var cx = x - chunk.x * this.chunkWidth,
-					cy = y - chunk.y * this.chunkHeight,
-					index = cy * this.chunkWidth + cx;
-				var cell = Cell.getPropertiesById(chunk.data[index]);
+				var chunk = this.getChunk({x: x, y: y});
+				var cx = x - chunk.realX,
+					cy = y - chunk.realY;
+				var cell = chunk.getCell({x: cx, y: cy});
 
 				var perm = Simplex.permutation[(y + (y * 48) + x) % 512],
 					colors = cell.color.length,
