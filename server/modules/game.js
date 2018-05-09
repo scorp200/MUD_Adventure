@@ -126,12 +126,11 @@ module.exports = function(world, rate, clients, db, logger) {
 				player.inventory[item.id] = player.inventory[item.id] || 0;
 				player.inventory[item.id] += item.dropAmount;
 
-				game.pushUpdate({ inventory: player.inventory }, { player: player });
+				game.pushUpdate({
+					inventory: player.inventory,
+					notify: "You aquaired " + item.dropAmount + " " + drop
+				}, { player: player });
 
-				commands.execute('say You aquaired ' + item.dropAmount + ' ' + drop, {
-					name: 'Server',
-					player: player
-				});
 				console.log(player.name + ' acquaired ' + item.dropAmount + ' ' + drop);
 			}
 		});

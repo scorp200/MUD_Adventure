@@ -25,7 +25,6 @@
 			var chunk = world.getChunk(aPos);
 			aPos.x -= chunk.realX;
 			aPos.y -= chunk.realY;
-			//console.log(aPos);
 			var cell = chunk.getCell(aPos);
 			if (cell.actions) {
 				var action = cell.actions[toAction];
@@ -43,7 +42,7 @@
 			if (Utils.checkDir(dir))
 				sendToServer({ command: toAction + ' ' + dir });
 			else {
-				Story.log('Please use n, e, s or w for direction!');
+				Story.warn('Please use n, e, s or w for direction!');
 			}
 		}
 	}

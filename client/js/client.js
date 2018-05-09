@@ -104,6 +104,16 @@ con.onmessage = function(msg) {
 			if (update.error) {
 				Story.log("<a-Server:-> " + update.error);
 			}
+			
+			//
+			else if (update.notify) {
+				Story.notify(update.notify);
+			}
+			
+			//
+			else if (update.warn) {
+				Story.warn(update.warn);
+			}
 
 			// update inventory
 			else if (update.inventory) {

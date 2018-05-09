@@ -63,12 +63,12 @@
 		pos.x -= chunk.realX;
 		pos.y -= chunk.realY;
 		var cell = chunk.getCell(pos).name;
-		console.log(chunk, pos, cell);
 		
 		//
-		if ( !map.tile.includes(cell) ) {
-			Story.warn("Cannot craft that item in this location");
+		if (!map.tile.includes(cell)) {
 			hasAll = false;
+			if (!server)
+				Story.warn("Cannot craft that item in this location");
 		}
 
 		// Check player has all required resources
@@ -112,7 +112,7 @@
 			} else {
 
 				//
-				Story.log("Unable to craft item, you are missing requirements!");
+				Story.warn("Unable to craft item, you are missing requirements!");
 
 			}
 

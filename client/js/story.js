@@ -68,6 +68,13 @@
 		/**
 		 *
 		 */
+		notify: function( text ) {
+			Story.log("<g-" + text + "->");
+		},
+		
+		/**
+		 *
+		 */
 		warn: function( text ) {
 			Story.log("<r-" + text + "->");
 		},
