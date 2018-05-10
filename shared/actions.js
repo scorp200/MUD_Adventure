@@ -26,7 +26,7 @@
 			aPos.x -= chunk.realX;
 			aPos.y -= chunk.realY;
 			var cell = chunk.getCell(aPos);
-			if (cell.actions) {
+			if (cell.actions && cell.actions[toAction]) {
 				var action = cell.actions[toAction];
 				action.drop ? drop(action.drop, player) : null;
 				action.change ? change({

@@ -227,14 +227,13 @@ function startup() {
 					var x = 64,
 						y = 64;
 					//find a walkable spot to spawn
+					var maxX = world.width * world.chunkWidth - 30;
+					var maxY = world.height * world.chunkHeight - 30;
 					while (true) {
-						x = ~~(20 + Math.random() * (world.width * world.chunkWidth)) - 10;
-						y = ~~(20 + Math.random() * (world.height * world.chunkHeight)) - 10;
+						x = ~~(Math.random() * (maxX - 30)) + 30;
+						y = ~~(Math.random() * (maxY - 30)) + 30;
 						var chunk = world.getChunk({ x: x, y: y });
-						var cell = chunk.getCell({
-							x: x - chunk.realX,
-							y: y - chunk.realY
-						});
+						var cell = chunk.getCell({ x: x - chunk.realX, y: y - chunk.realY });
 						if (cell.canMove)
 							break;
 					}

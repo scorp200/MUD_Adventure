@@ -91,7 +91,6 @@ con.onmessage = function(msg) {
 	if (data.world !== undefined) {
 		console.log(data.world);
 		world = new World(data.world);
-		Crafting.world = world;
 		console.log("data.world");
 		Story.log("<1-you now see the vast world->");
 	}
@@ -99,20 +98,9 @@ con.onmessage = function(msg) {
 	// received update from server
 	if (data.update) {
 		data.update.forEach(function(update) {
-
 			//console.log(update);
 			if (update.error) {
 				Story.log("<a-Server:-> " + update.error);
-			}
-			
-			//
-			else if (update.notify) {
-				Story.notify(update.notify);
-			}
-			
-			//
-			else if (update.warn) {
-				Story.warn(update.warn);
 			}
 
 			// update inventory
@@ -196,12 +184,12 @@ var sendToServer = function(data) {
 function autoLogin() {
 	var name = '';
 	var seed = Array.from(Date.now().toString());
-	while (name.length < 5) {
-		var char = 97 + parseInt(seed[seed.length - name.length]);
-		console.log(char);
+	for (i = 5; i > 0; i--) {
+		var char = 97 + parseInt(seed[seed.length - i]);
+		console.log(char, seed[seed.length - i]);
 		name += String.fromCharCode(char);
 	}
 	Command.execute("new");
-	Command.execute(name);
+	Command.execute(name.trim());
 	Command.execute("pass");
 }

@@ -78,12 +78,6 @@ module.exports = function(world, rate, clients, db, logger) {
 			color: player.color
 		};
 
-		game.pushUpdate({
-			move: player.id.toString(),
-			position: player.position,
-			index: index
-		}, { index: index });
-
 		if (oldIndex != index) {
 			if (oldIndex > -1) {
 				game.updateChunkPlayers(player, {
@@ -95,6 +89,13 @@ module.exports = function(world, rate, clients, db, logger) {
 			game.updateChunkPlayers(player);
 			setActiveChunks(player, chunk);
 		}
+
+		game.pushUpdate({
+			move: player.id.toString(),
+			position: player.position,
+			index: index
+		}, { index: index });
+
 		console.log(player.name + ' has moved to chunk ' + index + ' with position: ' + player.position.x + ',' + player.position.y);
 	}
 
