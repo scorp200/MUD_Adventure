@@ -1,7 +1,7 @@
 const creatures = require('../../../shared/creatures.js');
 var creature = function(id, pos) {
 	this.name = 'wolf';
-	Object.assign(this, creatures.getID(this.name));
+	Object.assign(this, creatures.mapping[this.name]);
 	this.id = id;
 	this.position = pos || { x: 0, y: 0 };
 	this.index = -1;
@@ -11,7 +11,7 @@ var creature = function(id, pos) {
  * update creature
  */
 creature.prototype.update = function(clients, game, utils) {
-    //creature logic
+	//creature logic
 }
 
 /**

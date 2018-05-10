@@ -3,7 +3,7 @@
 
 	}
 
-	creatures.getID = function(name) { return creatures.mapipng[name].id };
+	creatures.getID = function(name) { return creatures.mapipng[name].creature_id };
 
 	creatures.mapping = {
 		"wolf": {
