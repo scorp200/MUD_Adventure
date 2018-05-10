@@ -256,7 +256,7 @@
 		
 		"fence": {
 			id: 76,
-			canMove: true,
+			canMove: false,
 			desc: "A fence, I wonder how we breach it?",
 			tiles: [
 				"-72px -180px"
