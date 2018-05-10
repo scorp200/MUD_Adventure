@@ -118,9 +118,15 @@ module.exports = function(world, rate, clients, db, logger) {
 	/**
 	 * attempt to drop the items in the cell drop list.
 	 */
-	this.dropItem = function(player, drop) {
-		drop.forEach(function(drop) {
+	this.dropItem = function(player, drops) {
+		
+		// If "drops" is a single value
+		if (!Array.isArray(drops))
+			drops = [drops];
+		
+		drops.forEach(function(drop) {
 			item = items.mapping[drop];
+			console.log(drop,items.mapping);
 			if (Math.random() <= item.dropRate) {
 
 				// not sure how to make it more streamline

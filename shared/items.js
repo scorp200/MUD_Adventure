@@ -51,6 +51,11 @@
 			id: 4,
 			dropAmount: 1,
 			dropRate: 0.3
+		},
+		"waterskin": {
+			id: 5,
+			dropAmount: 1,
+			dropRate: 1
 		}
 	}
 

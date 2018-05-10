@@ -39,21 +39,19 @@
 		var item = split[0];
 		var dir = split[1];
 		var player = (server) ? opts.player : Client;
-
-		console.log( "CRAFTING: ", item, dir );
+		var map = crafting.mapping[item];
 
 		if ( !crafting.mapping[item] ) {
 			console.log( "Unknown craftable item!" );
 			return;
 		}
 
-		if ( !Utils.checkDir(dir) ) {
+		if ( map.tile && !Utils.checkDir(dir) ) {
 			console.log( "Not a valid direction!" );
 			return;
 		}
 		
 		//
-		var map = crafting.mapping[item];
 		var hasAll = true;
 		
 		//
@@ -86,8 +84,13 @@
 
 			if ( hasAll ) {
 				
-				//
-				chunk.setCell(pos.x, pos.y, map.change, true);
+				// If the crafted item effects world change
+				if (map.change)
+					chunk.setCell(pos.x, pos.y, map.change, true);
+				
+				// If the crafted item create a new item
+				if (map.item)
+					crafting.game.dropItem(player, map.item);
 				
 				for (var prop in consumes) {
 					var itemID = Items.getID(prop);
@@ -136,10 +139,18 @@
 		},
 
 		"fence": {
-			tile: ["grass"],
+			tile: ["grass", "drylands"],
 			change: "fence",
 			consume: {
 				wood: 2
+			}
+		},
+		
+		"waterskin": {
+			tile: ["water"],
+			item: "waterskin",
+			consume: {
+				wood: 1
 			}
 		}
 
