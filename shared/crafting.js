@@ -76,6 +76,7 @@
 		for (var prop in consumes) {
 			var itemID = Items.getID(prop);
 			if ((player.inventory[itemID] || 0) < consumes[prop]) {
+				console.log(player.inventory[itemID], consumes[prop]);
 				hasAll = false;
 			}
 		}
@@ -113,6 +114,7 @@
 
 				//
 				Story.warn("Unable to craft item, you are missing requirements!");
+				console.log(cell, consumes, map.tile);
 
 			}
 
@@ -133,9 +135,9 @@
 			}
 		},
 
-		"wall": {
-			tile: ["grass", "drylands"],
-			change: "wall",
+		"fence": {
+			tile: ["grass"],
+			change: "fence",
 			consume: {
 				wood: 2
 			}

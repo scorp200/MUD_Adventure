@@ -37,7 +37,9 @@
 				}) : null;
 				action.required ? required(action.required, player) : null;
 			} else
-				actions.game.pushUpdate({ error: 'nothing to ' + toAction + ' here :(' }, { player: player });
+				actions.game.pushUpdate({
+					warn: 'There is nothing here to ' + toAction + '...'
+				}, { player: player });
 		} else {
 			if (Utils.checkDir(dir))
 				sendToServer({ command: toAction + ' ' + dir });

@@ -91,6 +91,7 @@ con.onmessage = function(msg) {
 	if (data.world !== undefined) {
 		console.log(data.world);
 		world = new World(data.world);
+		Crafting.world = world;
 		console.log("data.world");
 		Story.log("<1-you now see the vast world->");
 	}
@@ -100,16 +101,27 @@ con.onmessage = function(msg) {
 		data.update.forEach(function(update) {
 			//console.log(update);
 			if (update.error) {
-				Story.log("<a-Server:-> " + update.error);
+				Story.log("<r-ERROR:-> <1-" + update.error + "->");
+			}
+			
+			//
+			if (update.notify) {
+				Story.notify(update.notify);
+			}
+			
+			//
+			if (update.warn) {
+				Story.warn(update.warn);
 			}
 
 			// update inventory
-			else if (update.inventory) {
+			if (update.inventory) {
+				console.log(update.inventory);
 				Client.inventory = update.inventory;
 			}
 
 			// cell change
-			else if (update.cell) {
+			if (update.cell) {
 				console.log("update.change");
 				console.log(update.cell);
 
@@ -122,12 +134,12 @@ con.onmessage = function(msg) {
 			}
 
 			//delete player
-			else if (update.delete) {
+			if (update.delete) {
 				delete world.chunks[update.index].players[update.delete];
 			}
 
 			// player moved
-			else if (update.move) {
+			if (update.move) {
 				world.chunks[update.index].players[update.move] = update.position;
 				if (update.move.toString() == Client.playerID) {
 					Client.position.x = update.position.x;
@@ -136,13 +148,13 @@ con.onmessage = function(msg) {
 			}
 
 			// player say
-			else if (update.say) {
+			if (update.say) {
 				console.log("update.say");
 				Story.log("<a-" + update.name + "->: " + update.say);
 			}
 
 			//get new chunks
-			else if (update.chunk) {
+			if (update.chunk) {
 
 				//
 				var x = update.chunk.props.x,

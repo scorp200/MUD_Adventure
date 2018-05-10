@@ -253,6 +253,18 @@
 				"#966045"
 			]
 		},
+		
+		"fence": {
+			id: 76,
+			canMove: true,
+			desc: "A fence, I wonder how we breach it?",
+			tiles: [
+				"-72px -180px"
+			],
+			color: [
+				"#966045"
+			]
+		},
 
 	}
 

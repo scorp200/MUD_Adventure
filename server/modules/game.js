@@ -129,10 +129,10 @@ module.exports = function(world, rate, clients, db, logger) {
 
 				game.pushUpdate({
 					inventory: player.inventory,
-					notify: "You aquaired " + item.dropAmount + " " + drop
+					notify: "You acquired " + item.dropAmount + " " + drop
 				}, { player: player });
 
-				console.log(player.name + ' acquaired ' + item.dropAmount + ' ' + drop);
+				console.log(player.name + ' acquired ' + item.dropAmount + ' ' + drop);
 			}
 		});
 	}
