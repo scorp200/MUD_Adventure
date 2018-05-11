@@ -4,10 +4,13 @@
 	var actions = {
 		game: null,
 		user: {
-			'cut': { _execute: exeAction },
-			'mine': { _execute: exeAction }
+			'cut': { _execute: exeAction.bind(null) },
+			'mine': { _execute: exeAction.bind(null) }
 		}
 	}
+	
+	actions.user.cut._execute.desc = "Cut something, like a tree or a movie scene.";
+	actions.user.mine._execute.desc = "Mine something, like some ore.";
 
 	actions.init = function(commands) {
 		actions.commands = commands;
@@ -49,18 +52,27 @@
 		}
 	}
 
+	/**
+	 * Drops an item, giving it to the player.
+	 */
 	function drop(drop, player) {
 		actions.game.dropItem(player, drop);
 	}
 
+	/**
+	 * Changes a cell.
+	 */
 	function change(opts) {
-		//console.log(opts.pos.x, opts.pos.y);
 		opts.chunk.setCell(opts.pos.x, opts.pos.y, opts.tile, true);
 	}
 
+	/**
+	 *
+	 */
 	function required(req, player) {
 		console.log(req);
 	}
+	
 	//
 	if (!server) {
 		actions.init(Command);

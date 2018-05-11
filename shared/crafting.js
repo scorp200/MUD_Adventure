@@ -124,6 +124,8 @@
 		}
 
 	}
+	
+	exeCraft.desc = "Craft an item or structure. Type 'craft help' for more details.";
 
 	/**
 	 * @namespace
