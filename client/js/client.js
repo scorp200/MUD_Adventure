@@ -13,8 +13,8 @@ Client = {
 	playerID: null,
 	chunk: null,
 	position: {
-		x: 80,
-		y: 40
+		x: 0,
+		y: 0
 	},
 	inventory: {},
 	socket: null,
@@ -113,11 +113,22 @@ con.onmessage = function(msg) {
 			if (update.warn) {
 				Story.warn(update.warn);
 			}
+			
+			// get the client's player data
+			if (update.player) {
+				Object.assign(Client, update.player);
+				Client.refreshStats();
+			}
 
 			// update inventory
 			if (update.inventory) {
 				console.log(update.inventory);
 				Client.inventory = update.inventory;
+			}
+			
+			//delete player
+			if (update.delete) {
+				delete world.chunks[update.index].players[update.delete];
 			}
 
 			// cell change
@@ -131,11 +142,6 @@ con.onmessage = function(msg) {
 				var cellY = update.cell.y - chunk.realY;
 				chunk.setCell(cellX, cellY, update.cell.tile);
 				console.log("cell changed!", cellX, cellY, update.cell.tile);
-			}
-
-			//delete player
-			if (update.delete) {
-				delete world.chunks[update.index].players[update.delete];
 			}
 
 			// player moved

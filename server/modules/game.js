@@ -177,14 +177,61 @@ module.exports = function(world, rate, clients, db, logger) {
 	}
 
 	/**
-	 * Sends current list of updates to all connected clients.
+	 * Handles all game update events.
 	 */
 	var update = function() {
-		var now = Date.now();
-		// execute commands
+		
+		//var now = Date.now();
+		handlePlayerStats();
+		executeCommands();
+		updatePlayers();
+		//console.log(Date.now() - now + ' ms');
+		
+	}
+	
+	/**
+	 *
+	 */
+	var handlePlayerStats = function() {
+		
+		clients.forEach(function(client) {
+			
+			var player = client.account;
+			
+			// Loss of stats over time
+			player.hydration = Math.max(0, player.hydration-1);
+			player.hunger = Math.max(0, player.hunger-1);
+			
+			// Handle hunger/dehydration
+			if (player.hunger <= 0
+			||  player.hydration <= 0) {
+				player.hp = Math.max(0, player.hp-1);
+			}
+			
+			// Handle... DEATH
+			if (player.hp <= 0) {
+			}
+			
+			// Tell the player they've probably died, I mean, update their stats!
+			game.pushUpdate({
+				player: {
+					hydration: player.hydration,
+					hunger: player.hunger,
+					hp: player.hp
+				}
+			}, { player: player });
+			
+		});
+		
+	}
+	
+	/**
+	 *
+	 */
+	var executeCommands = function() {
 		while (commandList.length > 0) {
-			var command = commandList.shift();
 			try {
+				var command = commandList.shift();
 				commands.execute('' + command.command, {
 					player: command.player,
 					clients: clients,
@@ -195,8 +242,12 @@ module.exports = function(world, rate, clients, db, logger) {
 				logger.log(e);
 			}
 		}
-
-		//update all players
+	}
+	
+	/**
+	 *
+	 */
+	var updatePlayers = function() {
 		for (var i = 0; i < clients.length; i++) {
 			if (!clients[i])
 				continue;
@@ -209,10 +260,6 @@ module.exports = function(world, rate, clients, db, logger) {
 			game.sendToClient(clients[player.cid], data);
 			player.update.length = 0;
 		}
-		/*clients.forEach(function(client) {
-
-		})*/
-		//console.log(Date.now() - now + ' ms');
 	}
 
 	//
