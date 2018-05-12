@@ -285,6 +285,24 @@
 				"#966045"
 			]
 		},
+		
+		"berrybush": {
+			id: 77,
+			canMove: false,
+			desc: "Nice bush!",
+			tiles: [
+				"-120px -24px"
+			],
+			color: [
+				"#ff0000"
+			],
+			actions: {
+				"cut": {
+					drop: ["berries"],
+					change: "grass"
+				}
+			}
+		},
 
 	}
 

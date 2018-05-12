@@ -94,6 +94,11 @@
 				// forests
 				var forest = Simplex.getHeight(cX, cY, 1, 0.24, 1);
 				if (forest > 0.8 || (forest > 0.4 && moisture < 0.5)) type = "tree";
+				
+				// Berry bushes
+				var bush = Simplex.getHeight(cX+1000, cY+1000, 1, 0.24, 1);
+				bush += Simplex.getHeight(cX + 937, cY * cX + 379, 1, 1.0, 1);
+				if (bush > 1.5 || (bush > 1.5 && moisture < 0.5)) type = "berrybush";
 
 				// mountain
 				var height = 1 + Simplex.getHeight(cX, cY, 1, 0.04, 1) * 0.4;

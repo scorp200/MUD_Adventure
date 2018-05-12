@@ -63,7 +63,19 @@
 					notify: "You drank out of the waterskin, quenching your thirst."
 				}
 			}
-		}
+		},
+		"berries": {
+			id: 6,
+			dropAmount: 5,
+			dropRate: 1,
+			actions: {
+				"eat": {
+					playerStats: { hunger: 100 },
+					required: { "berries": 1 },
+					notify: "You eat the berries."
+				}
+			}
+		},
 	}
 
 

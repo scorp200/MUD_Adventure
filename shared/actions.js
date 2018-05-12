@@ -7,6 +7,7 @@
 		user: {
 			'cut': { _execute: exeTileAction.bind(null) },
 			'mine': { _execute: exeTileAction.bind(null) },
+			'eat': { _execute: exeTileAction.bind(null) },
 			'drink': { _execute: exeTileAction.bind(null) },
 			'bath': { _execute: exeTileAction.bind(null) },
 			'item': { _execute: exeItemAction.bind(null) }
