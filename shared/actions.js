@@ -70,19 +70,23 @@
 		var secondAction = split[0];
 		var player = (server) ? opts.player : Client;
 		if (item !== undefined && player.inventory[item.id] !== undefined) {
-			if (item.actions === undefined && item.actions[secondAction] === undefined) {
+			if (item.actions === undefined || item.actions[secondAction] === undefined) {
 				if (!server)
 					Story.warn('You can\'t do that');
+				else
+					console.log(player.name + ' attempted an invalid action.');
 				return;
 			}
 
-			var action = item.actions[secondAction];
+			if (server)
+				var action = item.actions[secondAction];
 
 		} else {
 
-			if (!server) {
+			if (!server)
 				Story.warn('You don\'t have such item');
-			}
+			else
+				console.log(player.name + ' doesn\'t have such item.');
 			return;
 
 		}
