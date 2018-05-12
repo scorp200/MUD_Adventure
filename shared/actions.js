@@ -3,18 +3,22 @@
 
 	var actions = {
 		game: null,
+		items: null,
 		user: {
 			'cut': { _execute: exeTileAction.bind(null) },
 			'mine': { _execute: exeTileAction.bind(null) },
 			'drink': { _execute: exeTileAction.bind(null) },
-			'bath': { _execute: exeTileAction.bind(null) }
+			'bath': { _execute: exeTileAction.bind(null) },
+			'item': { _execute: exeItemAction.bind(null) },
+			'i': { _execute: exeItemAction.bind(null) }
 		}
 	}
 
 	actions.user.cut._execute.desc = "Cut something, like a tree or a movie scene.";
 	actions.user.mine._execute.desc = "Mine something, like some ore.";
-	actions.user.drink._execute.desc = "Rehydrate with some wild water.";
-	actions.user.bath._execute.desc = "take a bath";
+	actions.user.drink._execute.desc = "Drink some wild water.";
+	actions.user.bath._execute.desc = "take a bath.";
+	actions.user.item._execute.desc = "use an item.";
 
 	actions.init = function(commands) {
 		actions.commands = commands;
@@ -56,6 +60,31 @@
 				Story.warn('Please use n, e, s or w for direction!');
 			}
 		}
+	}
+
+	function exeItemAction(params, opts = {}, toAction) {
+
+		var items = server ? actions.items : Items;
+		var split = params.split(' ');
+		var item = actions.items[split[0]];
+		var action = split[1];
+		var player = (server) ? opts.player : Client;
+
+		if (item !== undefined && player.inventory[item.id] > 0) {
+
+		} else {
+			if (!server) {
+				Story.warn('You don\'t have such item');
+			}
+			return;
+		}
+
+		if (server) {
+			console.log(params);
+		} else {
+			sendToServer({ command: toAction + ' ' + params });
+		}
+
 	}
 
 	/**

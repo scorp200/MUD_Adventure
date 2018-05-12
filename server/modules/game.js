@@ -15,6 +15,7 @@ module.exports = function(world, rate, clients, db, logger) {
 	commands.game = this;
 	game.actions = actions;
 	actions.game = this;
+	actions.items = items;
 	crafting.game = this;
 	crafting.world = world;
 	commands.utils = actions.utils = utils;
