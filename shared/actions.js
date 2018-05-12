@@ -4,20 +4,24 @@
 	var actions = {
 		game: null,
 		user: {
-			'cut': { _execute: exeAction.bind(null) },
-			'mine': { _execute: exeAction.bind(null) }
+			'cut': { _execute: exeTileAction.bind(null) },
+			'mine': { _execute: exeTileAction.bind(null) },
+			'drink': { _execute: exeTileAction.bind(null) },
+			'bath': { _execute: exeTileAction.bind(null) }
 		}
 	}
-	
+
 	actions.user.cut._execute.desc = "Cut something, like a tree or a movie scene.";
 	actions.user.mine._execute.desc = "Mine something, like some ore.";
+	actions.user.drink._execute.desc = "Rehydrate with some wild water.";
+	actions.user.bath._execute.desc = "take a bath";
 
 	actions.init = function(commands) {
 		actions.commands = commands;
 		Object.assign(commands.user, actions.user);
 	}
 
-	function exeAction(dir, opts = {}, toAction) {
+	function exeTileAction(dir, opts = {}, toAction) {
 		if (server) {
 			var player = opts.player;
 			var world = opts.world;
@@ -39,6 +43,8 @@
 					player: player
 				}) : null;
 				action.required ? required(action.required, player) : null;
+				action.playerStats ? stats(action.playerStats, player) : null;
+				action.notify ? notify(action.notify, player) : null;
 			} else
 				actions.game.pushUpdate({
 					warn: 'There is nothing here to ' + toAction + '...'
@@ -67,12 +73,31 @@
 	}
 
 	/**
+	 * Change player stats
+	 */
+	function stats(stats, player) {
+		for (var i = 0, keys = Object.keys(stats); i < keys.length; i++) {
+			var key = keys[i]
+			player[key] = actions.utils.clamp(0, 100, player[key] += stats[key]);
+		}
+	}
+
+	/**
+	 * Notifies the player
+	 */
+	function notify(msg, player) {
+		actions.game.pushUpdate({
+			notify: msg
+		}, { player: player });
+	}
+
+	/**
 	 *
 	 */
 	function required(req, player) {
 		console.log(req);
 	}
-	
+
 	//
 	if (!server) {
 		actions.init(Command);

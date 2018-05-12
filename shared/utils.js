@@ -48,6 +48,15 @@
 			&& pos.y < world.height * world.chunkHeight;
 	}
 
+	/**
+	 *
+	 */
+	utils.clamp = function(min, max, num) {
+		num = num > max ? max : num;
+		num = num < min ? min : num;
+		return num;
+	}
+
 	// export
 	if (!server) {
 		window["Utils"] = utils;

@@ -51,8 +51,7 @@
 		for (var n = 0; n < keys.length; n++) {
 			var key = keys[n];
 			if (cell.mapping[key].id === id) {
-				return Object.assign(
-					{name: key},
+				return Object.assign({ name: key },
 					cell.mapping[key]
 				);
 			}
@@ -114,7 +113,12 @@
 				"#525430",
 				"#005500",
 				"#006600"
-			]
+			],
+			actions: {
+				"bath": {
+					notify: "You roll in the mud like a small piglet having the time of your life"
+				}
+			}
 		},
 
 		"tree": {
@@ -144,7 +148,17 @@
 			],
 			color: [
 				"#00cccc"
-			]
+			],
+			actions: {
+				"drink": {
+					playerStats: { hydration: 10 },
+					notify: "You take a sip of water, and feel refreshed."
+				},
+				"bath": {
+					playerStats: { hp: 1 },
+					notify: "You bathe in the lake, feeling brand new and ready for action"
+				}
+			}
 		},
 
 		"sea": {
@@ -156,7 +170,13 @@
 			],
 			color: [
 				"#005555"
-			]
+			],
+			actions: {
+				"drink": {
+					player: { hydration: -5 },
+					notify: "You take a sip of the sea, but its too salty, you feel terrible"
+				}
+			}
 		},
 
 		"mountain": {
@@ -241,7 +261,7 @@
 				}
 			}
 		},
-		
+
 		"bridge": {
 			id: 75,
 			canMove: true,
@@ -253,7 +273,7 @@
 				"#966045"
 			]
 		},
-		
+
 		"fence": {
 			id: 76,
 			canMove: false,

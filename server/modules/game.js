@@ -119,14 +119,14 @@ module.exports = function(world, rate, clients, db, logger) {
 	 * attempt to drop the items in the cell drop list.
 	 */
 	this.dropItem = function(player, drops) {
-		
+
 		// If "drops" is a single value
 		if (!Array.isArray(drops))
 			drops = [drops];
-		
+
 		drops.forEach(function(drop) {
 			item = items.mapping[drop];
-			console.log(drop,items.mapping);
+			console.log(drop, items.mapping);
 			if (Math.random() <= item.dropRate) {
 
 				// not sure how to make it more streamline
@@ -180,38 +180,37 @@ module.exports = function(world, rate, clients, db, logger) {
 	 * Handles all game update events.
 	 */
 	var update = function() {
-		
+
 		//var now = Date.now();
 		handlePlayerStats();
 		executeCommands();
 		updatePlayers();
 		//console.log(Date.now() - now + ' ms');
-		
+
 	}
-	
+
 	/**
 	 *
 	 */
 	var handlePlayerStats = function() {
-		
+
 		clients.forEach(function(client) {
-			
+
 			var player = client.account;
-			
+
 			// Loss of stats over time
-			player.hydration = Math.max(0, player.hydration-1);
-			player.hunger = Math.max(0, player.hunger-1);
-			
+			player.hydration = Math.max(0, player.hydration - 1);
+			player.hunger = Math.max(0, player.hunger - 1);
+
 			// Handle hunger/dehydration
-			if (player.hunger <= 0
-			||  player.hydration <= 0) {
-				player.hp = Math.max(0, player.hp-1);
+			if (player.hunger <= 0 ||
+				player.hydration <= 0) {
+				player.hp = Math.max(0, player.hp - 1);
 			}
-			
+
 			// Handle... DEATH
-			if (player.hp <= 0) {
-			}
-			
+			if (player.hp <= 0) {}
+
 			// Tell the player they've probably died, I mean, update their stats!
 			game.pushUpdate({
 				player: {
@@ -220,11 +219,11 @@ module.exports = function(world, rate, clients, db, logger) {
 					hp: player.hp
 				}
 			}, { player: player });
-			
+
 		});
-		
+
 	}
-	
+
 	/**
 	 *
 	 */
@@ -243,7 +242,7 @@ module.exports = function(world, rate, clients, db, logger) {
 			}
 		}
 	}
-	
+
 	/**
 	 *
 	 */
