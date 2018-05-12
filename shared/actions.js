@@ -77,7 +77,9 @@
 	 */
 	function stats(stats, player) {
 		for (var i = 0, keys = Object.keys(stats); i < keys.length; i++) {
-			var key = keys[i]
+			var key = keys[i];
+			if (player[key] === undefined)
+				continue;
 			player[key] = actions.utils.clamp(0, 100, player[key] += stats[key]);
 		}
 	}
@@ -86,9 +88,7 @@
 	 * Notifies the player
 	 */
 	function notify(msg, player) {
-		actions.game.pushUpdate({
-			notify: msg
-		}, { player: player });
+		actions.game.pushUpdate({ notify: msg }, { player: player });
 	}
 
 	/**

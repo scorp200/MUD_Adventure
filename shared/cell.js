@@ -116,7 +116,7 @@
 			],
 			actions: {
 				"bath": {
-					notify: "You roll in the mud like a small piglet having the time of your life"
+					notify: "You roll in the mud like a small piglet, having the time of your life"
 				}
 			}
 		},
