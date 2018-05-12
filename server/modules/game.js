@@ -1,4 +1,4 @@
-module.exports = function(world, rate, clients, db, logger) {
+module.exports = function(world, rate, clients, db, logger, utils) {
 
 	//
 	var commandList = [];
@@ -7,7 +7,6 @@ module.exports = function(world, rate, clients, db, logger) {
 	var items = require('../../shared/items.js');
 	var actions = require('../../shared/actions.js');
 	var crafting = require('../../shared/crafting.js');
-	var utils = require('../../shared/utils.js');
 	var living = {};
 
 	// cache references
@@ -248,18 +247,14 @@ module.exports = function(world, rate, clients, db, logger) {
 	 *
 	 */
 	var updatePlayers = function() {
-		for (var i = 0; i < clients.length; i++) {
-			if (!clients[i])
-				continue;
-			var player = clients[i].account;
+		clients.forEach(function(client) {
+			var player = client.account;
 			if (!player || player.update.length === 0)
 				return;
-			var data = {
-				update: player.update
-			};
-			game.sendToClient(clients[player.cid], data);
+			var data = { update: player.update };
+			game.sendToClient(client, data);
 			player.update.length = 0;
-		}
+		});
 	}
 
 	//

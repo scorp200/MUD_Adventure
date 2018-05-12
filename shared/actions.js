@@ -9,8 +9,7 @@
 			'mine': { _execute: exeTileAction.bind(null) },
 			'drink': { _execute: exeTileAction.bind(null) },
 			'bath': { _execute: exeTileAction.bind(null) },
-			'item': { _execute: exeItemAction.bind(null) },
-			'i': { _execute: exeItemAction.bind(null) }
+			'item': { _execute: exeItemAction.bind(null) }
 		}
 	}
 
@@ -56,14 +55,15 @@
 		} else {
 			if (Utils.checkDir(dir))
 				sendToServer({ command: toAction + ' ' + dir });
-			else {
+			else if (dir.split(' ').length > 0) {
+				exeItemAction(toAction + ' ' + dir, opts, 'item');
+			} else {
 				Story.warn('Please use n, e, s or w for direction!');
 			}
 		}
 	}
 
 	function exeItemAction(params, opts = {}, toAction) {
-
 		var items = server ? actions.items : Items;
 		var split = params.split(' ');
 		var item = items.mapping[split[1]];

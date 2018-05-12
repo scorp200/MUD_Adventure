@@ -57,6 +57,15 @@
 		return num;
 	}
 
+
+	utils.indexOf = function(arr, what) {
+		for(var i = 0, last = arr.length; i < last; i++){
+			if(arr[i] === what)
+				return i;
+		}
+		return -1;
+	}
+
 	// export
 	if (!server) {
 		window["Utils"] = utils;

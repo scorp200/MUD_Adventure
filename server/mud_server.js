@@ -6,6 +6,7 @@ const Game = require('./modules/game.js');
 const Player = require('./modules/player.js');
 const Chunk = require('../shared/chunk.js');
 const PouchDB = require('pouchdb');
+const utils = require('../shared/utils.js');
 var modules = {};
 var game = null;
 var world = {};
@@ -145,7 +146,7 @@ function saveTheWorld(all = true, firstTime = false) {
 		console.log('Saving world for the first time...');
 		keys.forEach(function(index) {
 			if (index == 'accounts') {
-				prop = { _id: index, data: accounts };
+				prop = { _id: index, accounts: accounts };
 			} else {
 				var chunk = world.chunks[parseInt(index)];
 				var prop = {
@@ -194,7 +195,7 @@ function saveTheWorld(all = true, firstTime = false) {
  */
 function startup() {
 	console.log("starting simulation...");
-	game = new Game(world, settings.server_tick, clients, db, logger);
+	game = new Game(world, settings.server_tick, clients, db, logger, utils);
 	setInterval(saveTheWorld.bind(true), 600000);
 	// create server
 	console.log("creating server...");
@@ -208,12 +209,14 @@ function startup() {
 
 		// send the connecting player their unique id
 		// reusing old id if any, otherwise use the length of clients array
-		var cid = clients.indexOf(null);
+
+		var cid = utils.indexOf(clients, undefined);
 		cid = cid == -1 ? clients.length : cid;
 		console.log('Client ' + cid + ' has connected');
 		clients[cid] = conn;
 		game.sendToClient(conn, { cid: cid });
 		var account = null;
+
 		// message from client
 		conn.on('message', function(msg) {
 			var data = JSON.parse(msg);
@@ -239,7 +242,7 @@ function startup() {
 					}
 					account = new Player(pid, cid, data.name.trim(), { x: x, y: y });
 					account.pass = data.pass.trim();
-					clients[cid].account = account;
+					conn.account = account;
 					accounts[account.name] = account;
 					game.sendToClient(conn, {
 						world: world.getProperties(),
@@ -259,7 +262,7 @@ function startup() {
 					account.cid = cid;
 					if (account.pass === data.pass) {
 						console.log('LOGIN: Client ' + cid + ' is now ' + data.name);
-						clients[cid].account = account;
+						conn.account = account;
 						account.active = {};
 						account.index = -1;
 						game.sendToClient(conn, {
@@ -291,11 +294,10 @@ function startup() {
 			}
 		});
 		conn.on('close', function() {
-			if (clients[cid] && account)
-				game.updateChunkPlayers(account, {
-					remove: true
-				})
-			clients[cid] = null;
+			if (conn && account)
+				game.updateChunkPlayers(account, { remove: true });
+			account = null;
+			delete clients[cid];
 			console.log('Client ' + cid + ' has left.')
 		});
 	});
