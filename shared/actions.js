@@ -18,7 +18,7 @@
 	actions.user.mine._execute.desc = "Mine something, like some ore.";
 	actions.user.drink._execute.desc = "Drink some wild water.";
 	actions.user.bath._execute.desc = "take a bath.";
-	actions.user.item._execute.desc = "use an item.";
+	actions.user.item._execute.desc = "Use an item, provide an action and an item.";
 
 	actions.init = function(commands) {
 		actions.commands = commands;
@@ -66,23 +66,39 @@
 
 		var items = server ? actions.items : Items;
 		var split = params.split(' ');
-		var item = actions.items[split[0]];
-		var action = split[1];
+		var item = items.mapping[split[1]];
+		var secondAction = split[0];
 		var player = (server) ? opts.player : Client;
+		if (item !== undefined && player.inventory[item.id] !== undefined) {
+			if (item.actions === undefined && item.actions[secondAction] === undefined) {
+				if (!server)
+					Story.warn('You can\'t do that');
+				return;
+			}
 
-		if (item !== undefined && player.inventory[item.id] > 0) {
+			var action = item.actions[secondAction];
 
 		} else {
+
 			if (!server) {
 				Story.warn('You don\'t have such item');
 			}
 			return;
+
 		}
 
 		if (server) {
+
+			action.drop ? drop(action.drop, player) : null;
+			action.required ? required(action.required, player) : null;
+			action.playerStats ? stats(action.playerStats, player) : null;
+			action.notify ? notify(action.notify, player) : null;
 			console.log(params);
+
 		} else {
+
 			sendToServer({ command: toAction + ' ' + params });
+
 		}
 
 	}

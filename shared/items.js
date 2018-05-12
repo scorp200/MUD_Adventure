@@ -6,7 +6,7 @@
 	var items = function() {
 
 	}
-	
+
 	/**
 	 *
 	 */
@@ -14,13 +14,13 @@
 		var keys = Object.keys(items.mapping);
 		for (var n = 0; n < keys.length; n++) {
 			var key = keys[n];
-			console.log( key, n, id );
+			console.log(key, n, id);
 			if (items.mapping[key].id === Number(id)) {
 				return key;
 			}
 		}
 	}
-	
+
 	/**
 	 *
 	 */
@@ -55,7 +55,14 @@
 		"waterskin": {
 			id: 5,
 			dropAmount: 1,
-			dropRate: 1
+			dropRate: 1,
+			actions: {
+				"drink": {
+					playerStats: { hydration: 100 },
+					required: { "waterskin": 1 },
+					notify: "You drank out of the waterskin, quenching your thirst."
+				}
+			}
 		}
 	}
 

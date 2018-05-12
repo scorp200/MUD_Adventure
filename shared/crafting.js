@@ -50,10 +50,10 @@
 			console.log( "Not a valid direction!" );
 			return;
 		}
-		
+
 		//
 		var hasAll = true;
-		
+
 		//
 		var pos = Object.assign({}, player.position);
 		Utils.applyDir(pos, dir);
@@ -61,7 +61,7 @@
 		pos.x -= chunk.realX;
 		pos.y -= chunk.realY;
 		var cell = chunk.getCell(pos).name;
-		
+
 		//
 		if (!map.tile.includes(cell)) {
 			hasAll = false;
@@ -74,7 +74,7 @@
 		for (var prop in consumes) {
 			var itemID = Items.getID(prop);
 			if ((player.inventory[itemID] || 0) < consumes[prop]) {
-				console.log(player.inventory[itemID], consumes[prop]);
+				//console.log(player.inventory[itemID], consumes[prop]);
 				hasAll = false;
 			}
 		}
@@ -83,24 +83,24 @@
 		if (server) {
 
 			if ( hasAll ) {
-				
+
 				// If the crafted item effects world change
 				if (map.change)
 					chunk.setCell(pos.x, pos.y, map.change, true);
-				
+
 				// If the crafted item create a new item
 				if (map.item)
 					crafting.game.dropItem(player, map.item);
-				
+
 				for (var prop in consumes) {
 					var itemID = Items.getID(prop);
 					player.inventory[itemID] -= consumes[prop];
 				}
-				
+
 				crafting.game.pushUpdate({
 					inventory: player.inventory
 				}, { player: player });
-				
+
 			}
 
 		} else {
@@ -124,7 +124,7 @@
 		}
 
 	}
-	
+
 	exeCraft.desc = "Craft an item or structure. Type 'craft help' for more details.";
 
 	/**
@@ -147,7 +147,7 @@
 				wood: 2
 			}
 		},
-		
+
 		"waterskin": {
 			tile: ["water"],
 			item: "waterskin",
