@@ -240,12 +240,7 @@
 	 */
 	function exeSay(text, opts) {
 		if (server) {
-			command.game.pushUpdate({
-				say: text,
-				name: opts.name || opts.player.name
-			}, {
-				player: opts.player || null
-			});
+			command.game.pushUpdate({ say: text, name: opts.player.name });
 		} else {
 			sendToServer({ command: 'say ' + text });
 		}
