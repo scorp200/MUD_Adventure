@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const ws = require('ws');
 const World = require('../shared/world.js');
