@@ -303,6 +303,18 @@
 				}
 			}
 		},
+		
+		"wall": {
+			id: 78,
+			canMove: false,
+			desc: "No one's going to get through this too easily.",
+			tiles: [
+				"-168px -180px"
+			],
+			color: [
+				"#aaaaaa"
+			]
+		},
 
 	}
 
