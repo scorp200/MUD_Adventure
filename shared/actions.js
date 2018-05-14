@@ -21,7 +21,6 @@
 	actions.user.mine._execute.desc = "Mine something, like some ore.";
 	actions.user.drink._execute.desc = "Drink some wild water.";
 	actions.user.bath._execute.desc = "take a bath.";
-	actions.user.item._execute.desc = "Use an item, provide an action and an item.";
 
 	actions.init = function(commands) {
 		actions.commands = commands;
