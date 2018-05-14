@@ -1,4 +1,4 @@
-module.exports = function(world, rate, clients, db, logger, utils) {
+module.exports = function(world, rate, clients, accounts, db, logger, utils) {
 
 	//
 	var commandList = [];
@@ -214,7 +214,11 @@ module.exports = function(world, rate, clients, db, logger, utils) {
 			}
 
 			// Handle... DEATH
-			if (player.hp <= 0) {}
+			if (player.hp <= 0) {
+				game.pushUpdate({ notify: "you have perrished, but the goddess will not let you rest." }, { player: player });
+				player.resetPlayer(utils.getWalkableCell(world));
+				game.updatePlayerPosition(player);
+			}
 
 			// Tell the player they've probably died, I mean, update their stats!
 			game.pushUpdate({
@@ -239,6 +243,7 @@ module.exports = function(world, rate, clients, db, logger, utils) {
 				commands.execute('' + command.command, {
 					player: command.player,
 					clients: clients,
+					accounts: accounts,
 					world: world
 				});
 				commandLimit[command.player.id] = null;

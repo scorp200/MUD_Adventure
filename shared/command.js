@@ -308,10 +308,40 @@
 	/**
 	 *
 	 */
-	function exeAttack() {
-		console.log('he attacc')
+	function exeAttack(dir, opts = {}) {
+		if (server) {
+			var player = opts.player;
+			var newPos = Object.assign({}, player.position);
+			command.utils.applyDir(newPos, dir, opts.amount);
+			var chunk = opts.world.getChunk({ x: newPos.x, y: newPos.y });
+			var toAttack = [];
+			for (var i = 0, keys = Object.keys(chunk.players); i < keys.length; i++) {
+				var key = keys[i];
+				if (chunk.players[key].x == newPos.x && chunk.players[key].y == newPos.y) {
+					toAttack.push(opts.accounts[key]);
+				}
+			}
+			if (toAttack.length > 0) {
+				toAttack.forEach(function(entity) {
+					entity.hp -= 5;
+					console.log(player.name + ' hit ' + entity.name + ' for 5 damage');
+					command.game.pushUpdate({ notify: "you hit " + entity.name + ' for 5 damage' }, { player: player });
+				});
+			} else {
+				command.game.pushUpdate({ notify: "you hit nothing!" }, { player: player });
+				return;
+			}
+		} else {
+			if (Utils.checkDir(dir)) {
+				Story.log('attacking ' + dir);
+				sendToServer({ command: 'attack ' + dir });
+			} else {
+				Story.log('Please use n, e, s or w for direction!');
+			}
+		}
 	}
 
+	exeAttack.desc = "Attack in specified direction.";
 
 	// Setup command input box in DOM
 	if (!server) {

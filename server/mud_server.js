@@ -54,8 +54,8 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
 		})
 		.catch(function(err) {
 			world_settings = {
-				width: 20,
-				height: 20,
+				width: 1,
+				height: 1,
 				chunkWidth: 64,
 				chunkHeight: 64,
 				name: settings.world_name
@@ -197,7 +197,7 @@ function saveTheWorld(all = false, firstTime = false) {
  */
 function startup() {
 	console.log("starting simulation...");
-	game = new Game(world, settings.server_tick, clients, db, logger, utils);
+	game = new Game(world, settings.server_tick, clients, accounts, db, logger, utils);
 	setInterval(saveTheWorld.bind(true), 600000);
 	// create server
 	console.log("creating server...");
@@ -233,7 +233,7 @@ function startup() {
 					account = new Player(pid, cid, data.name.trim(), utils.getWalkableCell(world));
 					account.pass = data.pass.trim();
 					conn.account = account;
-					accounts[account.name] = account;
+					accounts[account.id] = account;
 					game.sendToClient(conn, {
 						world: world.getProperties(),
 						player: account.getStats()

@@ -45,12 +45,10 @@ player.prototype.getStats = function() {
 	}
 }
 
-player.prototype.getPlayer = function() {
-	return player;
-}
-
-player.prototype.setPlayer = function(newPlayer) {
-	Object.assign(this, newPlayer);
+player.prototype.resetPlayer = function(newPos = { x: 0, y: 0 }) {
+	this.hp = this.hunger = this.hydration = 100;
+	this.inventory = {};
+	this.position = newPos;
 }
 
 // export

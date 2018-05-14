@@ -3,9 +3,9 @@
  */
 
 (function() {
-	
+
 	var server = typeof module !== "undefined";
-	
+
 	var items = {}
 
 	/**
@@ -79,7 +79,7 @@
 					notify: "You eat the berries."
 				}
 			}
-		},
+		}
 	}
 
 
