@@ -26,9 +26,9 @@ Client = {
 		var elHP = document.querySelector("#character .health");
 		var elHUN = document.querySelector("#character .hunger");
 		var elHYD = document.querySelector("#character .hydration");
-		elHP.textContent = "HP: " + (~~Client.hp || 0);
-		elHUN.textContent = "HUN: " + (~~Client.hunger || 0);
-		elHYD.textContent = "HYD: " + (~~Client.hydration || 0);
+		elHP.textContent = "HP: " + ~~(Client.hp || 0);
+		elHUN.textContent = "HUN: " + ~~(Client.hunger || 0);
+		elHYD.textContent = "HYD: " + ~~(Client.hydration || 0);
 	}
 
 }
