@@ -26,9 +26,9 @@ Client = {
 		var elHP = document.querySelector("#character .health");
 		var elHUN = document.querySelector("#character .hunger");
 		var elHYD = document.querySelector("#character .hydration");
-		elHP.textContent = "HP: " + (Client.hp || 0);
-		elHUN.textContent = "HUN: " + (Client.hunger || 0);
-		elHYD.textContent = "HYD: " + (Client.hydration || 0);
+		elHP.textContent = "HP: " + (~~Client.hp || 0);
+		elHUN.textContent = "HUN: " + (~~Client.hunger || 0);
+		elHYD.textContent = "HYD: " + (~~Client.hydration || 0);
 	}
 
 }
@@ -78,7 +78,7 @@ con.onmessage = function(msg) {
 		Story.intro();
 		Client.clientID = data.cid.toString();
 		console.log("Client ID set to " + Client.clientID);
-		autoLogin();
+		//autoLogin();
 	}
 
 	// get the client's player data
@@ -103,17 +103,17 @@ con.onmessage = function(msg) {
 			if (update.error) {
 				Story.log("<r-ERROR:-> <1-" + update.error + "->");
 			}
-			
+
 			//
 			if (update.notify) {
 				Story.notify(update.notify);
 			}
-			
+
 			//
 			if (update.warn) {
 				Story.warn(update.warn);
 			}
-			
+
 			// get the client's player data
 			if (update.player) {
 				Object.assign(Client, update.player);
@@ -125,7 +125,7 @@ con.onmessage = function(msg) {
 				console.log(update.inventory);
 				Client.inventory = update.inventory;
 			}
-			
+
 			//delete player
 			if (update.delete) {
 				delete world.chunks[update.index].players[update.delete];
