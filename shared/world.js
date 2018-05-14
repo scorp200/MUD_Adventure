@@ -8,8 +8,8 @@
 	var server = typeof require !== "undefined";
 	if (server) {
 		Simplex = require('../shared/simplex.js');
-		Chunk = require('../shared/Chunk.js');
-		Cell = require('../shared/Cell.js');
+		Chunk = require('../shared/chunk.js');
+		Cell = require('../shared/cell.js');
 	}
 
 	/**
@@ -33,13 +33,13 @@
 		this.chunks = {};
 		this.name = opts.name || 'world';
 		this.changes = {};
-		
+
 		// generate self
 		if (opts.generate)
 			this.generate();
 		else
 			this.blank();
-		
+
 	}
 
 	/**
@@ -59,7 +59,7 @@
 	 * In absence of generation, we can create a blank world.
 	 */
 	world.prototype.blank = function() {
-		
+
 		for (var x = 0; x < this.width; x++)
 		for (var y = 0; y < this.height; y++) {
 
@@ -71,9 +71,9 @@
 				height: this.chunkHeight,
 				dataMethod: this.dataMethod
 			});
-			
+
 		}
-		
+
 	}
 
 	/**
