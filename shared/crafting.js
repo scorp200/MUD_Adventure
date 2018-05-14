@@ -147,6 +147,14 @@
 				wood: 2
 			}
 		},
+		
+		"wall": {
+			tile: ["grass", "drylands"],
+			change: "wall",
+			consume: {
+				rock: 2
+			}
+		},
 
 		"waterskin": {
 			tile: ["water"],

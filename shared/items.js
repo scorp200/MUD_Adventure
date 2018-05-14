@@ -3,9 +3,10 @@
  */
 
 (function() {
-	var items = function() {
-
-	}
+	
+	var server = typeof module !== "undefined";
+	
+	var items = {}
 
 	/**
 	 *
@@ -25,7 +26,10 @@
 	 *
 	 */
 	items.getID = function(name) {
-		return items.mapping[name].id;
+		if (items.mapping[name])
+			return items.mapping[name].id;
+		else
+			((server) ? console : Story).warn("Item \"" + name + "\" does not exist!");
 	}
 
 	/**
