@@ -49,7 +49,10 @@
 	}
 
 	/**
-	 *
+	 * Clamp the given number between min and max values.
+	 * @param {number} min
+	 * @param {number} max
+	 * @param {number} num
 	 */
 	utils.clamp = function(min, max, num) {
 		num = num > max ? max : num;
@@ -57,7 +60,11 @@
 		return num;
 	}
 
-
+	/**
+	 * array.indexOf that can find undefined VALUES
+	 * @param {array} arr
+	 * @param {*} what
+	 */
 	utils.indexOf = function(arr, what) {
 		for(var i = 0, last = arr.length; i < last; i++){
 			if(arr[i] === what)
@@ -65,6 +72,26 @@
 		}
 		return -1;
 	}
+
+	/**
+	 *
+	 */
+	 utils.getWalkableCell = function(world) {
+		 var x = 64,
+			 y = 64;
+		 //find a walkable spot to spawn
+		 var maxX = world.width * world.chunkWidth - 30;
+		 var maxY = world.height * world.chunkHeight - 30;
+		 while (true) {
+			 x = ~~(Math.random() * (maxX - 30)) + 30;
+			 y = ~~(Math.random() * (maxY - 30)) + 30;
+			 var chunk = world.getChunk({ x: x, y: y });
+			 var cell = chunk.getCell({ x: x - chunk.realX, y: y - chunk.realY });
+			 if (cell.canMove)
+				 return {x: x, y: y};
+		 }
+	 }
+
 
 	// export
 	if (!server) {

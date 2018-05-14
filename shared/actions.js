@@ -9,10 +9,13 @@
 			'mine': { _execute: exeTileAction.bind(null) },
 			'eat': { _execute: exeTileAction.bind(null) },
 			'drink': { _execute: exeTileAction.bind(null) },
-			'bath': { _execute: exeTileAction.bind(null) },
-			'item': { _execute: exeItemAction.bind(null) }
+			'bath': { _execute: exeTileAction.bind(null) }
 		}
 	}
+
+	//server only command
+	if (server)
+		actions.user['item'] = { _execute: exeItemAction.bind(null) };
 
 	actions.user.cut._execute.desc = "Cut something, like a tree or a movie scene.";
 	actions.user.mine._execute.desc = "Mine something, like some ore.";

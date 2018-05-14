@@ -46,6 +46,7 @@ module.exports = function(world, rate, clients, db, logger, utils) {
 					return;
 				if (!isNaN(opts.index) && !player.active[opts.index])
 					return;
+				world.changes[opts.index] = true;
 				player.update.push(change);
 			});
 		}
@@ -118,7 +119,7 @@ module.exports = function(world, rate, clients, db, logger, utils) {
 	}
 
 	/**
-	 * attempt to drop the items in the cell drop list.
+	 * attempt to drop the items
 	 */
 	this.dropItem = function(player, drops) {
 

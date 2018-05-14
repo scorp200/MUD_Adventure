@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const fs = require('fs');
 const ws = require('ws');
 const World = require('../shared/world.js');
@@ -124,7 +125,7 @@ function create_world(world_settings, generate = false) {
 	}
 }
 
-function saveTheWorld(all = true, firstTime = false) {
+function saveTheWorld(all = false, firstTime = false) {
 	// *disclaimer no hero will actually save the world :,(
 	var now = Date.now();
 	var bulk = [];
@@ -228,20 +229,8 @@ function startup() {
 					console.log('NEW: Client ' + cid + ' is now ' + data.name);
 					//get a new player id;
 					var pid = Object.keys(accounts).length;
-					var x = 64,
-						y = 64;
-					//find a walkable spot to spawn
-					var maxX = world.width * world.chunkWidth - 30;
-					var maxY = world.height * world.chunkHeight - 30;
-					while (true) {
-						x = ~~(Math.random() * (maxX - 30)) + 30;
-						y = ~~(Math.random() * (maxY - 30)) + 30;
-						var chunk = world.getChunk({ x: x, y: y });
-						var cell = chunk.getCell({ x: x - chunk.realX, y: y - chunk.realY });
-						if (cell.canMove)
-							break;
-					}
-					account = new Player(pid, cid, data.name.trim(), { x: x, y: y });
+
+					account = new Player(pid, cid, data.name.trim(), utils.getWalkableCell(world));
 					account.pass = data.pass.trim();
 					conn.account = account;
 					accounts[account.name] = account;
@@ -283,10 +272,6 @@ function startup() {
 
 			// command
 			else if (account && data.command) {
-				if (data.command == 'save-world') {
-					saveTheWorld(true);
-					return;
-				}
 				console.log(account.name + ' has send the command ' + data.command);
 				game.push({
 					player: account,

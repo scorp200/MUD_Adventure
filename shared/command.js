@@ -22,13 +22,13 @@
 			"new": { _execute: exeNew },
 			"login": { _execute: exeLogin },
 			"move": { _execute: exeMove },
-			"movechunk": { _execute: exeMoveChunk },
+			//"movechunk": { _execute: exeMoveChunk },
 			"look": { _execute: exeLook },
 			"n": { _execute: exeMove.bind(null, "n") },
 			"e": { _execute: exeMove.bind(null, "e") },
 			"s": { _execute: exeMove.bind(null, "s") },
 			"w": { _execute: exeMove.bind(null, "w") },
-			'save-world': { _execute: exeSave }
+			"attack": { _execute: exeAttack }
 		}
 
 	}
@@ -308,10 +308,8 @@
 	/**
 	 *
 	 */
-	function exeSave() {
-		if (server)
-			return;
-		sendToServer({ command: 'save-world' });
+	function exeAttack() {
+		console.log('he attacc')
 	}
 
 
