@@ -54,8 +54,8 @@ fs.readFile('./server.properties', 'utf8', function(err, data) {
 		})
 		.catch(function(err) {
 			world_settings = {
-				width: 1,
-				height: 1,
+				width: 3,
+				height: 3,
 				chunkWidth: 64,
 				chunkHeight: 64,
 				name: settings.world_name

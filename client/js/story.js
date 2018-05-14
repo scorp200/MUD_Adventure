@@ -1,9 +1,9 @@
 /**
  * @module
  */
- 
+
 (function() {
-	
+
 	// cache DOM
 	var el = document.querySelector( "#story-text" ),
 		domStory = document.querySelector("#story div"),
@@ -13,13 +13,13 @@
 	 * @namespace story
 	 */
 	var story = {
-		
+
 		/**
 		 * Scripted introduction.
 		 * @memberof story
 		 */
 		intro: function() {
-			
+
 			story.space();
 			story.log( "<dg-Having thus far enjured a life of materialistic wants under the oppressive grind of capitalism., you decided something drastic had to change with your life. You tried many things, such as taking up Yoga, veganism, and having tiny fish eat the old dead skin off your feet. But, for whatever reason, none of this seemed to help. You decided there was only one thing for it, a pilgrimage to Dogeylvania; where you could really get in touch with nature and \"find yourself\"->" );
 			story.space();
@@ -28,57 +28,57 @@
 			story.log( "<dg-But, one does not simply float into Dogeylvania. During the journey you grow skeptical of Ted. You ask him how far we are from our destination, he replies that he hasn't the faintest idea and it's his first day on the job, and something about him being paid in whiskey and Vimto. You, expectedly, start to worry. This worry seems to manifest as a thick fog decends, the waves grow higher, stronger and thunder crackles through your senses. By now, even in this dazed state, you realize Ted has gone and you're on your own. Then, sheer blackness overtakes you, and everything slows to a stop...->" );
 			story.space();
 			story.log( "<r-If you're a stranger to these lands, type <g-new-> into the command console to create a new character. If you're already trapped here, type <g-login-> followed by your character name and password.'->" );
-			
+			Story.log( "This is a WIP project, a bunch of stuff missing, but we hope you will enjoy it for what we have done so far! ~CorporateDoge, ~JackOatley")
 		},
-		
+
 		/**
 		 * Prints the given text on a new line.
 		 * @memberof story
 		 * @param {string} text
 		 */
 		log: function( text ) {
-			
+
 			// final print + scroll
 			var atBottom = (el.scrollHeight - el.scrollTop === el.clientHeight);
-			
+
 			if ( lines.length > 0 && lines[lines.length-1] === text ) {
-				
+
 				// increment line counter at end
 				var child = domStory.children[lines.length-1];
 				var count = Number(child.textContent.slice(-1));
 				count = (isNaN(count)) ? 2 : count + 1;
 				text += " <1-x" + count + "->";
 				child.innerHTML = story.parseTags(text);
-				
+
 			} else {
-				
+
 				// original text, new p tag
 				var p = document.createElement( "P" );
 				p.innerHTML = story.parseTags(text);
 				domStory.appendChild( p );
 				lines[domStory.children.length-1] = text;
-				
+
 			}
-			
+
 			if (atBottom)
 				el.scrollTop = el.scrollHeight;
-			
+
 		},
-		
+
 		/**
 		 *
 		 */
 		notify: function( text ) {
 			Story.log("<g-" + text + "->");
 		},
-		
+
 		/**
 		 *
 		 */
 		warn: function( text ) {
 			Story.log("<r-" + text + "->");
 		},
-		
+
 		/**
 		 * Completely removes the previously printed line.
 		 * @memberof story
@@ -88,7 +88,7 @@
 			var child = domStory.children[lines.length-1];
 			domStory.removeChild( child );
 		},
-		
+
 		/**
 		 * Replces the text on the previously printed line with the given text.
 		 * @memberof story
@@ -98,7 +98,7 @@
 			story.remove();
 			story.log( text );
 		},
-		
+
 		/**
 		 * Appends the given text to the previously printed line.
 		 * @memberof story
@@ -109,7 +109,7 @@
 			story.parseTags( text );
 			child.innerHTML += text;
 		},
-		
+
 		/**
 		 * Adds an empty line.
 		 * @memberof story
@@ -119,7 +119,7 @@
 			domStory.innerHTML += "<br/>";
 			if (atBottom) el.scrollTop = el.scrollHeight;
 		},
-		
+
 		/**
 		 * Completely removes all text from the story box.
 		 * @memberof story
@@ -128,7 +128,7 @@
 			domStory.innerHTML = "";;
 			lines = [];
 		},
-		
+
 		/**
 		 * Parses the tags in a given text string.
 		 * @memberof story
@@ -146,7 +146,7 @@
 			text = text.split( "->" ).join( "</span>" );
 			return text;
 		}
-		
+
 	}
 
 	// export
@@ -154,5 +154,5 @@
 		window["Story"] = story
 	else
 		module.exports = story;
-		
+
 })();
