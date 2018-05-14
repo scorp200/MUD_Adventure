@@ -42,6 +42,8 @@ module.exports = function(world, rate, clients, db, logger, utils) {
 		} else {
 			clients.forEach(function(client) {
 				var player = client.account;
+				if (player === undefined)
+					return;
 				if (!isNaN(opts.index) && !player.active[opts.index])
 					return;
 				player.update.push(change);
