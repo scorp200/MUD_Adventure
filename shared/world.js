@@ -103,12 +103,13 @@
 			var progress = ~~((++currentSize / totalSize) * 100);
 			var report = "generation progress: " + progress + "%";
 			if (server) {
-				process.stdout.clearLine();
+				//throws an error as a service.
+				/*process.stdout.clearLine();
 				process.stdout.cursorTo(0);
 				process.stdout.write(report);
 				if (currentSize === totalSize) {
 					process.stdout.write("\n");
-				}
+				}*/
 			} else {
 				(progress % 20 == 0) && console.log(report);
 			}

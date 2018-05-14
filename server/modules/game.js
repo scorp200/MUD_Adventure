@@ -197,10 +197,12 @@ module.exports = function(world, rate, clients, db, logger, utils) {
 		clients.forEach(function(client) {
 
 			var player = client.account;
-
+			if (player === undefined)
+				return;
+			var rate = 0.2;
 			// Loss of stats over time
-			player.hydration = Math.max(0, player.hydration - 1);
-			player.hunger = Math.max(0, player.hunger - 1);
+			player.hydration = Math.max(0, player.hydration - rate);
+			player.hunger = Math.max(0, player.hunger - rate);
 
 			// Handle hunger/dehydration
 			if (player.hunger <= 0 ||
