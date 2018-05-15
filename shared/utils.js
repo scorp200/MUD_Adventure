@@ -92,6 +92,14 @@
 		 }
 	 }
 
+	 utils.checkIfNameExist = function(accounts, name) {
+	 	for (var i = 0, keys = Object.keys(accounts); i < keys.length; i++) {
+	 		if (accounts[keys[i]].name === name)
+	 			return true
+	 	}
+	 	return false;
+	 }
+
 
 	// export
 	if (!server) {

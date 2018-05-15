@@ -225,7 +225,7 @@ function startup() {
 
 			// new character
 			if (!account && data.type === "new" && data.name && data.pass) {
-				if (!accounts[data.name]) {
+				if (!utils.checkIfNameExist(accounts, data.name)) {
 					console.log('NEW: Client ' + cid + ' is now ' + data.name);
 					//get a new player id;
 					var pid = Object.keys(accounts).length;
