@@ -28,7 +28,7 @@
 			story.log( "<dg-But, one does not simply float into Dogeylvania. During the journey you grow skeptical of Ted. You ask him how far we are from our destination, he replies that he hasn't the faintest idea and it's his first day on the job, and something about him being paid in whiskey and Vimto. You, expectedly, start to worry. This worry seems to manifest as a thick fog decends, the waves grow higher, stronger and thunder crackles through your senses. By now, even in this dazed state, you realize Ted has gone and you're on your own. Then, sheer blackness overtakes you, and everything slows to a stop...->" );
 			story.space();
 			story.log( "<r-If you're a stranger to these lands, type <g-new-> into the command console to create a new character. If you're already trapped here, type <g-login-> followed by your character name and password.'->" );
-			Story.log( "This is a WIP project, a bunch of stuff missing, but we hope you will enjoy it for what we have done so far! ~CorporateDoge, ~JackOatley")
+			Story.log( "This is a WIP project, but we hope you will enjoy what we have so far! ~CorporateDoge, ~JackOatley")
 		},
 
 		/**
