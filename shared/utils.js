@@ -92,12 +92,12 @@
 		 }
 	 }
 
-	 utils.checkIfNameExist = function(accounts, name) {
+	 utils.findAccountByName = function(accounts, name) {
 	 	for (var i = 0, keys = Object.keys(accounts); i < keys.length; i++) {
 	 		if (accounts[keys[i]].name === name)
-	 			return true
+	 			return accounts[keys[i]]
 	 	}
-	 	return false;
+	 	return undefined;
 	 }
 
 

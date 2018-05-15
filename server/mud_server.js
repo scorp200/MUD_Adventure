@@ -225,7 +225,7 @@ function startup() {
 
 			// new character
 			if (!account && data.type === "new" && data.name && data.pass) {
-				if (!utils.checkIfNameExist(accounts, data.name)) {
+				if (!utils.findAccountByName(accounts, data.name)) {
 					console.log('NEW: Client ' + cid + ' is now ' + data.name);
 					//get a new player id;
 					var pid = Object.keys(accounts).length;
@@ -247,7 +247,7 @@ function startup() {
 
 			// login character
 			else if (!account && data.type === "login" && data.name && data.pass) {
-				account = accounts[data.name];
+				account = utils.findAccountByName(accounts, data.name);
 				if (account) {
 					account.cid = cid;
 					if (account.pass === data.pass) {
@@ -261,12 +261,14 @@ function startup() {
 						});
 						game.updatePlayerPosition(account);
 					} else {
-						console.log("FAILED LOGIN: Incorrect password: " + data.name, acc.pass);
+						console.log("FAILED LOGIN: Incorrect password: " + data.name, account.pass);
 						game.sendToClient(conn, { error: "FAILED LOGIN: Incorrect password!" });
+						account = null;
 					}
 				} else {
 					console.log("FAILED LOGIN: Account with name doesn't exist: " + data.name);
 					game.sendToClient(conn, { error: "FAILED LOGIN: No character with that name exists!" });
+					account = null;
 				}
 			}
 
