@@ -249,24 +249,6 @@
 	exeSay.desc = "Say something. Preferably something cool and not abusive. If you do say something abusive, well, back at you times infinity plus one!";
 
 	/**
-	 * Move to next chunk
-	 * ONLY FOR TESTING
-	 */
-	function exeMoveChunk(dir, opts = {}) {
-		if (server) {
-			opts.amount = 64;
-			exeMove(dir, opts);
-		} else {
-			if (Utils.checkDir(dir)) {
-				Story.log('Moving ' + dir);
-				sendToServer({ command: 'moveChunk ' + dir });
-			} else {
-				Story.log('Please use n, e, s or w for direction!');
-			}
-		}
-	}
-
-	/**
 	 * Move to a specified direction
 	 */
 	function exeMove(dir, opts = {}) {

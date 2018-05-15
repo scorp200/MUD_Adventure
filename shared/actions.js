@@ -95,12 +95,15 @@
 		}
 
 		if (server) {
-
+			if (!(action.required ? required(action.required, player) : true)) {
+				actions.game.pushUpdate({
+					warn: 'you dont have enough required items'
+				}, { player: player });
+				return;
+			}
 			action.drop ? drop(action.drop, player) : null;
-			action.required ? required(action.required, player) : null;
 			action.playerStats ? stats(action.playerStats, player) : null;
 			action.notify ? notify(action.notify, player) : null;
-			console.log(params);
 
 		} else {
 
@@ -147,7 +150,14 @@
 	 *
 	 */
 	function required(req, player) {
-		console.log(req);
+		for (var i = 0, keys = Object.keys(req); i < keys.length; i++) {
+			var key = keys[i];
+			var iid = actions.items.getID(key);
+			if (player.inventory[iid] < req[key])
+				return false;
+			player.inventory[iid]--;
+		}
+		return true;
 	}
 
 	//

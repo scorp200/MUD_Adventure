@@ -15,7 +15,7 @@
 		var keys = Object.keys(items.mapping);
 		for (var n = 0; n < keys.length; n++) {
 			var key = keys[n];
-			console.log(key, n, id);
+			//console.log(key, n, id);
 			if (items.mapping[key].id === Number(id)) {
 				return key;
 			}

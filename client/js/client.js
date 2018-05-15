@@ -77,7 +77,7 @@ con.onmessage = function(msg) {
 	if (data.cid !== undefined) {
 		Story.intro();
 		Client.clientID = data.cid.toString();
-		console.log("Client ID set to " + Client.clientID);
+		//console.log("Client ID set to " + Client.clientID);
 		//autoLogin();
 	}
 
@@ -89,7 +89,7 @@ con.onmessage = function(msg) {
 
 	// get the world from the server
 	if (data.world !== undefined) {
-		console.log(data.world);
+		//console.log(data.world);
 		world = new World(data.world);
 		Crafting.world = world;
 		console.log("data.world");
@@ -122,7 +122,7 @@ con.onmessage = function(msg) {
 
 			// update inventory
 			if (update.inventory) {
-				console.log(update.inventory);
+				//console.log(update.inventory);
 				Client.inventory = update.inventory;
 			}
 
@@ -133,15 +133,15 @@ con.onmessage = function(msg) {
 
 			// cell change
 			if (update.cell) {
-				console.log("update.change");
-				console.log(update.cell);
+				//console.log("update.change");
+				//console.log(update.cell);
 
 				// cell change code goes here it should be 11/10 and no less
 				var chunk = world.getChunk(update.cell);
 				var cellX = update.cell.x - chunk.realX;
 				var cellY = update.cell.y - chunk.realY;
 				chunk.setCell(cellX, cellY, update.cell.tile);
-				console.log("cell changed!", cellX, cellY, update.cell.tile);
+				//console.log("cell changed!", cellX, cellY, update.cell.tile);
 			}
 
 			// player moved

@@ -43,11 +43,15 @@
 
 		if ( !crafting.mapping[item] ) {
 			console.log( "Unknown craftable item!" );
+			if (!server)
+				Story.warn( "Unknown craftable item!" );
 			return;
 		}
 
 		if ( map.tile && !Utils.checkDir(dir) ) {
 			console.log( "Not a valid direction!" );
+			if (!server)
+				Story.warn( "Not a valid direction!" );
 			return;
 		}
 
@@ -117,7 +121,7 @@
 
 				//
 				Story.warn("Unable to craft item, you are missing requirements!");
-				console.log(cell, consumes, map.tile);
+				//console.log(cell, consumes, map.tile);
 
 			}
 
@@ -147,7 +151,7 @@
 				wood: 2
 			}
 		},
-		
+
 		"wall": {
 			tile: ["grass", "drylands"],
 			change: "wall",

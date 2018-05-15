@@ -129,7 +129,7 @@ module.exports = function(world, rate, clients, accounts, db, logger, utils) {
 
 		drops.forEach(function(drop) {
 			item = items.mapping[drop];
-			console.log(drop, items.mapping);
+			//console.log(drop, items.mapping);
 			if (Math.random() <= item.dropRate) {
 
 				// not sure how to make it more streamline
