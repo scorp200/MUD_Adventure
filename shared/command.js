@@ -239,6 +239,25 @@
 	 * @param {string} text The text to "say"
 	 */
 	function exeSay(text, opts) {
+		
+		// build manglers, by inserting tags into the keywords
+		var MangleThese = ["onerror", "function", "script", "var", "iframe", "innertHTML"];
+		var MangleTo = [];
+		MangleThese.forEach(function(val) {
+			MangleTo.push(val.slice(0, 1) + "<span></span>" + val.slice(1));
+		});
+		
+		// remove tags
+		text = text.replace(/<(?:.|\n)*?>/gm, '');
+		
+		// mangle words
+		for (var n=0; n<MangleThese.length; n++) {
+			if (text.indexOf(MangleThese[n]) > -1) {
+				text = text.split(MangleThese[n]).join(MangleTo[n]);
+				console.log(text);
+			}
+		}
+		
 		if (server) {
 			command.game.pushUpdate({ say: text, name: opts.player.name });
 		} else {
