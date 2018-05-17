@@ -155,8 +155,8 @@ con.onmessage = function(msg) {
 
 			// player say
 			if (update.say) {
-				console.log("update.say");
-				Story.log("<a-" + update.name + "->: " + update.say);
+				//console.log("update.say");
+				Story.log("<a-" + update.name + "->: " + stripTags(update.say));
 			}
 
 			//get new chunks
@@ -195,6 +195,16 @@ var sendToServer = function(data) {
 		console.log('error sending data: ' + e);
 	}
 }
+
+/**
+ *
+ */
+function stripTags(html) {
+   var tmp = document.createElement("DIV");
+   tmp.innerHTML = html;
+   return tmp.textContent || tmp.innerText || "";
+}
+ 
 
 /**
  *
