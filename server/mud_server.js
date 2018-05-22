@@ -127,7 +127,6 @@ function create_world(world_settings, generate = false) {
 
 function saveTheWorld(all = false, firstTime = false) {
 	// *disclaimer no hero will actually save the world :,(
-	var now = Date.now();
 	var bulk = [];
 	var keys = [];
 	var keyList = [];
@@ -198,7 +197,7 @@ function saveTheWorld(all = false, firstTime = false) {
 function startup() {
 	console.log("starting simulation...");
 	game = new Game(world, settings.server_tick, clients, accounts, db, logger, utils);
-	setInterval(saveTheWorld.bind(true), 600000);
+	setInterval(function() { saveTheWorld(); }, 600000);
 	// create server
 	console.log("creating server...");
 	var server = new ws.Server({
